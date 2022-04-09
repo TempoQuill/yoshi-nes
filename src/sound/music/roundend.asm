@@ -13,6 +13,7 @@ Music_RoundEnd_Ch2:
 	octave 4
 	note C_, 8
 	sound_ret
+
 Music_RoundEnd_Ch1:
 	tempo 192
 	channel_volume 13
@@ -26,6 +27,7 @@ Music_RoundEnd_Ch1:
 	note_type 12, 1, 7, 2, 8
 	note F_, 8
 	sound_ret
+
 Music_RoundEnd_Ch3:
 	hill_type 12, 0, 33
 	octave 3

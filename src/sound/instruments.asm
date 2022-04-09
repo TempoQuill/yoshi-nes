@@ -1,59 +1,58 @@
-
 Instruments:
-	.dw Instrument_c985
-	.dw Instrument_c995
-	.dw Instrument_c9a6
-	.dw Instrument_c9af
-	.dw Instrument_c9b8
-	.dw Instrument_c9c9
-	.dw Instrument_c9da
-	.dw Instrument_c9eb
-	.dw Instrument_c9fc
-	.dw Instrument_ca03
-	.dw Instrument_ca13
-	.dw Instrument_ca24
-	.dw Instrument_ca35
-	.dw Instrument_ca45
+	.dw Clarinet
+	.dw Harp
+	.dw Flute
+	.dw Pizzicato
+	.dw String
+	.dw Mandolin
+	.dw Brass
+	.dw Guitar
+	.dw Fiddle
+	.dw Piano
+	.dw Overdrive
+	.dw Underdrive
+	.dw EchoPiano
+	.dw AcousticBass
 
-Instrument_c985:
-	.db $4, $6, $9, $d, $f, $f, $d, $c, $b, $a, $b, $a, $9, $8, $7
+Clarinet:
+	.db  4,  6,  9, 13, 15, 15, 13, 12, 11, 10, 11, 10,  9,  8,  7
 	.db -1
-Instrument_c995:
-	.db $f, $e, $2, $c, $b, $a, $9, $a, $9, $8, $9, $8, $7, $8, $7, $6
+Harp:
+	.db 15, 14,  2, 12, 11, 10,  9, 10,  9,  8,  9,  8,  7,  8,  7,  6
 	.db -1
-Instrument_c9a6:
-	.db $8, $f, $f, $d, $c, $b, $c, $b
+Flute:
+	.db  8, 15, 15, 13, 12, 11, 12, 11
 	.db -1
-Instrument_c9af:
-	.db $5, $f, $f, $4, $8, $5, $3, $2
+Pizzicato:
+	.db  5, 15, 15,  4,  8,  5,  3,  2
 	.db -1
-Instrument_c9b8:
-	.db $f, $f, $e, $d, $c, $b, $c, $9, $a, $8, $9, $7, $8, $6, $7, $5
+String:
+	.db 15, 15, 14, 13, 12, 11, 12,  9, 10,  8,  9,  7,  8,  6,  7,  5
 	.db -1
-Instrument_c9c9:
-	.db $f, $d, $f, $d, $c, $9, $c, $a, $b, $9, $6, $9, $7, $8, $5, $6
+Mandolin:
+	.db 15, 13, 15, 13, 12,  9, 12, 10, 11,  9,  6,  9,  7,  8,  5,  6
 	.db -1
-Instrument_c9da:
-	.db $a, $f, $a, $e, $a, $d, $a, $b, $c, $a, $9, $8, $9, $7, $5, $4
+Brass:
+	.db 10, 15, 10, 14, 10, 13, 10, 11, 12, 10,  9,  8,  9,  7,  5,  4
 	.db -1
-Instrument_c9eb:
-	.db $f, $b, $e, $c, $d, $b, $c, $a, $9, $a, $b, $9, $8, $9, $5, $6
+Guitar:
+	.db 15, 11, 14, 12, 13, 11, 12, 10,  9, 10, 11,  9,  8,  9,  5,  6
 	.db -1
-Instrument_c9fc:
-	.db $5, $f, $f, $4, $8, $5
+Fiddle:
+	.db  5, 15, 15,  4,  8,  5
 	.db -1
-Instrument_ca03:
-	.db $f, $f, $e, $e, $d, $d, $c, $c, $b, $b, $a, $a, $9, $9, $8
+Piano:
+	.db 15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10, 10,  9,  9,  8
 	.db -1
-Instrument_ca13:
-	.db $f, $6, $e, $a, $c, $b, $a, $9, $9, $8, $8, $8, $7, $7, $7, $6
+Overdrive:
+	.db 15,  6, 14, 10, 12, 11, 10,  9,  9,  8,  8,  8,  7,  7,  7,  6
 	.db -1
-Instrument_ca24:
-	.db $f, $8, $c, $b, $c, $b, $a, $9, $9, $8, $8, $7, $7, $6, $6, $5
+Underdrive:
+	.db 15,  8, 12, 11, 12, 11, 10,  9,  9,  8,  8,  7,  7,  6,  6,  5
 	.db -1
-Instrument_ca35:
-	.db $f, $f, $e, $d, $c, $b, $a, $b, $d, $c, $b, $a, $8, $7, $6
+EchoPiano:
+	.db 15, 15, 14, 13, 12, 11, 10, 11, 13, 12, 11, 10,  8,  7,  6
 	.db -1
-Instrument_ca45:
-	.db $f, $1, $f, $e, $c, $b, $d, $b, $a, $c, $a, $9, $b, $9, $8
+AcousticBass:
+	.db 15,  1, 15, 14, 12, 11, 13, 11, 10, 12, 10,  9, 11,  9,  8
 	.db -1
