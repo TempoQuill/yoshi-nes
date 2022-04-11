@@ -1,3 +1,6 @@
+; PRG 1 contains all the music as well as the sound engine
+; and something to do with music ID's
+
 .include "sfx/sound/music/title.asm"
 .include "sfx/sound/music/starman.asm"
 .include "sfx/sound/music/flower.asm"
@@ -13,45 +16,45 @@
 .include "sfx/sound/sfx-1.asm"
 .include "sfx/sound/music/roundend.asm"
 
-Sub_01_9e77:
+UpdateSound:
 	LDX #CHAN_0
 	LDY #$00
-@01_9e7b:
+@loop:
 	TXA
 	ASL A
 	ASL A
 	STA zChannelOffset
 	CPX #CHAN_3
-	BEQ @01_9e86
+	BEQ @music_chan
 	BCS @01_9e9e
-@01_9e86:
+@music_chan:
 	LDA $0636
-	AND Data_01_9ede, X
+	AND ChannelMasks, X
 	BEQ @01_9eb3
 	BCS @01_9ea8
 	LDA $068d, X
 	BEQ @01_9ea5
 	LDA $0636
 	AND #$0f
-	BEQ @01_9ed8
+	BEQ @next_chan
 	BNE @01_9ea5
 @01_9e9e:
 	LDA $0636
 	AND #$0f
 	BEQ @01_9eb3
 @01_9ea5:
-	JSR Sub_01_a60e
+	JSR TurnOffEnvelopes
 @01_9ea8:
 	LDA $06be
-	ORA Data_01_9ede, X
+	ORA ChannelMasks, X
 	STA $06be
-	BNE @01_9ed8
+	BNE @next_chan
 @01_9eb3:
 	LDA $06be
-	AND Data_01_9ede, X
+	AND ChannelMasks, X
 	BEQ @01_9ed0
 	LDA $06be
-	EOR Data_01_9ede, X
+	EOR ChannelMasks, X
 	STA $06be
 	LDA zChannelOffset
 	AND #$0f
@@ -60,44 +63,55 @@ Sub_01_9e77:
 	TAY
 	JSR ApplyChannel
 @01_9ed0:
-	LDA $0689, X
-	BEQ @01_9ed8
-	JSR Sub_01_9ee7
-@01_9ed8:
+	LDA iChannelID, X
+	BEQ @next_chan
+	JSR UpdateChannel
+@next_chan:
 	INX
 	CPX #CHAN_8
-	BNE @01_9e7b
+	BNE @loop
 	RTS
 
-Data_01_9ede:
+ChannelMasks:
 	.db $80, $40, $20, $10, $08, $04, $02, $01
 
-Branch_01_9ee6:
+QuitChannelUpdate:
 	RTS
 
-Sub_01_9ee7:
+UpdateChannel:
+; This routine is responsible for what we hear
 	JSR CopyMusicAddress
+	; are we beginning a new note
 	DEC iChannelNoteLength, X
-	BNE @01_9ef5
-	LDA $0689, X
+	BNE @note_playing
+	; yes
+	LDA iChannelID, X ; useless
 	JMP ParseByte
-@01_9ef5:
+@note_playing:
+	; are we in a pitch slide?
 	LDA iChannelFlags, X
 	AND #SOUND_PITCH_SLIDE
-	BEQ @01_9f04
+	BEQ @slide_done
+	; yes
 	JSR ChannelCheckProceedure
-	BCS @01_9f04
-	JSR Sub_01_a897
-@01_9f04:
-	CPX #$07
-	BEQ Branch_01_9ee6
-	CPX #$03
-	BEQ Branch_01_9ee6
+	BCS @slide_done
+	JSR HandlePitchSlide
+@slide_done:
+	; are on noise channels?
+	CPX #CHAN_7
+	BEQ QuitChannelUpdate
+	CPX #CHAN_3
+	BEQ QuitChannelUpdate
+	; no
+	; is the SFX reading mode on?
 	LDA iChannelFlags, X
-	LSR A
-	BCC Branch_01_9ee6
-	CPX #$03
+	LSR A ; SOUND_READING_MODE
+	BCC QuitChannelUpdate
+	; no
+	; noise or SFX?
+	CPX #CHAN_3
 	BCS @01_9f5f
+	; no
 	LDA $068d, X
 	BNE @01_9f5f
 	LDA $06f7, X
@@ -256,14 +270,18 @@ Sub_01_9ee7:
 
 
 ParseNextByte:
+	; go to the next byte
 	INY
 ParseByte:
+	; check for address commands
 	LDA (zMusicAddress), Y
 	CMP #sound_call_cmd
-	BCS @01_a050
+	BCS @addr_cmd
 	JMP ParseNote
-@01_a050:
-	BNE @01_a066
+@addr_cmd:
+	; branch at this point if we aren't calling
+	BNE @next
+	; let RAM know we're about to enter a sub
 	LDA iChannelFlags, X
 	ORA #SOUND_SUBROUTINE
 	STA iChannelFlags, X
@@ -271,12 +289,17 @@ ParseByte:
 	JSR SaveMusicReturnAddress
 	JSR CopyMusicAddress
 	JMP ParseByte
-@01_a066:
+@next:
+	; are we looping?
 	CMP #sound_loop_cmd
-	BEQ @01_a08b
+	BEQ @sound_loop
+	; nope, we encountered $ff
+	; are we in a sub?
 	LDA iChannelFlags, X
 	AND #SOUND_SUBROUTINE
-	BEQ @01_a0c3
+	BEQ @track_end
+	; yes
+	; then let RAM know we're leaving
 	LDA iChannelFlags, X
 	AND #$ff ^ SOUND_SUBROUTINE
 	STA iChannelFlags, X
@@ -286,27 +309,35 @@ ParseByte:
 	STA iChannelAddress + 8, X
 	JSR CopyMusicAddress
 	JMP ParseByte
-@01_a08b:
+@sound_loop:
+	; safe increment loop counter
 	LDA iChannelLoopCounter, X
 	CLC
 	ADC #$01
+	; stack up to byte shown
+	; are we done? did we exceed the byte shown?
 	INY
 	CMP (zMusicAddress), Y
-	BEQ @01_a0a7
-	BMI @01_a09b
+	BEQ @end_loop
+	BMI @use_loop ; BCC would be more appropriate
+	; we exceed the byte shown, this is what happens when we loop with 0
 	SEC
 	SBC #$01
-@01_a09b:
+@use_loop:
+	; store A in the loop counter and perform the standard jump
 	STA iChannelLoopCounter, X
 	JSR UpdateMusicAddress
 	JSR CopyMusicAddress
 	JMP ParseByte
-@01_a0a7:
+@end_loop:
+	; clear the loop counter
 	LDA #$00
 	STA iChannelLoopCounter, X
+	; skip the parameters
 	INY
 	INY
 	INY
+	; update the music address
 	TYA
 	CLC
 	ADC zMusicAddress
@@ -316,11 +347,11 @@ ParseByte:
 	STA iChannelAddress + 8, X
 	JSR CopyMusicAddress
 	JMP ParseByte
-@01_a0c3:
-	LDA $0689, X
+@track_end:
+	LDA iChannelID, X
 	STA zMusicWord
 	LDA #$00
-	STA $0689, X
+	STA iChannelID, X
 	STA iChannelPitch, X
 	STA $0635
 	STA iChannelFlags, X
@@ -336,7 +367,7 @@ ParseByte:
 	BEQ @01_a12a
 	CPX #$04
 	BNE @01_a0fc
-	LDA $0689
+	LDA iChannelID
 	BEQ @01_a10d
 	LDA $06b9
 	BNE @01_a10d
@@ -709,52 +740,52 @@ Branch_01_a389:
 	STA zMusicWord
 	INC zMusicWord
 	LDA #$00
-	STA $00e6
+	STA zMusicOffsetAddress
 	STA $00e9
 	LDA iChannelNoteTypeLength, X
-	STA $00e7
+	STA zMusicOffsetAddress + 1
 @01_a3a0:
 	LSR zMusicWord
 	BCC @01_a3ab
-	LDA $00e7
+	LDA zMusicOffsetAddress + 1
 	CLC
-	ADC $00e6
-	STA $00e6
+	ADC zMusicOffsetAddress
+	STA zMusicOffsetAddress
 @01_a3ab:
-	ASL $00e7
+	ASL zMusicOffsetAddress + 1
 	LDA zMusicWord
 	BNE @01_a3a0
 	CPX #$07
 	BCC @01_a3ba
-	LDA $00e6
+	LDA zMusicOffsetAddress
 	JMP @01_a3f2
 @01_a3ba:
 	CPX #$04
 	BCC @01_a3cb
 	LDA iSFXTempo
-	STA $00e7
+	STA zMusicOffsetAddress + 1
 	LDA iSFXTempo + 1
 	STA $00e8
 	JMP @01_a3d5
 @01_a3cb:
 	LDA iMusicTempo
-	STA $00e7
+	STA zMusicOffsetAddress + 1
 	LDA iMusicTempo + 1
 	STA $00e8
 @01_a3d5:
-	LSR $00e6
+	LSR zMusicOffsetAddress
 	BCC @01_a3e8
 	LDA $00e8
 	CLC
 	ADC $06e3, X
 	STA $06e3, X
-	LDA $00e7
+	LDA zMusicOffsetAddress + 1
 	ADC $00e9
 	STA $00e9
 @01_a3e8:
 	ASL $00e8
-	ROL $00e7
-	LDA $00e6
+	ROL zMusicOffsetAddress + 1
+	LDA zMusicOffsetAddress
 	BNE @01_a3d5
 	LDA $00e9
 @01_a3f2:
@@ -974,11 +1005,11 @@ IncrementMusicAddress:
 	CLC
 	ADC zMusicAddress
 	STA iChannelAddress, X
-	BCC @01_a58a
+	BCC @quit
 	LDA zMusicAddress + 1
 	ADC #0
 	STA iChannelAddress + 8, X
-@01_a58a:
+@quit:
 	RTS
 
 UpdateMusicAddress:
@@ -1072,7 +1103,7 @@ CheckProClearCarry:
 	PLA
 	RTS
 
-Sub_01_a60e:
+TurnOffEnvelopes:
 	LDA zChannelOffset
 	AND #$0f
 	TAY
@@ -1121,9 +1152,9 @@ ApplyChannel:
 	LDA iChannelPitch, X
 	STA SQ1_HI, Y
 	LDA $0636
-	AND Data_01_9ede, X
+	AND ChannelMasks, X
 	BNE @01_a669
-	LDA $0689, X
+	LDA iChannelID, X
 	BEQ @01_a669
 	LDA iChannelTimbre, X
 	ORA iChannelVolumeRamp, X
@@ -1141,7 +1172,7 @@ PlayAudio:
 	CMP #music_boundary
 	BCS @01_a691
 	LDA #$00
-	STA $0689
+	STA iChannelID
 	STA $068a
 	STA $068b
 	STA $068c
@@ -1152,7 +1183,7 @@ PlayAudio:
 	CMP #music_boundary + 1
 	BCC @01_a6d2
 	LDA #$00
-	STA $0689
+	STA iChannelID
 	STA $068a
 	STA $068b
 	STA $068c
@@ -1238,9 +1269,9 @@ PlayAudio:
 	BEQ @01_a6fe
 	LDA zMusicHeaderID
 	BEQ @01_a740
-	CMP $0689, X
+	CMP iChannelID, X
 	BCS @01_a740
-	LDA $0689, X
+	LDA iChannelID, X
 	CMP #$13
 	BCS @01_a720
 @01_a740:
@@ -1298,7 +1329,7 @@ PlayAudio:
 	STA SQ1_SWEEP, Y
 @01_a7a6:
 	LDA zMusicHeaderID
-	STA $0689, X
+	STA iChannelID, X
 	CMP zChannelTotal
 	BMI @01_a7b9
 	LDY $00e2
@@ -1421,7 +1452,7 @@ ApplyPitchSlide:
 	JSR Sub_01_a97b
 	RTS
 
-Sub_01_a897:
+HandlePitchSlide:
 	JSR Sub_01_a97b
 	LDA iChannelFlags, X
 	AND #SOUND_PITCH_SLIDE_DIR
@@ -1550,222 +1581,118 @@ Ptrs_01_a98e:
 	.dw MPT_01_aab4
 	.dw MPT_01_aaf8
 MPT_01_a9a0:
-	.dw PTD_01_ab40
-	.dw PTD_01_ab81
-	.dw PTD_01_ab42
-	.dw PTD_01_ab92
-	.dw PTD_01_ab4b
-	.dw PTD_01_ab70
-	.dw PTD_01_ab54
-	.dw PTD_01_ab70
-	.dw PTD_01_ab5d
-	.dw PTD_01_ab70
-	.dw PTD_01_ab66
-	.dw PTD_01_aba3
-	.dw PTD_01_ab6b
-	.dw PTD_01_aba3
+	.dw PTD_01_ab40, PTD_01_ab81
+	.dw PTD_01_ab42, PTD_01_ab92
+	.dw PTD_01_ab4b, PTD_01_ab70
+	.dw PTD_01_ab54, PTD_01_ab70
+	.dw PTD_01_ab5d, PTD_01_ab70
+	.dw PTD_01_ab66, PTD_01_aba3
+	.dw PTD_01_ab6b, PTD_01_aba3
 MPT_01_a9bc:
-	.dw PTD_01_abac
-	.dw PTD_01_abba
-	.dw PTD_01_abb5
-	.dw PTD_01_abba
+	.dw PTD_01_abac, PTD_01_abba
+	.dw PTD_01_abb5, PTD_01_abba
 MPT_01_a9c4:
-	.dw PTD_01_abcb
-	.dw PTD_01_abcd
-	.dw PTD_01_abcb
-	.dw PTD_01_abd0
-	.dw PTD_01_abcb
-	.dw PTD_01_abd3
-	.dw PTD_01_abcb
-	.dw PTD_01_abd6
+	.dw PTD_01_abcb, PTD_01_abcd
+	.dw PTD_01_abcb, PTD_01_abd0
+	.dw PTD_01_abcb, PTD_01_abd3
+	.dw PTD_01_abcb, PTD_01_abd6
 MPT_01_a9d4:
-	.dw PTD_01_abd9
-	.dw PTD_01_abe3
-	.dw PTD_01_abde
-	.dw PTD_01_abe3
-	.dw PTD_01_abf0
-	.dw PTD_01_abe3
-	.dw PTD_01_abfa
-	.dw PTD_01_ac08
-	.dw PTD_01_ac15
-	.dw PTD_01_ac27
-	.dw PTD_01_ac49
-	.dw PTD_01_ac63
-	.dw PTD_01_ac7c
-	.dw PTD_01_ac82
-	.dw PTD_01_ac7f
-	.dw PTD_01_ac82
-	.dw PTD_01_ac87
-	.dw PTD_01_ac91
-	.dw PTD_01_ac8c
-	.dw PTD_01_ac91
-	.dw PTD_01_ac9a
-	.dw PTD_01_acaf
-	.dw PTD_01_acd8
-	.dw PTD_01_acdf
-	.dw PTD_01_afd7
-	.dw PTD_01_afe7
-	.dw PTD_01_abd9
-	.dw PTD_01_abe3
-	.dw PTD_01_abd9
-	.dw PTD_01_abe3
-	.dw PTD_01_abd9
-	.dw PTD_01_abe3
-	.dw PTD_01_abd9
-	.dw PTD_01_abe3
-	.dw PTD_01_abd9
-	.dw PTD_01_abe3
-	.dw PTD_01_abf5
-	.dw PTD_01_abe3
-	.dw PTD_01_ac01
-	.dw PTD_01_ac08
-	.dw PTD_01_ac1e
-	.dw PTD_01_ac38
-	.dw PTD_01_ac56
-	.dw PTD_01_ac63
+	.dw PTD_01_abd9, PTD_01_abe3
+	.dw PTD_01_abde, PTD_01_abe3
+	.dw PTD_01_abf0, PTD_01_abe3
+	.dw PTD_01_abfa, PTD_01_ac08
+	.dw PTD_01_ac15, PTD_01_ac27
+	.dw PTD_01_ac49, PTD_01_ac63
+	.dw PTD_01_ac7c, PTD_01_ac82
+	.dw PTD_01_ac7f, PTD_01_ac82
+	.dw PTD_01_ac87, PTD_01_ac91
+	.dw PTD_01_ac8c, PTD_01_ac91
+	.dw PTD_01_ac9a, PTD_01_acaf
+	.dw PTD_01_acd8, PTD_01_acdf
+	.dw PTD_01_afd7, PTD_01_afe7
+	.dw PTD_01_abd9, PTD_01_abe3
+	.dw PTD_01_abd9, PTD_01_abe3
+	.dw PTD_01_abd9, PTD_01_abe3
+	.dw PTD_01_abd9, PTD_01_abe3
+	.dw PTD_01_abd9, PTD_01_abe3
+	.dw PTD_01_abf5, PTD_01_abe3
+	.dw PTD_01_ac01, PTD_01_ac08
+	.dw PTD_01_ac1e, PTD_01_ac38
+	.dw PTD_01_ac56, PTD_01_ac63
 MPT_01_aa2c:
-	.dw PTD_01_acec
-	.dw PTD_01_acf1
-	.dw PTD_01_ad0d
-	.dw PTD_01_ad25
-	.dw PTD_01_acfa
-	.dw PTD_01_ad04
-	.dw PTD_01_acff
-	.dw PTD_01_ad04
+	.dw PTD_01_acec, PTD_01_acf1
+	.dw PTD_01_ad0d, PTD_01_ad25
+	.dw PTD_01_acfa, PTD_01_ad04
+	.dw PTD_01_acff, PTD_01_ad04
 MPT_01_aa3c:
-	.dw PTD_01_ad87
-	.dw PTD_01_adb9
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad76
-	.dw PTD_01_adda
-	.dw PTD_01_ae06
-	.dw PTD_01_ad54
-	.dw PTD_01_ad59
-	.dw PTD_01_ae49
-	.dw PTD_01_ae67
-	.dw PTD_01_ae4e
-	.dw PTD_01_ae70
-	.dw PTD_01_ae53
-	.dw PTD_01_ae79
-	.dw PTD_01_ae23
-	.dw PTD_01_ae30
-	.dw PTD_01_ad87
-	.dw PTD_01_ad98
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_adda
-	.dw PTD_01_ade9
-	.dw PTD_01_ad54
-	.dw PTD_01_ad56
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_ad5c
-	.dw PTD_01_ad65
-	.dw PTD_01_ae58
-	.dw PTD_01_ae67
-	.dw PTD_01_ae5d
-	.dw PTD_01_ae70
-	.dw PTD_01_ae62
-	.dw PTD_01_ae79
+	.dw PTD_01_ad87, PTD_01_adb9
+	.dw PTD_01_ad5c, PTD_01_ad76
+	.dw PTD_01_adda, PTD_01_ae06
+	.dw PTD_01_ad54, PTD_01_ad59
+	.dw PTD_01_ae49, PTD_01_ae67
+	.dw PTD_01_ae4e, PTD_01_ae70
+	.dw PTD_01_ae53, PTD_01_ae79
+	.dw PTD_01_ae23, PTD_01_ae30
+	.dw PTD_01_ad87, PTD_01_ad98
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_adda, PTD_01_ade9
+	.dw PTD_01_ad54, PTD_01_ad56
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_ad5c, PTD_01_ad65
+	.dw PTD_01_ae58, PTD_01_ae67
+	.dw PTD_01_ae5d, PTD_01_ae70
+	.dw PTD_01_ae62, PTD_01_ae79
 MPT_01_aa98:
-	.dw PTD_01_ae82
-	.dw PTD_01_ae8d
-	.dw PTD_01_aeb3
-	.dw PTD_01_aebe
-	.dw PTD_01_aee7
-	.dw PTD_01_aef2
-	.dw PTD_01_af12
-	.dw PTD_01_af1f
-	.dw PTD_01_aea2
-	.dw PTD_01_aea8
-	.dw PTD_01_aed3
-	.dw PTD_01_aeda
-	.dw PTD_01_af07
-	.dw PTD_01_af0b
+	.dw PTD_01_ae82, PTD_01_ae8d
+	.dw PTD_01_aeb3, PTD_01_aebe
+	.dw PTD_01_aee7, PTD_01_aef2
+	.dw PTD_01_af12, PTD_01_af1f
+	.dw PTD_01_aea2, PTD_01_aea8
+	.dw PTD_01_aed3, PTD_01_aeda
+	.dw PTD_01_af07, PTD_01_af0b
 MPT_01_aab4:
-	.dw PTD_01_af38
-	.dw PTD_01_afc5
-	.dw PTD_01_af3d
-	.dw PTD_01_afc5
-	.dw PTD_01_af42
-	.dw PTD_01_afc5
-	.dw PTD_01_af47
-	.dw PTD_01_afc5
-	.dw PTD_01_af4c
-	.dw PTD_01_afc5
-	.dw PTD_01_af51
-	.dw PTD_01_afc5
-	.dw PTD_01_af56
-	.dw PTD_01_afc5
-	.dw PTD_01_af5b
-	.dw PTD_01_afc5
-	.dw PTD_01_af60
-	.dw PTD_01_afc5
-	.dw PTD_01_af65
-	.dw PTD_01_afc5
-	.dw PTD_01_af6a
-	.dw PTD_01_afc5
-	.dw PTD_01_af6f
-	.dw PTD_01_afc5
-	.dw PTD_01_af74
-	.dw PTD_01_afc5
-	.dw PTD_01_af79
-	.dw PTD_01_afc5
-	.dw PTD_01_af7e
-	.dw PTD_01_afc5
-	.dw PTD_01_af83
-	.dw PTD_01_af86
-	.dw PTD_01_af8b
-	.dw PTD_01_af8d
+	.dw PTD_01_af38, PTD_01_afc5
+	.dw PTD_01_af3d, PTD_01_afc5
+	.dw PTD_01_af42, PTD_01_afc5
+	.dw PTD_01_af47, PTD_01_afc5
+	.dw PTD_01_af4c, PTD_01_afc5
+	.dw PTD_01_af51, PTD_01_afc5
+	.dw PTD_01_af56, PTD_01_afc5
+	.dw PTD_01_af5b, PTD_01_afc5
+	.dw PTD_01_af60, PTD_01_afc5
+	.dw PTD_01_af65, PTD_01_afc5
+	.dw PTD_01_af6a, PTD_01_afc5
+	.dw PTD_01_af6f, PTD_01_afc5
+	.dw PTD_01_af74, PTD_01_afc5
+	.dw PTD_01_af79, PTD_01_afc5
+	.dw PTD_01_af7e, PTD_01_afc5
+	.dw PTD_01_af83, PTD_01_af86
+	.dw PTD_01_af8b, PTD_01_af8d
 MPT_01_aaf8:
-	.dw PTD_01_af90
-	.dw PTD_01_afce
-	.dw PTD_01_af92
-	.dw PTD_01_afce
-	.dw PTD_01_af95
-	.dw PTD_01_afce
-	.dw PTD_01_af98
-	.dw PTD_01_afce
-	.dw PTD_01_af9b
-	.dw PTD_01_afce
-	.dw PTD_01_af9e
-	.dw PTD_01_afce
-	.dw PTD_01_afa1
-	.dw PTD_01_afce
-	.dw PTD_01_afa4
-	.dw PTD_01_afce
-	.dw PTD_01_afa7
-	.dw PTD_01_afce
-	.dw PTD_01_afaa
-	.dw PTD_01_afce
-	.dw PTD_01_afad
-	.dw PTD_01_afce
-	.dw PTD_01_afb0
-	.dw PTD_01_afce
-	.dw PTD_01_afb3
-	.dw PTD_01_afce
-	.dw PTD_01_afb6
-	.dw PTD_01_afce
-	.dw PTD_01_afb9
-	.dw PTD_01_afce
-	.dw PTD_01_afbc
-	.dw PTD_01_afce
-	.dw PTD_01_afbf
-	.dw PTD_01_afce
-	.dw PTD_01_afc2
-	.dw PTD_01_afce
+	.dw PTD_01_af90, PTD_01_afce
+	.dw PTD_01_af92, PTD_01_afce
+	.dw PTD_01_af95, PTD_01_afce
+	.dw PTD_01_af98, PTD_01_afce
+	.dw PTD_01_af9b, PTD_01_afce
+	.dw PTD_01_af9e, PTD_01_afce
+	.dw PTD_01_afa1, PTD_01_afce
+	.dw PTD_01_afa4, PTD_01_afce
+	.dw PTD_01_afa7, PTD_01_afce
+	.dw PTD_01_afaa, PTD_01_afce
+	.dw PTD_01_afad, PTD_01_afce
+	.dw PTD_01_afb0, PTD_01_afce
+	.dw PTD_01_afb3, PTD_01_afce
+	.dw PTD_01_afb6, PTD_01_afce
+	.dw PTD_01_afb9, PTD_01_afce
+	.dw PTD_01_afbc, PTD_01_afce
+	.dw PTD_01_afbf, PTD_01_afce
+	.dw PTD_01_afc2, PTD_01_afce
 PTD_01_ab40:
 	.db $01, $00
 PTD_01_ab42:

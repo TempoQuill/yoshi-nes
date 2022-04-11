@@ -1,7 +1,13 @@
 
 	.dsb $34
 z34:
-	.dsb $a4
+	.dsb $41
+zMMC1Ctrl:
+	.dsb 1
+zMMC1Chr:
+	.dsb 2
+zMMC1Prg:
+	.dsb $60
 zMusicWord:
 	.dsb 2
 zAuxPointer:
@@ -16,7 +22,10 @@ zChannelOffset:
 zMusicHeaderID:
 	.dsb 1
 zChannelTotal:
-	.dsb $18
+	.dsb 1
+	.dsb 1
+zMusicOffsetAddress:
+	.dsb $16
 zInstrumentPointer:
 	.dsb 2
 	.dsb 2
@@ -32,7 +41,9 @@ iStackTop:
 iChannelTargetPitch:
 	.dsb 1
 iChannelPitchSlideTail:
-	.dsb 4
+	.dsb 1
+	.dsb 1
+	.dsb 2
 iChannelNoteTypeLength: ; 638
 	.dsb 8
 iChannelBackupAddress:
@@ -48,7 +59,11 @@ iChannelTimbre: ; 670
 iChannelVolumeRamp:
 	.dsb 9
 iChannelNoteLength:
-	.dsb $10
+	.dsb 8
+iChannelID:
+	.dsb 4
+
+	.dsb 4
 iChannelAddress: ; 691
 	.dsb $10
 iChannelFlags: ; 6a1

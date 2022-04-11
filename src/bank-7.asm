@@ -14,7 +14,7 @@ Sub_07_cca8:
 	STA $0261
 	JMP @07_cd1f
 @07_ccba:
-	JSR Sub_07_cf65
+	JSR SwitchToAudio
 	LDA $0260
 	ORA #$40
 	STA $0260
@@ -66,7 +66,7 @@ Sub_07_cca8:
 	DEX
 	CPX #$03
 	BNE @07_cd09
-	JSR Sub_07_cf69
+	JSR SwitchToMain
 @07_cd1f:
 	LDX $0261
 	BEQ @07_cd2f
@@ -137,15 +137,15 @@ Sub_07_cd38:
 	STA zMusicHeaderPointer + 1
 	INY
 	LDA (zMusicAddress), Y
-	STA $00e6
+	STA zMusicOffsetAddress
 	INY
 	LDA (zMusicAddress), Y
-	STA $00e7
+	STA zMusicOffsetAddress + 1
 	LDY #$00
 	LDA (zMusicHeaderPointer), Y
 	STA $00e1
 	LDY #$00
-	LDA ($00e6), Y
+	LDA (zMusicOffsetAddress), Y
 	STA $00e5
 	LDA #$01
 	STA $00e8
@@ -159,7 +159,7 @@ Sub_07_cdb4:
 	LDX $0261
 @07_cdb7:
 	LDY $00e9
-	LDA ($00e6), Y
+	LDA (zMusicOffsetAddress), Y
 	INC $00e9
 	CLC
 	ADC zMusicHeaderID
@@ -174,7 +174,7 @@ Sub_07_cdb4:
 	STA $0700, X
 	INX
 	LDY $00e9
-	LDA ($00e6), Y
+	LDA (zMusicOffsetAddress), Y
 	INC $00e9
 	CLC
 	ADC $00e2
@@ -222,17 +222,17 @@ JMP_07_ce02:
 	JSR Sub_07_cf12
 	LDA #$01
 	STA JOY2
-	LDA #$00
+	LDA #0
 	STA SND_CHN
 	LDA #$1f
-	STA $0075
+	STA zMMC1Ctrl
 	LDA #$00
-	STA $0076
+	STA zMMC1Chr
 	LDA #$00
-	STA $0077
+	STA zMMC1Chr + 1
 	LDA #$00
-	STA $0078
-	JSR Sub_07_cf16
+	STA zMMC1Prg
+	JSR WriteToMapper
 	LDA $0000
 	CMP #$12
 	BNE @07_ce4e
@@ -306,8 +306,8 @@ JMP_07_ce02:
 
 Sub_07_cecf:
 	LDA #$00
-	STA $0076
-	STA $0077
+	STA zMMC1Chr
+	STA zMMC1Chr + 1
 	STA $0248
 	STA $0260
 	LDA #$ff
@@ -335,21 +335,22 @@ Sub_07_cecf:
 	JSR Sub_00_80ba
 	JSR Sub_07_f6b3
 	RTS
+; unreferenced
 	.db $00, $00
 
 Sub_07_cf12:
 	INC Sub_07_cf12 ; resets MMC1
 	RTS
 
-Sub_07_cf16:
-	JSR Sub_07_cf23
-	JSR Sub_07_cf39
-	JSR Sub_07_cf4f
-	JSR Sub_07_cf69
+WriteToMapper:
+	JSR WriteMapperControl
+	JSR WriteChr1
+	JSR WriteChr2
+	JSR SwitchToMain
 	RTS
 
-Sub_07_cf23:
-	LDA $0075
+WriteMapperControl:
+	LDA zMMC1Ctrl
 	STA MMC1_Control + $1000
 	LSR A
 	STA MMC1_Control + $1000
@@ -361,8 +362,8 @@ Sub_07_cf23:
 	STA MMC1_Control + $1000
 	RTS
 
-Sub_07_cf39:
-	LDA $0077
+WriteChr1:
+	LDA zMMC1Chr + 1
 	STA MMC1_CHRBank1 + $1000
 	LSR A
 	STA MMC1_CHRBank1 + $1000
@@ -374,8 +375,8 @@ Sub_07_cf39:
 	STA MMC1_CHRBank1 + $1000
 	RTS
 
-Sub_07_cf4f:
-	LDA $0076
+WriteChr2:
+	LDA zMMC1Chr
 	STA MMC1_CHRBank2 + $1000
 	LSR A
 	STA MMC1_CHRBank2 + $1000
@@ -387,13 +388,13 @@ Sub_07_cf4f:
 	STA MMC1_CHRBank2 + $1000
 	RTS
 
-Sub_07_cf65:
+SwitchToAudio:
 	LDA #$01
-	BNE Branch_07_cf6b
+	BNE PrgSwitch
 
-Sub_07_cf69:
-	LDA $0078
-Branch_07_cf6b:
+SwitchToMain:
+	LDA zMMC1Prg
+PrgSwitch:
 	STA MMC1_RomBank + $1000
 	LSR A
 	STA MMC1_RomBank + $1000
@@ -666,7 +667,7 @@ Sub_07_d124:
 	ASL A
 	ASL A
 	TAX
-	JSR Sub_07_cf65
+	JSR SwitchToAudio
 	LDY #$00
 @07_d12f:
 	LDA Data_01_b006, X
@@ -677,7 +678,7 @@ Sub_07_d124:
 	INY
 	CPY #$20
 	BNE @07_d12f
-	JSR Sub_07_cf69
+	JSR SwitchToMain
 	LDA #$40
 	STA $0224
 	LDA #$02
@@ -690,7 +691,7 @@ Sub_07_d124:
 	ASL A
 	ASL A
 	TAX
-	JSR Sub_07_cf65
+	JSR SwitchToAudio
 	LDY #$00
 @07_d159:
 	LDA Data_01_b006, X
@@ -699,7 +700,7 @@ Sub_07_d124:
 	INY
 	CPY #$20
 	BNE @07_d159
-	JSR Sub_07_cf69
+	JSR SwitchToMain
 	LDA #$01
 	STA $0224
 	RTS
@@ -2205,7 +2206,7 @@ Sub_07_e083:
 	LDX $007c
 	LDA Data_07_e091, X
 Branch_07_e088:
-	CMP $0689
+	CMP iChannelID
 	BEQ Branch_07_e090
 	JSR Sub_07_f6ff
 Branch_07_e090:
@@ -2304,8 +2305,8 @@ NMI:
 	PHA
 	TYA
 	PHA
-	JSR Sub_07_cf4f
-	JSR Sub_07_cf39
+	JSR WriteChr2
+	JSR WriteChr1
 	LDA $00b1
 	AND #$7f
 	BEQ @07_e152
@@ -2318,7 +2319,7 @@ NMI:
 	STA $00b1
 	JSR Sub_07_e18c
 @07_e157:
-	JSR Sub_07_cf65
+	JSR SwitchToAudio
 	LDA $06ba
 	BEQ @07_e167
 	JSR PlayAudio
@@ -2331,9 +2332,9 @@ NMI:
 	LDA #$00
 	STA $06fe
 @07_e174:
-	JSR Sub_01_9e77
-	LDA $0078
-	JSR Sub_07_cf69
+	JSR UpdateSound
+	LDA zMMC1Prg
+	JSR SwitchToMain
 	PLA
 	TAY
 	PLA
@@ -2452,12 +2453,12 @@ Sub_07_e25d:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
-	LDA $0689
+	LDA iChannelID
 	CMP #$54
 	BEQ @07_e27c
 	LDA $0520
 	BNE @07_e295
-	JSR Sub_00_a9b4
+	JSR Sub_00_89b4
 	JMP @07_e29c
 @07_e295:
 	LDA #$78
@@ -2495,7 +2496,7 @@ Sub_07_e25d:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
-	LDA $0689
+	LDA iChannelID
 	CMP #$6c
 	BEQ @07_e2dd
 	JSR Sub_00_acd9
@@ -2517,7 +2518,7 @@ Sub_07_e25d:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
-	LDA $0689
+	LDA iChannelID
 	CMP #$62
 	BEQ @07_e31f
 	LDA #$65
@@ -2551,7 +2552,7 @@ Sub_07_e32f:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
-	LDA $0689
+	LDA iChannelID
 	CMP #$57
 	BEQ @07_e35a
 	LDA #$02
@@ -2590,7 +2591,7 @@ Sub_07_e32f:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
-	LDA $0689
+	LDA iChannelID
 	CMP #$62
 	BEQ @07_e3b9
 	JSR Sub_00_acd9
@@ -2613,7 +2614,7 @@ Sub_07_e32f:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
-	LDA $0689
+	LDA iChannelID
 	CMP #$6c
 	BEQ @07_e3ef
 	JSR Sub_00_acd9
@@ -4576,13 +4577,13 @@ Data_07_f6af:
 	.db $00, $01, $02, $03
 
 Sub_07_f6b3:
-	LDA #$00
+	LDA #0
 	STA DPCM_DELTA
 	STA DPCM_OFFSET
 	STA DPCM_SIZE
-	LDA #$00
+	LDA #0
 	STA DPCM_ENV
-	LDA #$1f
+	LDA #SQ1_F | SQ2_F | TRI_F | NOISE_F | DPCM_F
 	STA SND_CHN
 	LDA #<MusicHeaders
 	SEC
@@ -4599,10 +4600,10 @@ Sub_07_f6b3:
 	STA $00fe
 	LDA #$c8
 	STA $00ff
-	JSR Sub_07_cf65
+	JSR SwitchToAudio
 	LDA #$ff
 	JSR PlayAudio
-	JSR Sub_07_cf69
+	JSR SwitchToMain
 	LDA #$00
 	STA $0636
 	STA $06b9
@@ -4685,9 +4686,9 @@ JPT_07_f781:
 	JSR Sub_00_8086
 	JSR Sub_00_9881
 	LDA #$00
-	STA $0076
+	STA zMMC1Chr
 	LDA #$00
-	STA $0077
+	STA zMMC1Chr + 1
 	JSR Sub_00_8006
 	JSR Sub_07_cdeb
 	LDA #$01
@@ -4697,7 +4698,7 @@ JPT_07_f781:
 	STA $00b7
 	LDA #$b1
 	STA $00b8
-	JSR Sub_07_cf65
+	JSR SwitchToAudio
 	JSR Sub_07_cf7f
 	LDA #$21
 	JSR Sub_07_d05d
@@ -4709,7 +4710,7 @@ JPT_07_f781:
 	JSR Sub_07_d05d
 	JSR Sub_07_d05d
 	JSR Sub_07_cf7f
-	JSR Sub_07_cf69
+	JSR SwitchToMain
 	LDA #$34
 	JSR Sub_07_f6ff
 	LDA #$00
@@ -4766,7 +4767,7 @@ JPT_07_f831:
 	STA $0616
 @07_f842:
 	JSR Sub_00_80cb
-	LDA $0689
+	LDA iChannelID
 	CMP #$34
 	BEQ @07_f897
 	LDA $0081

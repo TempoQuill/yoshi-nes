@@ -184,8 +184,8 @@ Sub_00_8148:
 	STA $027a
 	JSR Sub_00_8581
 	LDA #$01
-	STA $0076
-	STA $0077
+	STA zMMC1Chr
+	STA zMMC1Chr + 1
 	LDA $0548
 	CMP #$03
 	BNE @00_81b4
@@ -839,15 +839,15 @@ Sub_00_89a5:
 	STA $0279
 	RTS
 
-Sub_00_a9b4:
+Sub_00_89b4:
 	LDA $0536
 	ORA $0535
-	BNE @00_a9c4
+	BNE @00_89c4
 	LDA #$78
 	STA $00b1
 	JSR Sub_00_806a
 	RTS
-@00_a9c4:
+@00_89c4:
 	LDA #$8c
 	STA $0083
 	LDA #$8e
@@ -861,7 +861,7 @@ Sub_00_a9b4:
 	LDA #$0a
 	JSR JMP_00_846b
 	LDA #$06
-	STA $0076
+	STA zMMC1Chr
 	LDA #$90
 	STA $0083
 	LDA #$8f
@@ -1370,6 +1370,7 @@ Data_00_8dd6:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $8d, $8e, $00, $8d, $8e, $00, $8d, $8e, $00, $8d, $8e, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Data_00_8f90:
 	.db $00, $90, $91, $00, $90, $91, $00, $90, $91, $00, $90, $91, $00
 	.db $00, $a0, $a1, $00, $a0, $a1, $00, $a0, $a1, $00, $a0, $a1, $00
 	.db $00, $01, $02, $03, $04, $05, $06
@@ -1767,15 +1768,15 @@ Sub_00_9358:
 	STA $00b5
 	LDA $0520
 	BNE @00_9372
-	LDA #$01
+	LDA #<Data_00_9801
 	STA $0083
-	LDA #$98
+	LDA #>Data_00_9801
 	STA $0084
 	JMP @00_937a
 @00_9372:
-	LDA #$41
+	LDA #<Data_00_9841
 	STA $0083
-	LDA #$98
+	LDA #>Data_00_9841
 	STA $0084
 @00_937a:
 	JSR Sub_00_adc3
@@ -1787,7 +1788,7 @@ Sub_00_9358:
 	STA $0263
 	STA $00b4
 	LDA #$07
-	STA $0076
+	STA zMMC1Chr
 	LDA #$72
 	STA $0083
 	LDA #$96
@@ -2232,28 +2233,32 @@ Data_00_9801:
 	.db $aa, $bb, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
 	.db $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
 	.db $aa, $aa, $66, $55, $99, $ea, $76, $99, $aa, $aa, $a6, $a5, $a9
-	.db $ae, $a7, $a9, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
-	.db $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $66, $aa, $aa, $aa, $aa
-	.db $bb, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
+	.db $ae, $a7, $a9, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
+Data_00_9841:
+	.db $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $66, $aa, $aa, $aa
+	.db $aa, $bb, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
 	.db $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
-	.db $aa, $aa, $55, $99, $6a, $9a, $aa, $aa, $aa, $aa, $95, $a9, $a6
-	.db $a9, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
+	.db $aa, $aa, $aa, $55, $99, $6a, $9a, $aa, $aa, $aa, $aa, $95, $a9
+	.db $a6, $a9, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
 
 Sub_00_9881:
-	LDA #$98
+	LDA #<Data_00_9898
 	STA $0083
-	LDA #$98
+	LDA #>Data_00_9898
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$9d
+	LDA #<Data_00_989d
 	STA $00b7
-	LDA #$98
+	LDA #>Data_00_989d
 	STA $00b8
 	JSR Sub_07_cf7f
 	RTS
 
 Data_00_9898:
-	.db $28, $00, $20, $1e, $00, $29, $ce, $04, $10, $01, $15, $13
+	.db $28, $00, $20, $1e, $00
+
+Data_00_989d:
+	.db $29, $ce, $04, $10, $01, $15, $13
 
 Sub_00_98a6:
 	ORA $00ff
@@ -2332,13 +2337,13 @@ Sub_00_9910:
 	CPX #$03
 	BNE @00_9927
 	LDA #$1e
-	STA $0075
-	JSR Sub_07_cf23
+	STA zMMC1Ctrl
+	JSR WriteMapperControl
 	JSR Sub_00_9dae
 	LDA #$04
-	STA $0076
+	STA zMMC1Chr
 	LDA #$05
-	STA $0077
+	STA zMMC1Chr + 1
 	LDA #$20
 	STA PPUADDR
 	LDA #$00
@@ -2408,16 +2413,16 @@ Sub_00_9910:
 @00_99f0:
 	LDA $054f
 	BNE @00_9a03
-	LDA #$17
+	LDA #<Data_00_9c17
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c17
 	STA $0084
 	JSR Sub_00_9bcc
 	JMP @00_9a0e
 @00_9a03:
-	LDA #$23
+	LDA #<Data_00_9c23
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c23
 	STA $0084
 	JSR Sub_00_9bcc
 @00_9a0e:
@@ -2425,9 +2430,9 @@ Sub_00_9910:
 	BNE @00_99d7
 	LDA #$00
 	STA $0552
-	LDA #$2f
+	LDA #<Data_00_9c2f
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c2f
 	STA $0084
 	JSR Sub_00_9bcc
 	LDA #$28
@@ -2457,16 +2462,16 @@ Sub_00_9910:
 @00_9a5b:
 	LDA $054f
 	BNE @00_9a6e
-	LDA #$3b
+	LDA #<Data_00_9c3b
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c3b
 	STA $0084
 	JSR Sub_00_9bde
 	JMP @00_9a79
 @00_9a6e:
-	LDA #$65
+	LDA #<Data_00_9c65
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c65
 	STA $0084
 	JSR Sub_00_9bde
 @00_9a79:
@@ -2474,26 +2479,26 @@ Sub_00_9910:
 	BNE @00_9a42
 	LDA #$00
 	STA $0552
-	LDA #$3b
+	LDA #<Data_00_9c3b
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c3b
 	STA $0084
 	JSR Sub_00_9bde
 	JSR Sub_00_9e44
 	LDA #$1e
 	STA $00b1
 	JSR Sub_00_806a
-	LDA #$8f
+	LDA #<Data_00_9c8f
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c8f
 	STA $0084
 	JSR Sub_00_9bde
 	LDA #$0a
 	STA $00b1
 	JSR Sub_00_806a
-	LDA #$b9
+	LDA #<Data_00_9cb9
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9cb9
 	STA $0084
 	JSR Sub_00_9bde
 	LDA #$13
@@ -2501,9 +2506,9 @@ Sub_00_9910:
 	LDA #$05
 	STA $00b1
 	JSR Sub_00_806a
-	LDA #$0b
+	LDA #<Data_00_9c0b
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c0b
 	STA $0084
 	JSR Sub_00_9bf0
 	LDA #$07
@@ -2538,9 +2543,9 @@ Sub_00_9910:
 	BNE @00_9afc
 	LDA #$ff
 	STA $0265
-	LDA #$11
+	LDA #<Data_00_9c11
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c11
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -2550,9 +2555,9 @@ Sub_00_9910:
 	STA $00a6
 	LDA #$01
 	JSR JMP_00_846b
-	LDA #$b9
+	LDA #<Data_00_9cb9
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9cb9
 	STA $0084
 	JSR Sub_00_9bde
 	LDA #$05
@@ -2560,17 +2565,17 @@ Sub_00_9910:
 	JSR Sub_00_806a
 	LDA #$ff
 	STA $0264
-	LDA #$8f
+	LDA #<Data_00_9c8f
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c8f
 	STA $0084
 	JSR Sub_00_9bde
 	LDA #$0a
 	STA $00b1
 	JSR Sub_00_806a
-	LDA #$3b
+	LDA #<Data_00_9c3b
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9c3b
 	STA $0084
 	JSR Sub_00_9bde
 	LDA #$08
@@ -2591,9 +2596,9 @@ Sub_00_9910:
 	DEC $02ac
 	DEC $054e
 	BNE @00_9b83
-	LDA #$38
+	LDA #<Data_00_9d38
 	STA $0083
-	LDA #$9d
+	LDA #>Data_00_9d38
 	STA $0084
 	LDX $0551
 	LDA Data_00_9d74, X
@@ -2605,12 +2610,12 @@ Sub_00_9910:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
-	LDA $0689
+	LDA iChannelID
 	CMP #$5a
 	BEQ @00_9bab
 	LDA #$1f
-	STA $0075
-	JSR Sub_07_cf23
+	STA zMMC1Ctrl
+	JSR WriteMapperControl
 	LDA #$04
 	STA $0248
 	RTS
@@ -2663,26 +2668,39 @@ Sub_00_9c02:
 	RTS
 
 Data_00_9c0b:
-	.db $2c, $2d, $2d, $7b, $7c, $ea, $ef, $ef, $ef, $ea, $ea, $ea, $8c
-	.db $8d, $8e, $9c, $9d, $9e, $ac, $ad, $ae, $6f, $6f, $6f, $cc, $cd
-	.db $ce, $dc, $dd, $de, $ec, $ed, $ee, $6f, $6f, $6f, $eb, $eb, $eb
-	.db $4f, $4f, $4f, $5f, $5f, $5f, $6f, $6f, $6f, $80, $81, $82, $83
-	.db $84, $85, $af, $90, $91, $92, $93, $94, $95, $ea, $a0, $a1, $a2
-	.db $a3, $a4, $a5, $cf, $b0, $b1, $b2, $b3, $b4, $b5, $df, $c0, $c1
-	.db $c2, $c3, $c4, $c5, $ef, $d0, $d1, $d2, $d3, $d4, $d5, $ea, $86
-	.db $87, $88, $89, $8a, $8b, $af, $96, $97, $98, $99, $9a, $9b, $ea
-	.db $a6, $a7, $a8, $a9, $aa, $ab, $cf, $b6, $b7, $b8, $b9, $ba, $bb
-	.db $df, $c6, $c7, $c8, $c9, $ca, $cb, $ef, $d6, $d7, $d8, $d9, $da
-	.db $db, $ea, $20, $21, $22, $23, $24, $25, $af, $30, $31, $32, $33
-	.db $34, $35, $ea, $40, $41, $42, $43, $44, $45, $cf, $50, $51, $52
-	.db $53, $54, $55, $df, $60, $61, $62, $63, $64, $65, $ef, $70, $71
-	.db $72, $73, $74, $75, $ea, $26, $27, $28, $29, $2a, $2b, $2b, $36
-	.db $37, $38, $39, $3a, $3b, $3b, $46, $47, $48, $49, $4a, $4b, $4c
-	.db $56, $57, $58, $59, $5a, $5b, $5c, $66, $67, $68, $69, $6a, $6b
-	.db $6c, $76, $77, $78, $79, $7a, $7b, $7c, $00, $01, $02, $03, $04
-	.db $05, $06, $07, $08, $09, $0a, $0b, $0c, $0d, $0e, $0f, $10, $11
-	.db $12, $13, $14, $15, $16, $17, $18, $19, $1a, $1b, $1c, $1d, $1e
-	.db $1f
+	.db $2c, $2d, $2d, $7b, $7c, $ea
+Data_00_9c11:
+	.db $ef, $ef, $ef, $ea, $ea, $ea
+Data_00_9c17:
+	.db $8c, $8d, $8e, $9c, $9d, $9e, $ac, $ad, $ae, $6f, $6f, $6f
+Data_00_9c23:
+	.db $cc, $cd, $ce, $dc, $dd, $de, $ec, $ed, $ee, $6f, $6f, $6f
+Data_00_9c2f:
+	.db $eb, $eb, $eb, $4f, $4f, $4f, $5f, $5f, $5f, $6f, $6f, $6f
+Data_00_9c3b:
+	.db $80, $81, $82, $83, $84, $85, $af, $90, $91, $92, $93, $94, $95
+	.db $ea, $a0, $a1, $a2, $a3, $a4, $a5, $cf, $b0, $b1, $b2, $b3, $b4
+	.db $b5, $df, $c0, $c1, $c2, $c3, $c4, $c5, $ef, $d0, $d1, $d2, $d3
+	.db $d4, $d5, $ea
+Data_00_9c65:
+	.db $86, $87, $88, $89, $8a, $8b, $af, $96, $97, $98, $99, $9a, $9b
+	.db $ea, $a6, $a7, $a8, $a9, $aa, $ab, $cf, $b6, $b7, $b8, $b9, $ba
+	.db $bb, $df, $c6, $c7, $c8, $c9, $ca, $cb, $ef, $d6, $d7, $d8, $d9
+	.db $da, $db, $ea
+Data_00_9c8f:
+	.db $20, $21, $22, $23, $24, $25, $af, $30, $31, $32, $33, $34, $35
+	.db $ea, $40, $41, $42, $43, $44, $45, $cf, $50, $51, $52, $53, $54
+	.db $55, $df, $60, $61, $62, $63, $64, $65, $ef, $70, $71, $72, $73
+	.db $74, $75, $ea
+Data_00_9cb9:
+	.db $26, $27, $28, $29, $2a, $2b, $2b, $36, $37, $38, $39, $3a, $3b
+	.db $3b, $46, $47, $48, $49, $4a, $4b, $4c, $56, $57, $58, $59, $5a
+	.db $5b, $5c, $66, $67, $68, $69, $6a, $6b, $6c, $76, $77, $78, $79
+	.db $7a, $7b, $7c
+Data_00_9ce3:
+	.db $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0a, $0b, $0c
+	.db $0d, $0e, $0f, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+	.db $1a, $1b, $1c, $1d, $1e, $1f
 
 Sub_00_9d03:
 	LDA #$1e
@@ -2703,25 +2721,30 @@ Sub_00_9d03:
 Data_00_9d1a:
 	.db $eb, $eb, $eb, $eb, $eb, $eb, $eb, $eb, $eb, $eb, $4f, $5f, $6f
 	.db $7f, $8f, $9f, $af, $ea, $cf, $df, $ef, $ea, $ea, $ea, $ea, $ea
-	.db $ea, $ea, $3c, $3c, $00, $00, $05, $00, $00, $01, $00, $00, $00
-	.db $01, $05, $00, $00, $02, $00, $00, $00, $02, $05, $00, $00, $03
-	.db $00, $00, $00, $04, $00, $00, $00, $05, $00, $00, $00, $06, $00
-	.db $00, $00, $07, $00, $00, $00, $08, $00, $00, $00, $09, $00, $00
-	.db $01, $00, $00, $00, $01, $02, $00, $00, $01, $05, $00, $00
+	.db $ea, $ea, $3c, $3c
+Data_00_9d38:
+	.db $00, $00, $05, $00, $00, $01, $00, $00, $00, $01, $05, $00, $00
+	.db $02, $00, $00, $00, $02, $05, $00, $00, $03, $00, $00, $00, $04
+	.db $00, $00, $00, $05, $00, $00, $00, $06, $00, $00, $00, $07, $00
+	.db $00, $00, $08, $00, $00, $00, $09, $00, $00, $01, $00, $00, $00
+	.db $01, $02, $00, $00, $01, $05, $00, $00
 
 Data_00_9d74:
 	.db $00, $01, $02, $03, $04, $05, $05, $06, $06, $07, $07, $08, $08
 	.db $09, $09, $0a, $0a, $0a, $0b, $0b, $0b, $0c, $0c, $0c, $0d, $0d
-	.db $0d, $0e, $f0, $f1, $f2, $f3, $f4, $eb, $eb, $eb, $eb, $eb, $4e
-	.db $5e, $6e, $7e, $ea, $e0, $e1, $e2, $e3, $e4, $e5, $e6, $e7, $e8
-	.db $e9, $ea, $ea, $ea, $ea, $ea
+	.db $0d, $0e
+Data_00_9d90:
+	.db $f0, $f1, $f2, $f3, $f4, $eb, $eb, $eb, $eb, $eb
+Data_00_9d9a:
+	.db $4e, $5e, $6e, $7e, $ea, $e0, $e1, $e2, $e3, $e4, $e5, $e6, $e7
+	.db $e8, $e9, $ea, $ea, $ea, $ea, $ea
 
 Sub_00_9dae:
 	LDA #$05
 	JSR Sub_07_d124
-	LDA #$d7
+	LDA #<Data_00_9dd7
 	STA $0083
-	LDA #$9d
+	LDA #>Data_00_9dd7
 	STA $0084
 	JSR Sub_00_adc3
 	LDA #$27
@@ -2752,9 +2775,9 @@ Data_00_9e17:
 	.db $26, $0f, $20, $16, $0f, $20
 
 Sub_00_9e44:
-	LDA #$e3
+	LDA #<Data_00_9ce3
 	STA $0083
-	LDA #$9c
+	LDA #>Data_00_9ce3
 	STA $0084
 	LDA #$20
 	STA $00a4
@@ -2764,9 +2787,9 @@ Sub_00_9e44:
 	STA $00a6
 	LDA #$01
 	JSR JMP_00_846b
-	LDA #$90
+	LDA #<Data_00_9d90
 	STA $0083
-	LDA #$9d
+	LDA #>Data_00_9d90
 	STA $0084
 	LDA #$21
 	STA $00a4
@@ -2776,9 +2799,9 @@ Sub_00_9e44:
 	STA $00a6
 	LDA #$01
 	JSR JMP_00_846b
-	LDA #$9a
+	LDA #<Data_00_9d9a
 	STA $0083
-	LDA #$9d
+	LDA #>Data_00_9d9a
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -2925,9 +2948,9 @@ Sub_00_9f9f:
 	JSR Sub_00_802b
 	JSR Sub_00_8086
 	LDA #$07
-	STA $0076
+	STA zMMC1Chr
 	LDA #$05
-	STA $0077
+	STA zMMC1Chr + 1
 	JSR Sub_00_a206
 	JSR Sub_00_9fbd
 	JSR Sub_00_809b
@@ -2938,9 +2961,9 @@ Sub_00_9f9f:
 Sub_00_9fbd:
 	LDA #$01
 	JSR Sub_07_d124
-	LDA #$e9
+	LDA #<Data_00_9fe9
 	STA $0083
-	LDA #$9f
+	LDA #>Data_00_9fe9
 	STA $0084
 	JSR Sub_00_adc3
 	LDA #$00
@@ -2968,9 +2991,9 @@ Sub_00_a029:
 	JSR Sub_00_802b
 	JSR Sub_00_8086
 	LDA #$07
-	STA $0076
+	STA zMMC1Chr
 	LDA #$05
-	STA $0077
+	STA zMMC1Chr + 1
 	JSR Sub_00_a0ae
 	JSR Sub_00_a049
 	LDA #$5e
@@ -2982,9 +3005,9 @@ Sub_00_a029:
 Sub_00_a049:
 	LDA #$02
 	JSR Sub_07_d124
-	LDA #$6e
+	LDA #<Data_00_a06e
 	STA $0083
-	LDA #$a0
+	LDA #>Data_00_a06e
 	STA $0084
 	JSR Sub_00_adc3
 	LDA #$00
@@ -3006,24 +3029,24 @@ Data_00_a06e:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 Sub_00_a0ae:
-	LDA #$5e
+	LDA #<Data_00_a35e
 	STA $0083
-	LDA #$a3
+	LDA #>Data_00_a35e
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$fc
+	LDA #<Data_00_a1fc
 	STA $0083
-	LDA #$a1
+	LDA #>Data_00_a1fc
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$01
+	LDA #<Data_00_a201
 	STA $0083
-	LDA #$a2
+	LDA #>Data_00_a201
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$de
+	LDA #<Data_00_a0de
 	STA $00b7
-	LDA #$a0
+	LDA #>Data_00_a0de
 	STA $00b8
 	JSR Sub_07_cf7f
 	JSR Sub_07_db56
@@ -3052,49 +3075,84 @@ Data_00_a0de:
 	.db $27, $9d, $9e, $d4, $d5, $20, $22, $18, $00, $00, $00, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $ff, $20, $89, $0e, $02, $00
-	.db $20, $e4, $18, $09, $00, $22, $24, $18, $09, $00
+Data_00_a1fc:
+	.db $20, $e4, $18, $09, $00
+Data_00_a201:
+	.db $22, $24, $18, $09, $00
 
 Sub_00_a206:
-	LDA #$5e
+	LDA #<Data_00_a35e
 	STA $0083
-	LDA #$a3
+	LDA #>Data_00_a35e
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$63
+	LDA #<Data_00_a363
 	STA $0083
-	LDA #$a3
+	LDA #>Data_00_a363
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$68
+	LDA #<Data_00_a368
 	STA $0083
-	LDA #$a3
+	LDA #>Data_00_a368
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$6d
+	LDA #<Data_00_a36d
 	STA $0083
-	LDA #$a3
+	LDA #>Data_00_a36d
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$72
+	LDA #<Data_00_a372
 	STA $0083
-	LDA #$a3
+	LDA #>Data_00_a372
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$77
+	LDA #<Data_00_a377
 	STA $0083
-	LDA #$a3
+	LDA #>Data_00_a377
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$57
+	LDA #<Data_00_a257
 	STA $00b7
-	LDA #$a2
+	LDA #>Data_00_a257
 	STA $00b8
 	JSR Sub_07_cf7f
 	JSR Sub_07_dba5
 	RTS
 
 Data_00_a257:
-	.db $20, $67, $11, $b0, $b0, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $5a, $5b, $5c, $5d, $c2, $c3, $20, $87, $11, $b0, $b0, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $6a, $6b, $6c, $6d, $b0, $b0, $20, $a7, $11, $b0, $b0, $70, $71, $72, $73, $74, $75, $76, $77, $78, $79, $7a, $7b, $7c, $7d, $b0, $b0, $20, $c7, $11, $b0, $b0, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8a, $8b, $8c, $8d, $b0, $b0, $20, $e7, $11, $b0, $b0, $b0, $b0, $5e, $5f, $6e, $6f, $7e, $7f, $8e, $8f, $90, $91, $a0, $a1, $b0, $b0, $21, $46, $0f, $07, $01, $0d, $05, $00, $00, $00, $00, $01, $00, $00, $00, $00, $00, $00, $02, $21, $4f, $03, $97, $a7, $b7, $c7, $21, $56, $03, $97, $a7, $b7, $c7, $21, $c6, $04, $0c, $05, $16, $05, $0c, $21, $cc, $0e, $ad, $bf, $ae, $ad, $bf, $ae, $ad, $bf, $ae, $ad, $bf, $ae, $ad, $bf, $ae, $21, $ec, $0e, $af, $1c, $af, $af, $1d, $af, $af, $1e, $af, $af, $1f, $af, $af, $20, $af, $22, $0c, $0e, $bd, $bf, $be, $bd, $bf, $be, $bd, $bf, $be, $bd, $bf, $be, $bd, $bf, $be, $22, $86, $12, $13, $10, $05, $05, $04, $00, $00, $00, $0c, $1b, $17, $00, $00, $00, $00, $08, $09, $07, $08, $23, $06, $02, $02, $07, $0d, $23, $18, $02, $1b, $06, $06, $20, $22, $18, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $ff, $20, $40, $20, $1a, $27, $20, $87, $12, $04, $00, $21, $24, $18, $03, $00, $21, $a4, $18, $05, $00, $22, $64, $18, $03, $00, $22, $e4, $18, $03, $00
+	.db $20, $67, $11, $b0, $b0, $50, $51, $52, $53, $54, $55, $56, $57
+	.db $58, $59, $5a, $5b, $5c, $5d, $c2, $c3, $20, $87, $11, $b0, $b0
+	.db $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $6a, $6b, $6c
+	.db $6d, $b0, $b0, $20, $a7, $11, $b0, $b0, $70, $71, $72, $73, $74
+	.db $75, $76, $77, $78, $79, $7a, $7b, $7c, $7d, $b0, $b0, $20, $c7
+	.db $11, $b0, $b0, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89
+	.db $8a, $8b, $8c, $8d, $b0, $b0, $20, $e7, $11, $b0, $b0, $b0, $b0
+	.db $5e, $5f, $6e, $6f, $7e, $7f, $8e, $8f, $90, $91, $a0, $a1, $b0
+	.db $b0, $21, $46, $0f, $07, $01, $0d, $05, $00, $00, $00, $00, $01
+	.db $00, $00, $00, $00, $00, $00, $02, $21, $4f, $03, $97, $a7, $b7
+	.db $c7, $21, $56, $03, $97, $a7, $b7, $c7, $21, $c6, $04, $0c, $05
+	.db $16, $05, $0c, $21, $cc, $0e, $ad, $bf, $ae, $ad, $bf, $ae, $ad
+	.db $bf, $ae, $ad, $bf, $ae, $ad, $bf, $ae, $21, $ec, $0e, $af, $1c
+	.db $af, $af, $1d, $af, $af, $1e, $af, $af, $1f, $af, $af, $20, $af
+	.db $22, $0c, $0e, $bd, $bf, $be, $bd, $bf, $be, $bd, $bf, $be, $bd
+	.db $bf, $be, $bd, $bf, $be, $22, $86, $12, $13, $10, $05, $05, $04
+	.db $00, $00, $00, $0c, $1b, $17, $00, $00, $00, $00, $08, $09, $07
+	.db $08, $23, $06, $02, $02, $07, $0d, $23, $18, $02, $1b, $06, $06
+	.db $20, $22, $18, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+	.db $00, $00, $ff
+Data_00_a35e:
+	.db $20, $40, $20, $1a, $27
+Data_00_a363:
+	.db $20, $87, $12, $04, $00
+Data_00_a368:
+	.db $21, $24, $18, $03, $00
+Data_00_a36d:
+	.db $21, $a4, $18, $05, $00
+Data_00_a372:
+	.db $22, $64, $18, $03, $00
+Data_00_a377:
+	.db $22, $e4, $18, $03, $00
 
 
 JMP_00_a37c:
@@ -3475,6 +3533,7 @@ Sub_00_a7f5:
 	LDX $0444
 	LDA Data_00_a839, X
 	CLC
+
 	ADC $0089
 	STA $0089
 	BCC @00_a829
@@ -4138,30 +4197,30 @@ Sub_00_acd9:
 	BEQ @00_ad04
 	CMP #$03
 	BEQ @00_ad12
-	LDA #$93
+	LDA #<Data_00_ad93
 	STA $00c7
-	LDA #$ad
+	LDA #>Data_00_ad93
 	STA $00c8
 	JSR Sub_00_acb9
 	JMP @00_ad1e
 @00_acf6:
-	LDA #$99
+	LDA #<Data_00_ad99
 	STA $00c7
-	LDA #$ad
+	LDA #>Data_00_ad99
 	STA $00c8
 	JSR Sub_00_acb9
 	JMP @00_ad1e
 @00_ad04:
-	LDA #$9f
+	LDA #<Data_00_ad9f
 	STA $00c7
-	LDA #$ad
+	LDA #>Data_00_ad9f
 	STA $00c8
 	JSR Sub_00_acb9
 	JMP @00_ad1e
 @00_ad12:
-	LDA #$a5
+	LDA #<Data_00_ada5
 	STA $00c7
-	LDA #$ad
+	LDA #>Data_00_ada5
 	STA $00c8
 	JSR Sub_00_acb9
 	RTS
@@ -4173,30 +4232,30 @@ Sub_00_acd9:
 	BEQ @00_ad49
 	CMP #$03
 	BEQ @00_ad57
-	LDA #$ab
+	LDA #<Data_00_adab
 	STA $00c7
-	LDA #$ad
+	LDA #<Data_00_adab
 	STA $00c8
 	JSR Sub_00_acb9
 	JMP @00_ad62
 @00_ad3b:
-	LDA #$b1
+	LDA #<Data_00_adb1
 	STA $00c7
-	LDA #$ad
+	LDA #>Data_00_adb1
 	STA $00c8
 	JSR Sub_00_acb9
 	JMP @00_ad62
 @00_ad49:
-	LDA #$b7
+	LDA #<Data_00_adb7
 	STA $00c7
-	LDA #$ad
+	LDA #>Data_00_adb7
 	STA $00c8
 	JSR Sub_00_acb9
 	JMP @00_ad62
 @00_ad57:
-	LDA #$bd
+	LDA #<Data_00_adbd
 	STA $00c7
-	LDA #$ad
+	LDA #>Data_00_adbd
 	STA $00c8
 	JSR Sub_00_acb9
 @00_ad62:
@@ -4206,11 +4265,23 @@ Data_00_ad63:
 	.db $89, $8a, $89, $8a, $89, $8a, $8b, $8c, $8b, $8c, $8b, $8c, $9e
 	.db $9f, $89, $8a, $89, $8a, $ae, $af, $8b, $8c, $8b, $8c, $9e, $9f
 	.db $9e, $9f, $89, $8a, $ae, $af, $ae, $af, $8b, $8c, $9e, $9f, $9e
-	.db $9f, $9e, $9f, $ae, $af, $ae, $af, $ae, $af, $63, $ad, $20, $42
-	.db $06, $01, $6f, $ad, $20, $42, $06, $01, $7b, $ad, $20, $42, $06
-	.db $01, $87, $ad, $20, $42, $06, $01, $63, $ad, $20, $58, $06, $01
-	.db $6f, $ad, $20, $58, $06, $01, $7b, $ad, $20, $58, $06, $01, $87
-	.db $ad, $20, $58, $06, $01
+	.db $9f, $9e, $9f, $ae, $af, $ae, $af, $ae, $af
+Data_00_ad93:
+	.db $63, $ad, $20, $42, $06, $01
+Data_00_ad99:
+	.db $6f, $ad, $20, $42, $06, $01
+Data_00_ad9f:
+	.db $7b, $ad, $20, $42, $06, $01
+Data_00_ada5:
+	.db $87, $ad, $20, $42, $06, $01
+Data_00_adab:
+	.db $63, $ad, $20, $58, $06, $01
+Data_00_adb1:
+	.db $6f, $ad, $20, $58, $06, $01
+Data_00_adb7:
+	.db $7b, $ad, $20, $58, $06, $01
+Data_00_adbd:
+	.db $87, $ad, $20, $58, $06, $01
 
 Sub_00_adc3:
 	LDA #$6a
@@ -4453,9 +4524,9 @@ Sub_00_afb0:
 	JSR Sub_07_cdeb
 	JSR Sub_07_f6b3
 	LDA #$02
-	STA $0076
+	STA zMMC1Chr
 	LDA #$05
-	STA $0077
+	STA zMMC1Chr + 1
 	JSR Sub_00_9881
 	LDA #$de
 	STA $0700
@@ -4541,16 +4612,16 @@ Sub_00_b070:
 	JSR Sub_07_cf7f
 	LDA $0521
 	BNE @00_b08e
-	LDA #$a3
+	LDA #<Data_00_b4a3
 	STA $00b7
-	LDA #$b4
+	LDA #>Data_00_b4a3
 	STA $00b8
 	JSR Sub_07_cf7f
 	JMP @00_b099
 @00_b08e:
-	LDA #$aa
+	LDA #<Data_00_b4aa
 	STA $00b7
-	LDA #$b4
+	LDA #>Data_00_b4aa
 	STA $00b8
 	JSR Sub_07_cf7f
 @00_b099:
@@ -4779,8 +4850,11 @@ Data_00_b21d:
 	.db $0e, $0e, $0e, $0e, $0e, $0e, $0e, $ff, $21, $71, $03, $14, $09
 	.db $0d, $05, $21, $50, $07, $d0, $b6, $b6, $b6, $b6, $b6, $b6, $f6
 	.db $21, $b0, $07, $f7, $fc, $fc, $fc, $fc, $fc, $fc, $f8, $21, $77
-	.db $41, $c6, $c6, $21, $70, $41, $f5, $f5, $ff, $23, $3c, $02, $0c
-	.db $1b, $17, $ff, $23, $3c, $03, $08, $09, $07, $08, $ff, $20, $6a
+	.db $41, $c6, $c6, $21, $70, $41, $f5, $f5, $ff
+Data_00_b4a3:
+	.db $23, $3c, $02, $0c, $1b, $17, $ff
+Data_00_b4aa:
+	.db $23, $3c, $03, $08, $09, $07, $08, $ff, $20, $6a
 	.db $02, $0c, $1b, $17, $ff, $20, $69, $03, $08, $09, $07, $08, $ff
 	.db $20, $73, $02, $0c, $1b, $17, $ff, $20, $73, $03, $08, $09, $07
 	.db $08, $ff
@@ -4870,7 +4944,7 @@ Sub_00_b5d2:
 	LDA $0569
 	EOR #$01
 	STA $0569
-	STA $0076
+	STA zMMC1Chr
 	RTS
 
 Sub_00_b5ef:
