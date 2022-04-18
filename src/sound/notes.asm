@@ -1,0 +1,25 @@
+Pitches:
+	.dw $6ae
+	.dw $64e
+	.dw $5f4
+	.dw $59e
+	.dw $54e
+	.dw $501
+	.dw $4b9
+	.dw $476
+	.dw $436
+	.dw $3f9
+	.dw $3c0
+	.dw $38a
+	.dw $6af
+	.dw $64f
+	.dw $5f5
+	.dw $59f
+	.dw $54f
+	.dw $502
+	.dw $4ba
+	.dw $477
+	.dw $437
+	.dw $3fa
+	.dw $3c1
+	.dw $38b

@@ -25,8 +25,8 @@ Sub_00_8006:
 	RTS
 
 Sub_00_802b:
-	LDA $00b0
-	AND #$1e
+	LDA zPPUMask
+	AND #$1e ; show everything, no color skews
 	BEQ @00_805d
 	LDY #$03
 @00_8033:
@@ -48,22 +48,22 @@ Sub_00_802b:
 	JSR Sub_00_806a
 	DEY
 	BNE @00_8033
-	LDA $00b0
+	LDA zPPUMask
 	STA $0247
-	AND #$e1
-	STA $00b0
+	AND #$e1 ; hide everything
+	STA zPPUMask
 @00_805d:
 	JSR Sub_00_806a
 	RTS
 
 Sub_00_8061:
 	LDA $0247
-	STA $00b0
+	STA zPPUMask
 	JSR Sub_00_806a
 	RTS
 
 Sub_00_806a:
-	LDA $00af
+	LDA zPPUControl
 	BPL @00_807b
 	LDA $00b1
 	BNE @00_8076
@@ -76,27 +76,27 @@ Sub_00_806a:
 @00_807b:
 	LDA PPUSTATUS
 	BPL @00_807b
-	LDA $00b0
+	LDA zPPUMask
 	STA PPUMASK
 	RTS
 
 Sub_00_8086:
-	LDA $00af
-	AND #$80
+	LDA zPPUControl
+	AND #NMI
 	BEQ @00_8095
-	LDA $00af
-	STA $0246
-	AND #$3f
-	STA $00af
+	LDA zPPUControl
+	STA iPPUControl
+	AND #OBJ_RES | BG_TABLE | OBJ_TABLE | VRAM_INC | NT_BASE_MASK
+	STA zPPUControl
 @00_8095:
-	LDA $00af
+	LDA zPPUControl
 	STA PPUCTRL
 	RTS
 
 Sub_00_809b:
-	LDA $0246
+	LDA iPPUControl
 	STA PPUCTRL
-	STA $00af
+	STA zPPUControl
 	RTS
 
 Sub_00_80a4:
@@ -192,9 +192,9 @@ Sub_00_8148:
 	LDA #$01
 	STA $05b0
 	JSR Sub_00_8586
-	LDA #$0d
+	LDA #<Data_00_820d
 	STA $0083
-	LDA #$82
+	LDA #>Data_00_820d
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -212,9 +212,9 @@ Sub_00_8148:
 	STA $0294
 	LDA #$0a
 	STA $027c
-	LDA #$93
+	LDA #<Data_00_8393
 	STA $0083
-	LDA #$83
+	LDA #>Data_00_8393
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -227,9 +227,9 @@ Sub_00_8148:
 	JMP @00_81fd
 @00_81b4:
 	JSR Sub_00_8564
-	LDA #$11
+	LDA #<Data_00_8311
 	STA $0083
-	LDA #$83
+	LDA #>Data_00_8311
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -247,9 +247,9 @@ Sub_00_8148:
 	STA $0294
 	LDA #$0b
 	STA $027c
-	LDA #$8f
+	LDA #<Data_00_828f
 	STA $0083
-	LDA #$82
+	LDA #>Data_00_828f
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -279,6 +279,7 @@ Data_00_820d:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $00, $07, $01, $0d, $05, $00, $0f, $16, $05, $12, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Data_00_828f:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $fe, $00, $00, $00, $00, $00, $00, $00, $00, $00, $fe, $00
 	.db $00, $fe, $00, $00, $00, $00, $00, $00, $00, $00, $00, $fe, $00
@@ -289,6 +290,7 @@ Data_00_820d:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $00, $07, $01, $0d, $05, $00, $0f, $16, $05, $12, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Data_00_8311:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $fe, $00, $25, $26, $27, $28, $94, $95, $00, $00, $fe, $00
 	.db $00, $fe, $00, $35, $36, $37, $38, $a4, $a5, $00, $00, $fe, $00
@@ -299,6 +301,7 @@ Data_00_820d:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $00, $07, $01, $0d, $05, $00, $0f, $16, $05, $12, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Data_00_8393:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $fe, $00, $00, $00, $00, $00, $00, $00, $00, $00, $fe, $00
 	.db $00, $fe, $00, $00, $00, $00, $00, $00, $00, $00, $00, $fe, $00
@@ -315,9 +318,9 @@ Sub_00_8415:
 	BEQ @00_8450
 	LDA $044f
 	BNE @00_8450
-	LDA #$51
+	LDA #<Data_00_8451
 	STA $0083
-	LDA #$84
+	LDA #>Data_00_8451
 	STA $0084
 	LDA #$23
 	STA $00a4
@@ -327,9 +330,9 @@ Sub_00_8415:
 	STA $00a6
 	LDA #$01
 	JSR JMP_00_846b
-	LDA #$51
+	LDA #<Data_00_8451
 	STA $0083
-	LDA #$84
+	LDA #>Data_00_8451
 	STA $0084
 	LDA #$23
 	STA $00a4
@@ -530,9 +533,9 @@ Sub_00_859e:
 	LDA $044f
 	BNE @00_85d2
 	JSR Sub_00_8564
-	LDA #$ef
+	LDA #<Data_00_85ef
 	STA $0083
-	LDA #$85
+	LDA #>Data_00_85ef
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -545,9 +548,9 @@ Sub_00_859e:
 	RTS
 @00_85d2:
 	JSR Sub_00_8581
-	LDA #$71
+	LDA #<Data_00_8671
 	STA $0083
-	LDA #$86
+	LDA #>Data_00_8671
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -570,6 +573,7 @@ Data_00_85ef:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $10, $15, $13, $08, $00, $13, $14, $01, $12, $14, $1a, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Data_00_8671:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $fe, $00, $90, $91, $92, $93, $94, $95, $96, $00, $fe, $00
 	.db $00, $fe, $00, $a0, $a1, $a2, $a3, $a4, $a5, $a6, $00, $fe, $00
@@ -589,9 +593,9 @@ Sub_00_86f3:
 	LDA $044f
 	BNE @00_871f
 	JSR Sub_00_8564
-	LDA #$3c
+	LDA #<Data_00_873c
 	STA $0083
-	LDA #$87
+	LDA #>Data_00_873c
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -604,9 +608,9 @@ Sub_00_86f3:
 	RTS
 @00_871f:
 	JSR Sub_00_8581
-	LDA #$be
+	LDA #<Data_00_87be
 	STA $0083
-	LDA #$87
+	LDA #>Data_00_87be
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -629,6 +633,7 @@ Data_00_873c:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $10, $15, $13, $08, $00, $13, $14, $01, $12, $14, $1a, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Data_00_87be:
 	.db $00, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $fe, $00
 	.db $00, $fe, $00, $90, $98, $99, $9a, $9b, $9c, $9d, $00, $fe, $00
 	.db $00, $fe, $00, $a7, $a8, $a9, $aa, $ab, $ac, $ad, $00, $fe, $00
@@ -848,9 +853,9 @@ Sub_00_89b4:
 	JSR Sub_00_806a
 	RTS
 @00_89c4:
-	LDA #$8c
+	LDA #<Data_00_8e8c
 	STA $0083
-	LDA #$8e
+	LDA #>Data_00_8e8c
 	STA $0084
 	LDA #$20
 	STA $00a4
@@ -862,9 +867,9 @@ Sub_00_89b4:
 	JSR JMP_00_846b
 	LDA #$06
 	STA zMMC1Chr
-	LDA #$90
+	LDA #<Data_00_8f90
 	STA $0083
-	LDA #$8f
+	LDA #>Data_00_8f90
 	STA $0084
 	LDA #$22
 	STA $00a4
@@ -887,24 +892,24 @@ Sub_00_89b4:
 	JSR Sub_00_bbcb
 	LDA $0536
 	BEQ @00_8a26
-	LDA #$72
+	LDA #<Data_00_8e72
 	STA $0083
-	LDA #$8e
+	LDA #>Data_00_8e72
 	STA $0084
 	JMP @00_8a40
 @00_8a26:
 	LDA $0535
 	CMP #$04
 	BCC @00_8a38
-	LDA #$58
+	LDA #<Data_00_8e58
 	STA $0083
-	LDA #$8e
+	LDA #>Data_00_8e58
 	STA $0084
 	JMP @00_8a40
 @00_8a38:
-	LDA #$3e
+	LDA #<Data_00_8e3e
 	STA $0083
-	LDA #$8e
+	LDA #>Data_00_8e3e
 	STA $0084
 @00_8a40:
 	LDA #$23
@@ -953,8 +958,8 @@ Sub_00_89b4:
 	JSR Sub_00_8c7f
 	LDA $0550
 	BEQ @00_8aba
-	LDA #$1e
-	JSR Sub_07_f6ff
+	LDA #SFX_HATCH
+	JSR StoreMusicID
 	LDA #$0a
 	STA $00b1
 	JSR Sub_00_806a
@@ -966,8 +971,8 @@ Sub_00_89b4:
 	STA $054f
 	LDA #$ff
 	STA $0550
-	LDA #$1e
-	JSR Sub_07_f6ff
+	LDA #SFX_HATCH
+	JSR StoreMusicID
 	LDA #$14
 	JSR Sub_00_8c4c
 @00_8ace:
@@ -992,8 +997,8 @@ Sub_00_89b4:
 	JSR Sub_00_8d33
 	LDA #$08
 	JSR Sub_00_8d33
-	LDA #$2e
-	JSR Sub_07_f6ff
+	LDA #SFX_BIG_YOSHI
+	JSR StoreMusicID
 	LDA #$07
 	STA $0280
 	LDA #$a0
@@ -1014,8 +1019,8 @@ Sub_00_89b4:
 	JSR Sub_00_8cda
 	LDA #$08
 	JSR Sub_00_8cda
-	LDA #$2c
-	JSR Sub_07_f6ff
+	LDA #SFX_YOSHI
+	JSR StoreMusicID
 	LDA #$03
 	STA $0280
 	LDA #$a8
@@ -1034,8 +1039,8 @@ Sub_00_89b4:
 	JSR Sub_00_8cb0
 	LDA #$08
 	JSR Sub_00_8cb0
-	LDA #$2c
-	JSR Sub_07_f6ff
+	LDA #SFX_YOSHI
+	JSR StoreMusicID
 	LDA #$01
 	STA $0280
 	LDA #$a8
@@ -1052,8 +1057,8 @@ Sub_00_89b4:
 	JSR Sub_00_8c39
 	LDA #$09
 	JSR Sub_00_8c7f
-	LDA #$2c
-	JSR Sub_07_f6ff
+	LDA #SFX_YOSHI
+	JSR StoreMusicID
 	LDA #$00
 	STA $0280
 	LDA #$b0
@@ -1170,9 +1175,9 @@ Sub_00_8c7f:
 	ASL A
 	ASL A
 	STA $00a6
-	LDA #$e6
+	LDA #<Data_00_8de6
 	STA $0083
-	LDA #$8d
+	LDA #>Data_00_8de6
 	STA $0084
 	JSR Sub_00_84af
 	LDA #$22
@@ -1195,9 +1200,9 @@ Sub_00_8c7f:
 
 Sub_00_8cb0:
 	STA $00a6
-	LDA #$0e
+	LDA #<Data_00_8e0e
 	STA $0083
-	LDA #$8e
+	LDA #>Data_00_8e0e
 	STA $0084
 	JSR Sub_00_84af
 	LDA #$22
@@ -1237,9 +1242,9 @@ Sub_00_8cda:
 	LDA #$07
 	STA $027c, X
 @00_8d09:
-	LDA #$1e
+	LDA #<Data_00_8e1e
 	STA $0083
-	LDA #$8e
+	LDA #>Data_00_8e1e
 	STA $0084
 	JSR Sub_00_84af
 	LDA #$22
@@ -1260,9 +1265,9 @@ Sub_00_8cda:
 Sub_00_8d33:
 	STA $00a6
 	LDX $0552
-	LDA #$03
+	LDA #<Data_00_a003
 	STA $0264, X
-	LDA #$a0
+	LDA #>Data_00_a003
 	STA $02ac, X
 	LDA #$05
 	CLC
@@ -1280,9 +1285,9 @@ Sub_00_8d33:
 	LDA #$09
 	STA $027c, X
 @00_8d62:
-	LDA #$2e
+	LDA #<Data_00_8e2e
 	STA $0083
-	LDA #$8e
+	LDA #>Data_00_8e2e
 	STA $0084
 	JSR Sub_00_84af
 	LDA #$22
@@ -1321,9 +1326,9 @@ Sub_00_8d8c:
 	DEC $02b0
 	CMP $00a3
 	BNE @00_8da8
-	LDA #$d6
+	LDA #<Data_00_8dd6
 	STA $0083
-	LDA #$8d
+	LDA #>Data_00_8dd6
 	STA $0084
 	PLA
 	JSR Sub_00_8939
@@ -1337,19 +1342,31 @@ Sub_00_8d8c:
 
 Data_00_8dd6:
 	.db $00, $00, $05, $00, $00, $01, $00, $00, $00, $02, $00, $00, $00
-	.db $05, $00, $00, $53, $54, $55, $56, $57, $58, $59, $5a, $5b, $5c
+	.db $05, $00, $00
+Data_00_8de6:
+	.db $53, $54, $55, $56, $57, $58, $59, $5a, $5b, $5c
 	.db $5d, $5e, $5f, $60, $61, $62, $9c, $9d, $ac, $ad, $9e, $9f, $ae
 	.db $af, $89, $8a, $8b, $8c, $92, $93, $a2, $a3, $b0, $b1, $c0, $c1
-	.db $b2, $b3, $c2, $c3, $00, $00, $b7, $d1, $e0, $e1, $f0, $f1, $00
-	.db $00, $d2, $d3, $e2, $e3, $f2, $f3, $00, $00, $d4, $d5, $e4, $e5
-	.db $f4, $ab, $00, $00, $d8, $d9, $e8, $e9, $bb, $f9, $94, $95, $a4
-	.db $a5, $b4, $b5, $c4, $c5, $98, $99, $a8, $a9, $b8, $b9, $c8, $c9
+	.db $b2, $b3, $c2, $c3
+Data_00_8e0e:
+	.db $00, $00, $b7, $d1, $e0, $e1, $f0, $f1, $00, $00, $d2, $d3, $e2
+	.db $e3, $f2, $f3
+Data_00_8e1e:
+	.db $00, $00, $d4, $d5, $e4, $e5, $f4, $ab, $00, $00, $d8, $d9, $e8
+	.db $e9, $bb, $f9
+Data_00_8e2e:
+	.db $94, $95, $a4, $a5, $b4, $b5, $c4, $c5, $98, $99, $a8, $a9, $b8
+	.db $b9, $c8, $c9
+Data_00_8e3e:
 	.db $00, $00, $bc, $bd, $be, $bf, $00, $cc, $cd, $cd, $ce, $00, $00
 	.db $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18
+Data_00_8e58:
 	.db $00, $00, $bd, $dc, $eb, $bd, $dd, $dd, $bd, $de, $cb, $00, $00
 	.db $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18
+Data_00_8e72:
 	.db $ec, $ed, $ee, $bd, $be, $00, $ee, $dd, $db, $bf, $bd, $be, $cf
 	.db $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18, $18
+Data_00_8e8c:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff
@@ -1361,6 +1378,7 @@ Data_00_8dd6:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $00, $07, $01, $0d, $05, $00, $1b, $16, $05, $12, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Data_00_8f1b:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
@@ -1388,12 +1406,12 @@ Sub_00_8fd4:
 	STA $02f0
 	LDA #$21
 	STA $02e7
-	LDA #$1b
+	LDA #<Data_00_8f1b
 	STA $02e8
 	STA $02e9
 	STA $02eb
 	STA $02ec
-	LDA #$8f
+	LDA #>Data_00_8f1b
 	STA $02ea
 	LDA #$3c
 	STA $02f1
@@ -1460,26 +1478,28 @@ Sub_00_9000:
 @00_907c:
 	LDA $02ee
 	CLC
-	ADC #$1b
+	ADC #<Data_00_8f1b
 	STA $02e8
 	LDA $02ed
 	CLC
-	ADC #$1b
+	ADC #<Data_00_8f1b
 	STA $02e9
-	LDA #$8f
+	LDA #>Data_00_8f1b
 	STA $02ea
 	LDA $02f0
 	CLC
-	ADC #$1b
+	ADC #<Data_00_8f1b
 	STA $02eb
 	LDA $02ef
 	CLC
-	ADC #$1b
+	ADC #<Data_00_8f1b
 	STA $02ec
 	RTS
 
 Data_00_90a6:
-	.db $00, $00, $01, $01, $01, $02, $02, $03, $00, $00, $05, $00, $00
+	.db $00, $00, $01, $01, $01, $02, $02, $03
+Data_00_90ae:
+	.db $00, $00, $05, $00, $00
 	.db $00, $05, $00, $00, $01, $00, $00, $00, $01, $00, $00, $00, $01
 	.db $00, $00, $00, $02, $00, $00, $00, $02, $00, $00, $00, $05, $00
 	.db $00
@@ -1535,8 +1555,8 @@ Sub_00_9118:
 	STA $027c, Y
 	CMP #$01
 	BNE @00_914c
-	LDA #$1e
-	JSR Sub_07_f6ff
+	LDA #SFX_HATCH
+	JSR StoreMusicID
 	LDA #$0f
 	STA $053e, X
 	BNE @00_9167
@@ -1573,9 +1593,9 @@ Sub_00_9118:
 	STA $027c, Y
 	LDA #$32
 	STA $053e, X
-	LDA #$ae
+	LDA #<Data_00_90ae
 	STA $0083
-	LDA #$90
+	LDA #>Data_00_90ae
 	STA $0084
 	LDA $053a, X
 	JSR Sub_00_8939
@@ -1586,9 +1606,9 @@ Sub_00_9118:
 	LDA #$2e
 	JMP @00_91ac
 @00_91aa:
-	LDA #$2c
+	LDA #SFX_YOSHI
 @00_91ac:
-	JSR Sub_07_f6ff
+	JSR StoreMusicID
 	RTS
 @00_91b0:
 	CMP #$02
@@ -1755,7 +1775,9 @@ Data_00_92d8:
 	.db $01, $10
 
 Data_00_931b:
-	.db $01, $00, $01, $00, $01, $01, $01, $00, $01, $00, $01, $01, $01
+	.db $01, $00, $01, $00, $01, $01, $01
+Data_00_9322:
+	.db $00, $01, $00, $01, $01, $01
 	.db $00, $01, $01, $01, $01, $01, $01, $01, $01, $00, $01, $00, $01
 	.db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $01, $01, $00
 	.db $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
@@ -1768,15 +1790,15 @@ Sub_00_9358:
 	STA $00b5
 	LDA $0520
 	BNE @00_9372
-	LDA #<Data_00_9801
+	LDA #<Attr_00_9801
 	STA $0083
-	LDA #>Data_00_9801
+	LDA #>Attr_00_9801
 	STA $0084
 	JMP @00_937a
 @00_9372:
-	LDA #<Data_00_9841
+	LDA #<Attr_00_9841
 	STA $0083
-	LDA #>Data_00_9841
+	LDA #>Attr_00_9841
 	STA $0084
 @00_937a:
 	JSR Sub_00_adc3
@@ -1789,59 +1811,59 @@ Sub_00_9358:
 	STA $00b4
 	LDA #$07
 	STA zMMC1Chr
-	LDA #$72
+	LDA #<Data_00_9672
 	STA $0083
-	LDA #$96
+	LDA #>Data_00_9672
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$77
+	LDA #<Data_00_9677
 	STA $0083
-	LDA #$96
+	LDA #>Data_00_9677
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$7c
+	LDA #<Data_00_967c
 	STA $0083
-	LDA #$96
+	LDA #>Data_00_967c
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$81
+	LDA #<Data_00_9681
 	STA $0083
-	LDA #$96
+	LDA #>Data_00_9681
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$86
+	LDA #<Data_00_9686
 	STA $0083
-	LDA #$96
+	LDA #>Data_00_9686
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$8b
+	LDA #<Data_00_968b
 	STA $0083
-	LDA #$96
+	LDA #>Data_00_968b
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$90
+	LDA #<Data_00_9690
 	STA $0083
-	LDA #$96
+	LDA #>Data_00_9690
 	STA $0084
 	JSR Sub_00_a3b0
-	LDA #$95
+	LDA #<Data_00_9695
 	STA $00b7
-	LDA #$96
+	LDA #>Data_00_9695
 	STA $00b8
 	JSR Sub_07_cf7f
 	LDA $0520
 	BNE @00_9400
-	LDA #$0d
+	LDA #<Data_00_970d
 	STA $00b7
-	LDA #$97
+	LDA #>Data_00_970d
 	STA $00b8
 	LDA #$00
 	STA $0551
 	JMP @00_940d
 @00_9400:
-	LDA #$61
+	LDA #<Data_00_9761
 	STA $00b7
-	LDA #$97
+	LDA #>Data_00_9761
 	STA $00b8
 	LDA #$39
 	STA $0551
@@ -2142,9 +2164,21 @@ Sub_00_9358:
 	RTS
 
 Data_00_9672:
-	.db $20, $00, $20, $1e, $00, $20, $40, $20, $1a, $e5, $21, $24, $18
-	.db $01, $e1, $22, $64, $18, $01, $f1, $21, $43, $01, $09, $e3, $21
-	.db $5c, $01, $09, $e4, $21, $44, $18, $09, $00, $21, $23, $00, $e0
+	.db $20, $00, $20, $1e, $00
+Data_00_9677:
+	.db $20, $40, $20, $1a, $e5
+Data_00_967c:
+	.db $21, $24, $18, $01, $e1
+Data_00_9681:
+	.db $22, $64, $18, $01, $f1
+Data_00_9686:
+	.db $21, $43, $01, $09, $e3
+Data_00_968b:
+	.db $21, $5c, $01, $09, $e4
+Data_00_9690:
+	.db $21, $44, $18, $09, $00
+Data_00_9695:
+	.db $21, $23, $00, $e0
 	.db $21, $3c, $00, $e2, $22, $63, $00, $f0, $22, $7c, $00, $f2, $20
 	.db $a6, $13, $34, $35, $e5, $e5, $3c, $3d, $3e, $3f, $e5, $d6, $d7
 	.db $d8, $d9, $da, $db, $dc, $e5, $e5, $36, $37, $20, $c6, $13, $44
@@ -2153,14 +2187,18 @@ Data_00_9672:
 	.db $97, $a7, $b7, $c7, $21, $13, $00, $d1, $21, $a5, $02, $1c, $13
 	.db $14, $21, $e5, $02, $1d, $0e, $04, $22, $25, $02, $1e, $12, $04
 	.db $21, $ed, $00, $26, $21, $f3, $00, $26, $21, $fa, $00, $26, $22
-	.db $2d, $00, $26, $22, $33, $00, $26, $22, $3a, $00, $26, $ff, $21
+	.db $2d, $00, $26, $22, $33, $00, $26, $22, $3a, $00, $26, $ff
+Data_00_970d:
+	.db $21
 	.db $0e, $00, $d2, $21, $69, $11, $13, $03, $1b, $12, $05, $00, $0c
 	.db $05, $16, $05, $0c, $00, $00, $00, $05, $07, $07, $13, $22, $a7
 	.db $02, $cd, $ce, $cf, $22, $c7, $02, $dd, $de, $df, $22, $e7, $02
 	.db $ed, $ee, $ef, $23, $07, $02, $fd, $fe, $e5, $22, $f3, $01, $3a
 	.db $3b, $23, $13, $01, $4a, $4b, $22, $b6, $02, $94, $95, $96, $22
 	.db $d6, $02, $a4, $a5, $a6, $22, $f6, $02, $b4, $b5, $b6, $23, $16
-	.db $02, $c4, $c5, $c6, $ff, $21, $0e, $00, $d3, $21, $69, $11, $13
+	.db $02, $c4, $c5, $c6, $ff
+Data_00_9761:
+	.db $21, $0e, $00, $d3, $21, $69, $11, $13
 	.db $03, $1b, $12, $05, $00, $0c, $05, $16, $05, $0c, $00, $00, $00
 	.db $14, $09, $0d, $05, $22, $a8, $04, $98, $99, $9a, $9b, $9c, $22
 	.db $c8, $04, $a8, $a9, $aa, $ab, $ac, $22, $e8, $04, $b8, $b9, $ba
@@ -2228,18 +2266,10 @@ Sub_00_97e7:
 @00_9800:
 	RTS
 
-Data_00_9801:
-	.db $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $66, $aa, $aa, $aa
-	.db $aa, $bb, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
-	.db $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
-	.db $aa, $aa, $66, $55, $99, $ea, $76, $99, $aa, $aa, $a6, $a5, $a9
-	.db $ae, $a7, $a9, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
-Data_00_9841:
-	.db $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $66, $aa, $aa, $aa
-	.db $aa, $bb, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
-	.db $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
-	.db $aa, $aa, $aa, $55, $99, $6a, $9a, $aa, $aa, $aa, $aa, $95, $a9
-	.db $a6, $a9, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa, $aa
+Attr_00_9801:
+.incbin "src/raw-data/attr-00-9801.bin"
+Attr_00_9841:
+.incbin "src/raw-data/attr-00-9841.bin"
 
 Sub_00_9881:
 	LDA #<Data_00_9898
@@ -2278,16 +2308,17 @@ Sub_00_98a8:
 	STA $0260
 	LDA #$f0
 	STA $0636
-	LDA #$31
-	JSR Sub_07_f6ff
+	LDA #SFX_PAUSE
+	JSR StoreMusicID
 	LDA $00b4
 	STA $00a3
 	LDA $00b5
 	STA $00a4
 	LDA #$00
 	STA $00b4
-	LDA #$92
-	STA $00af
+	; $2800 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
+	LDA #NMI | BG_TABLE | 2
+	STA zPPUControl
 	LDA #$00
 	STA $00b5
 @00_98e4:
@@ -2304,8 +2335,9 @@ Sub_00_98a8:
 	STA $00b5
 	LDA $0081
 	BNE @00_9905
-	LDA #$90
-	STA $00af
+	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
+	LDA #NMI | BG_TABLE
+	STA zPPUControl
 @00_9905:
 	LDA #$01
 	STA $0260
@@ -2336,7 +2368,7 @@ Sub_00_9910:
 	INX
 	CPX #$03
 	BNE @00_9927
-	LDA #$1e
+	LDA #CHR_MODE | PRG_L16 | 2MIRROR_V
 	STA zMMC1Ctrl
 	JSR WriteMapperControl
 	JSR Sub_00_9dae
@@ -2408,8 +2440,8 @@ Sub_00_9910:
 	EOR $0001
 	STA $054f
 	BNE @00_99f0
-	LDA #$15
-	JSR Sub_07_f6ff
+	LDA #SFX_WALK_SOFT
+	JSR StoreMusicID
 @00_99f0:
 	LDA $054f
 	BNE @00_9a03
@@ -2457,8 +2489,8 @@ Sub_00_9910:
 	EOR $0001
 	STA $054f
 	BNE @00_9a5b
-	LDA #$16
-	JSR Sub_07_f6ff
+	LDA #SFX_WALK
+	JSR StoreMusicID
 @00_9a5b:
 	LDA $054f
 	BNE @00_9a6e
@@ -2501,8 +2533,8 @@ Sub_00_9910:
 	LDA #>Data_00_9cb9
 	STA $0084
 	JSR Sub_00_9bde
-	LDA #$13
-	JSR Sub_07_f6ff
+	LDA #SFX_COLLECT_BONUS
+	JSR StoreMusicID
 	LDA #$05
 	STA $00b1
 	JSR Sub_00_806a
@@ -2547,9 +2579,9 @@ Sub_00_9910:
 	STA $0083
 	LDA #>Data_00_9c11
 	STA $0084
-	LDA #$22
+	LDA #<Data_00_9322
 	STA $00a4
-	LDA #$93
+	LDA #>Data_00_9322
 	STA $00a5
 	LDA #$03
 	STA $00a6
@@ -2604,8 +2636,8 @@ Sub_00_9910:
 	LDA Data_00_9d74, X
 	JSR Sub_00_8939
 	JSR Sub_00_9e44
-	LDA #$5a
-	JSR Sub_07_f6ff
+	LDA #MUSIC_CURRENT_SCORE
+	JSR StoreMusicID
 @00_9bab:
 	LDA #$01
 	STA $00b1
@@ -2613,7 +2645,7 @@ Sub_00_9910:
 	LDA iChannelID
 	CMP #$5a
 	BEQ @00_9bab
-	LDA #$1f
+	LDA #CHR_MODE | PRG_L16 | 2MIRROR_H
 	STA zMMC1Ctrl
 	JSR WriteMapperControl
 	LDA #$04
@@ -2742,9 +2774,9 @@ Data_00_9d9a:
 Sub_00_9dae:
 	LDA #$05
 	JSR Sub_07_d124
-	LDA #<Data_00_9dd7
+	LDA #<Attr_00_9dd7
 	STA $0083
-	LDA #>Data_00_9dd7
+	LDA #>Attr_00_9dd7
 	STA $0084
 	JSR Sub_00_adc3
 	LDA #$27
@@ -2754,19 +2786,15 @@ Sub_00_9dae:
 	LDY #$40
 	LDX #$00
 @00_9dcc:
-	LDA Data_00_9dd7, X
+	LDA Attr_00_9dd7, X
 	STA PPUDATA
 	INX
 	DEY
 	BNE @00_9dcc
 	RTS
 
-Data_00_9dd7:
-	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $50, $50, $50, $50, $50, $50, $50, $50, $55, $55
-	.db $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55
-	.db $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55
-	.db $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55
+Attr_00_9dd7:
+.incbin "src/raw-data/attr-00-9dd7.bin"
 
 Data_00_9e17:
 	.db $16, $0f, $20, $29, $0f, $26, $16, $0f, $20, $16, $0f, $20, $38
@@ -2955,7 +2983,7 @@ Sub_00_9f9f:
 	JSR Sub_00_9fbd
 	JSR Sub_00_809b
 	JSR Sub_00_8061
-	JSR Sub_07_e083
+	JSR GetMenuBGM
 	RTS
 
 Sub_00_9fbd:
@@ -2983,6 +3011,7 @@ Sub_00_9fbd:
 Data_00_9fe9:
 	.db $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55, $55
 	.db $55, $55, $55, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Data_00_a003:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
@@ -2996,8 +3025,8 @@ Sub_00_a029:
 	STA zMMC1Chr + 1
 	JSR Sub_00_a0ae
 	JSR Sub_00_a049
-	LDA #$5e
-	JSR Sub_07_f6ff
+	LDA #MUSIC_VS_MENU
+	JSR StoreMusicID
 	JSR Sub_00_809b
 	JSR Sub_00_8061
 	RTS
@@ -3005,9 +3034,9 @@ Sub_00_a029:
 Sub_00_a049:
 	LDA #$02
 	JSR Sub_07_d124
-	LDA #<Data_00_a06e
+	LDA #<Attr_00_a06e
 	STA $0083
-	LDA #>Data_00_a06e
+	LDA #>Attr_00_a06e
 	STA $0084
 	JSR Sub_00_adc3
 	LDA #$00
@@ -3021,12 +3050,8 @@ Sub_00_a049:
 	JSR Sub_07_e0d5
 	RTS
 
-Data_00_a06e:
-	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $aa, $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $00, $00, $00, $c0, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+Attr_00_a06e:
+.incbin "src/raw-data/attr-00-a06e.bin"
 
 Sub_00_a0ae:
 	LDA #<Data_00_a35e
@@ -4350,7 +4375,7 @@ Sub_00_ae28:
 	LDA $0081
 	BNE @00_ae88
 	JSR Sub_00_aee1
-	JSR Sub_07_e076
+	JSR GetMainBGM
 	LDA $0520
 	BNE @00_ae4b
 	JSR Sub_00_af7a
@@ -4402,8 +4427,8 @@ Sub_00_ae28:
 	JSR Sub_07_efd1
 	LDA $0122
 	BNE @00_aec8
-	LDA #$50
-	JSR Sub_07_f6ff
+	LDA #MUSIC_VS_MATCH
+	JSR StoreMusicID
 @00_aec8:
 	JSR Sub_00_8883
 	JSR Sub_07_d849
@@ -4568,8 +4593,9 @@ Sub_00_afb0:
 	LDA #$00
 	STA $00b5
 	STA $00b4
-	LDA #$92
-	STA $0246
+	; $2800 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
+	LDA #NMI | BG_TABLE | 2
+	STA iPPUControl
 	LDA #$e8
 	STA $00b5
 	JSR Sub_00_b064
@@ -4589,17 +4615,17 @@ Sub_00_b04f:
 	RTS
 
 Sub_00_b058:
-	LDA #$d0
+	LDA #<Data_00_b1d0
 	STA $0083
-	LDA #$b1
+	LDA #>Data_00_b1d0
 	STA $0084
 	JSR Sub_00_a3b0
 	RTS
 
 Sub_00_b064:
-	LDA #$d5
+	LDA #<Data_00_b1d5
 	STA $0083
-	LDA #$b1
+	LDA #>Data_00_b1d5
 	STA $0084
 	JSR Sub_00_a3b0
 	RTS
@@ -4632,33 +4658,36 @@ Sub_00_b070:
 	LDA #$b4
 	STA $00b8
 	JSR Sub_07_cf7f
-	LDA #$d7
+	LDA #<Data_00_b0d7
 	STA $00b7
-	LDA #$b0
+	LDA #>Data_00_b0d7
 	STA $00b8
 	JSR Sub_07_cf7f
 	JMP JMP_00_b0c2
 @00_b0b7:
-	LDA #$ce
+	LDA #<Data_00_b0ce
 	STA $00b7
-	LDA #$b0
+	LDA #>Data_00_b0ce
 	STA $00b8
 	JSR Sub_07_cf7f
 
 
 JMP_00_b0c2:
-	LDA #$e0
+	LDA #<Data_00_b0e0
 	STA $00b7
-	LDA #$b0
+	LDA #>Data_00_b0e0
 	STA $00b8
 	JSR Sub_07_cf7f
 	RTS
 
 Data_00_b0ce:
-	.db $20, $db, $04, $01, $14, $0f, $10, $05, $ff, $20, $db, $04, $97
-	.db $14, $0f, $10, $05, $ff, $20, $ba, $05, $d0, $b6, $b6, $b6, $b6
-	.db $b6, $20, $fa, $05, $f7, $fc, $fc, $fc, $fc, $fc, $20, $a0, $42
-	.db $f6, $c6, $f8, $20, $da, $40, $f5, $ff
+	.db $20, $db, $04, $01, $14, $0f, $10, $05, $ff
+Data_00_b0d7:
+	.db $20, $db, $04, $97, $14, $0f, $10, $05, $ff
+Data_00_b0e0:
+	.db $20, $ba, $05, $d0, $b6, $b6, $b6, $b6, $b6, $20, $fa, $05, $f7
+	.db $fc, $fc, $fc, $fc, $fc, $20, $a0, $42, $f6, $c6, $f8, $20, $da
+	.db $40, $f5, $ff
 
 Sub_00_b0fd:
 	LDA #$4f
@@ -4763,7 +4792,9 @@ Sub_00_b1ae:
 	RTS
 
 Data_00_b1d0:
-	.db $20, $60, $20, $1a, $fd, $20, $20, $20, $1a, $fd
+	.db $20, $60, $20, $1a, $fd
+Data_00_b1d5:
+	.db $20, $20, $20, $1a, $fd
 
 Sub_00_b1da:
 	LDA #$36
@@ -5169,8 +5200,8 @@ Sub_00_b72c:
 	LDX $044f
 	LDA $0440, X
 	BEQ @00_b765
-	LDA #$1d
-	JSR Sub_07_f6ff
+	LDA #SFX_SWITCH_COLUMN
+	JSR StoreMusicID
 	DEC $0440, X
 	JSR Sub_00_a3fb
 	RTS
@@ -5179,8 +5210,8 @@ Sub_00_b72c:
 	LDA $0440, X
 	CMP #$02
 	BEQ @00_b765
-	LDA #$1d
-	JSR Sub_07_f6ff
+	LDA #SFX_SWITCH_COLUMN
+	JSR StoreMusicID
 	INC $0440, X
 	JSR Sub_00_a3fb
 	RTS
@@ -5309,15 +5340,15 @@ Sub_00_b898:
 	DEC $053c, X
 	LDA #$04
 	STA $0474
-	LDA #$30
-	JSR Sub_07_f6ff
+	LDA #SFX_GARBAGE
+	JSR StoreMusicID
 	RTS
 @00_b8b8:
 	DEC $053c, X
 	LDA #$03
 	STA $0474
-	LDA #$30
-	JSR Sub_07_f6ff
+	LDA #SFX_GARBAGE
+	JSR StoreMusicID
 	RTS
 @00_b8c6:
 	LDA #$02
@@ -5419,8 +5450,8 @@ Sub_00_b930:
 	JSR Sub_07_daf2
 	LDX $0451
 	JSR Sub_00_ba9b
-	LDA #$1f
-	JSR Sub_07_f6ff
+	LDA #SFX_SHELL_VANISH
+	JSR StoreMusicID
 	RTS
 @00_b998:
 	JSR Sub_00_ba1b
@@ -5506,16 +5537,16 @@ Sub_00_ba1b:
 	CMP $00a3
 	BEQ @00_ba52
 @00_ba47:
-	LDA #$21
-	JSR Sub_07_f6ff
+	LDA #SFX_PLACEMENT
+	JSR StoreMusicID
 	LDA #$00
 	STA $0509
 	RTS
 @00_ba52:
 	LDA #$01
 	STA $0509
-	LDA #$20
-	JSR Sub_07_f6ff
+	LDA #SFX_MATCH
+	JSR StoreMusicID
 	RTS
 
 Sub_00_ba5d:
@@ -5600,8 +5631,8 @@ Sub_00_baaa:
 	JSR Sub_00_ba9b
 	INC $0487, X
 	INC $0487, X
-	LDA #$20
-	JSR Sub_07_f6ff
+	LDA #SFX_MATCH
+	JSR StoreMusicID
 	LDA #$19
 	STA $0083
 	LDA #$bb

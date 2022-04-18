@@ -17,6 +17,7 @@
 .include "sfx/sound/music/roundend.asm"
 
 UpdateSound:
+; This routine is responsible for what we hear
 	LDX #CHAN_0
 	LDY #$00
 @loop:
@@ -79,7 +80,6 @@ QuitChannelUpdate:
 	RTS
 
 UpdateChannel:
-; This routine is responsible for what we hear
 	JSR CopyMusicAddress
 	; are we beginning a new note
 	DEC iChannelNoteLength, X
@@ -125,7 +125,7 @@ UpdateChannel:
 	INC iChannelVibratoCounter, X
 	JMP @01_9fb8
 @01_9f32:
-	LDA #$00
+	LDA #0
 	STA iChannelVibratoCounter, X
 	LDA #$81
 	STA $06f7, X
@@ -147,9 +147,9 @@ UpdateChannel:
 	BEQ @01_9f7d
 	INC iChannelVibratoCounter, X
 @01_9f5f:
-	CPX #$06
+	CPX #CHAN_6
 	BEQ @01_9f6a
-	CPX #$02
+	CPX #CHAN_2
 	BEQ @01_9f6a
 	JMP @01_9fb8
 @01_9f6a:
@@ -211,15 +211,15 @@ UpdateChannel:
 	ASL A
 	TAY
 	LDA (zInstrumentPointer), Y
-	STA zMusicWord
+	STA zCurrentInstrumentAddress
 	INY
 	LDA (zInstrumentPointer), Y
-	STA zMusicWord + 1
+	STA zCurrentInstrumentAddress + 1
 @01_9fe8:
 	LDA iChannelInsID, X
 	INC iChannelInsID, X
 	TAY
-	LDA (zMusicWord), Y
+	LDA (zCurrentInstrumentAddress), Y
 	CMP #$fe
 	BCC @01_a005
 	BEQ @01_9ffd
@@ -227,11 +227,11 @@ UpdateChannel:
 	JMP @01_a02d
 @01_9ffd:
 	INY
-	LDA (zMusicWord), Y
+	LDA (zCurrentInstrumentAddress), Y
 	STA iChannelInsID, X
 	BNE @01_9fe8
 @01_a005:
-	LDA (zMusicWord), Y
+	LDA (zCurrentInstrumentAddress), Y
 	BEQ @01_a03a
 	STA iChannelVolumeRamp, X
 	JMP @01_a02d
@@ -350,22 +350,22 @@ ParseByte:
 @track_end:
 	LDA iChannelID, X
 	STA zMusicWord
-	LDA #$00
+	LDA #0
 	STA iChannelID, X
 	STA iChannelPitch, X
 	STA $0635
 	STA iChannelFlags, X
 	LDA zMusicWord
-	CMP #$51
+	CMP #MUSIC_VS_MATCH + 1
 	BNE @01_a0e7
-	LDA #$ff
+	LDA #NO_MUSIC
 	JSR PlayAudio
-	LDA $0637
+	LDA i637
 	JMP PlayAudio
 @01_a0e7:
-	CPX #$03
+	CPX #CHAN_3
 	BEQ @01_a12a
-	CPX #$04
+	CPX #CHAN_4
 	BNE @01_a0fc
 	LDA iChannelID
 	BEQ @01_a10d
@@ -478,10 +478,10 @@ ParseNote:
 @01_a1c2:
 	LDA (zMusicAddress), Y
 	AND #$07
-	STA zMusicWord
+	STA zCurrentTrackPitch
 	INY
 	LDA (zMusicAddress), Y
-	STA zMusicWord + 1
+	STA zCurrentTrackPitch + 1
 	JSR Sub_01_a4d9
 	JMP IncrementMusicAddress
 
@@ -550,7 +550,7 @@ SearchCommand_Tier2:
 	AND #$f0
 	CMP #$e0
 	BEQ @01_a24c
-	JMP JMP_01_a357
+	JMP SearchCommand_Volume
 @01_a24c:
 	LDA (zMusicAddress), Y
 	AND #$0f
@@ -586,7 +586,7 @@ E0_EF_Commands:
 
 Octave:
 	LDA (zMusicAddress), Y
-	AND #$0f
+	AND #%00001111
 	STA iChannelOctave, X
 	JMP ParseNextByte
 
@@ -610,14 +610,14 @@ Vibrato:
 	INY
 	LDA (zMusicAddress), Y
 	BNE @01_a2b2
-	LDA #$00
+	LDA #0
 	STA $06f7, X
 	JMP ParseNextByte
 @01_a2b2:
 	STA iChannelVibratoDelay, X
 	INY
 	LDA (zMusicAddress), Y
-	AND #$0f
+	AND #%00001111
 	STA iChannelVibratoSpeed, X
 	LDA (zMusicAddress), Y
 	LSR A
@@ -625,7 +625,7 @@ Vibrato:
 	LSR A
 	LSR A
 	STA iChannelVibratoDepth, X
-	LDA #$00
+	LDA #0
 	STA iChannelVibratoCounter, X
 	LDA #$c1
 	STA $06f7, X
@@ -637,25 +637,25 @@ Dummy:
 Tempo:
 	INY
 	CPX #CHAN_4
-	BCS @01_a2f7
+	BCS @sfx
 	LDA (zMusicAddress), Y
 	STA iMusicTempo
 	INY
 	LDA (zMusicAddress), Y
 	STA iMusicTempo + 1
-	LDA #$00
+	LDA #0
 	STA $06e3
 	STA $06e4
 	STA $06e5
 	STA $06e6
 	JMP ParseNextByte
-@01_a2f7:
+@sfx:
 	LDA (zMusicAddress), Y
 	STA iSFXTempo
 	INY
 	LDA (zMusicAddress), Y
 	STA iSFXTempo + 1
-	LDA #$00
+	LDA #0
 	STA $06e7
 	STA $06e8
 	STA $06e9
@@ -698,27 +698,27 @@ Pitch_Slide:
 	STA iChannelFlags, X
 	INY
 	LDA (zMusicAddress), Y
-JMP_01_a357:
+SearchCommand_Volume:
 	CMP #channel_volume_cmd
-	BNE Branch_01_a389
+	BNE GetNoteLength
 	LDA (zMusicAddress), Y
 	AND #$0f
 	STA iChannelVolumeOffset, X
 	JMP ParseNextByte
 
-Branch_01_a365:
+GetNotePitch:
 	LDA (zMusicAddress), Y
 	AND #$f0
-	CMP #$c0
-	BEQ Branch_01_a388
-	JSR Sub_01_a5dc
-	BCS Branch_01_a388
+	CMP #NOTE_REST << 4
+	BEQ PlayQuit
+	JSR DrumCheckProceedure
+	BCS PlayQuit
 	LSR A
 	LSR A
 	LSR A
 	LSR A
-	CMP #$0b
-	BNE Branch_01_a382
+	CMP #B_
+	BNE PlayFromPitch
 
 PlayNewSong:
 	INY
@@ -726,73 +726,73 @@ PlayNewSong:
 	PHA
 	JSR IncrementMusicAddress
 	PLA
-Branch_01_a382:
+PlayFromPitch:
 	JSR PlayAudio
 	JSR GetChannelID
-Branch_01_a388:
+PlayQuit:
 	RTS
 
-Branch_01_a389:
+GetNoteLength:
 	JSR IncrementMusicAddress
 	DEY
 	LDA (zMusicAddress), Y
 	AND #$0f
 	STA zMusicWord
 	INC zMusicWord
-	LDA #$00
-	STA zMusicOffsetAddress
-	STA $00e9
+	LDA #0
+	STA ze6
+	STA ze6 + 3
 	LDA iChannelNoteTypeLength, X
-	STA zMusicOffsetAddress + 1
+	STA ze6 + 1
 @01_a3a0:
 	LSR zMusicWord
 	BCC @01_a3ab
-	LDA zMusicOffsetAddress + 1
+	LDA ze6 + 1
 	CLC
-	ADC zMusicOffsetAddress
-	STA zMusicOffsetAddress
+	ADC ze6
+	STA ze6
 @01_a3ab:
-	ASL zMusicOffsetAddress + 1
+	ASL ze6 + 1
 	LDA zMusicWord
 	BNE @01_a3a0
 	CPX #$07
 	BCC @01_a3ba
-	LDA zMusicOffsetAddress
+	LDA ze6
 	JMP @01_a3f2
 @01_a3ba:
 	CPX #$04
 	BCC @01_a3cb
 	LDA iSFXTempo
-	STA zMusicOffsetAddress + 1
+	STA ze6 + 1
 	LDA iSFXTempo + 1
-	STA $00e8
+	STA ze6 + 2
 	JMP @01_a3d5
 @01_a3cb:
 	LDA iMusicTempo
-	STA zMusicOffsetAddress + 1
+	STA ze6 + 1
 	LDA iMusicTempo + 1
-	STA $00e8
+	STA ze6 + 2
 @01_a3d5:
-	LSR zMusicOffsetAddress
+	LSR ze6
 	BCC @01_a3e8
-	LDA $00e8
+	LDA ze6 + 2
 	CLC
 	ADC $06e3, X
 	STA $06e3, X
-	LDA zMusicOffsetAddress + 1
-	ADC $00e9
-	STA $00e9
+	LDA ze6 + 1
+	ADC ze6 + 3
+	STA ze6 + 3
 @01_a3e8:
-	ASL $00e8
-	ROL zMusicOffsetAddress + 1
-	LDA zMusicOffsetAddress
+	ASL ze6 + 2
+	ROL ze6 + 1
+	LDA ze6
 	BNE @01_a3d5
-	LDA $00e9
+	LDA ze6 + 3
 @01_a3f2:
 	STA iChannelNoteLength, X
 	CPX #$03
 	BNE @01_a3fc
-	JMP Branch_01_a365
+	JMP GetNotePitch
 @01_a3fc:
 	LDA (zMusicAddress), Y
 	AND #$f0
@@ -839,11 +839,11 @@ Branch_01_a389:
 	BNE @01_a440
 	STA zMusicWord
 	LDA #$04
-	STA $00e1
+	STA zByteCount
 @01_a452:
 	LSR zMusicWord + 1
 	ROR zMusicWord
-	CMP $00e1
+	CMP zByteCount
 	BNE @01_a452
 	LDA zMusicWord
 @01_a45c:
@@ -862,12 +862,12 @@ Branch_01_a389:
 	ASL A
 	TAY
 	LDA (zInstrumentPointer), Y
-	STA zMusicWord
+	STA zCurrentInstrumentAddress
 	INY
 	LDA (zInstrumentPointer), Y
-	STA zMusicWord + 1
+	STA zCurrentInstrumentAddress + 1
 	LDY #$00
-	LDA (zMusicWord), Y
+	LDA (zCurrentInstrumentAddress), Y
 	ORA iChannelTimbre, X
 	STA iChannelNoteTypeMainParam, X
 	LDA #$01
@@ -898,19 +898,20 @@ Branch_01_a389:
 	LSR A
 	LSR A
 	LSR A
+	; these two shift instructions are useless
 	LSR A
 	ASL A
 	TAY
 	LDA Pitches + 1, Y
-	STA zMusicWord
+	STA zCurrentTrackPitch
 	LDA Pitches, Y
-	STA zMusicWord + 1
+	STA zCurrentTrackPitch + 1
 	LDY iChannelOctave, X
 @01_a4cd:
 	CPY #$07
 	BEQ Sub_01_a4d9
-	LSR zMusicWord
-	ROR zMusicWord + 1
+	LSR zCurrentTrackPitch
+	ROR zCurrentTrackPitch + 1
 	INY
 	JMP @01_a4cd
 
@@ -918,13 +919,13 @@ Sub_01_a4d9:
 	LDA iChannelFlags, X
 	AND #SOUND_PITCH_INC
 	BEQ @01_a4f6
-	INC zMusicWord + 1
+	INC zCurrentTrackPitch + 1
 	BNE @01_a4f6
-	INC zMusicWord
+	INC zCurrentTrackPitch
 @01_a4f6:
-	LDA zMusicWord
+	LDA zCurrentTrackPitch
 	ORA #$08
-	STA zMusicWord
+	STA zCurrentTrackPitch
 	CPX #CHAN_2
 	BEQ @01_a50d
 	CPX #CHAN_6
@@ -946,12 +947,12 @@ Sub_01_a4d9:
 @01_a513:
 	STA iChannelPitch, X
 @01_a516:
-	LDA zMusicWord
+	LDA zCurrentTrackPitch
 	JSR ChannelCheckProceedure
 	BCS @01_a520
 	JSR UpdateHigh
 @01_a520:
-	LDA zMusicWord + 1
+	LDA zCurrentTrackPitch + 1
 	STA iChannelPitch + 8, X
 	JSR ChannelCheckProceedure
 	BCS @01_a53b
@@ -964,31 +965,8 @@ Sub_01_a4d9:
 	JSR ApplyPitchSlide
 @01_a53b:
 	RTS
-Pitches:
-	.dw $6ae
-	.dw $64e
-	.dw $5f4
-	.dw $59e
-	.dw $54e
-	.dw $501
-	.dw $4b9
-	.dw $476
-	.dw $436
-	.dw $3f9
-	.dw $3c0
-	.dw $38a
-	.dw $6af
-	.dw $64f
-	.dw $5f5
-	.dw $59f
-	.dw $54f
-	.dw $502
-	.dw $4ba
-	.dw $477
-	.dw $437
-	.dw $3fa
-	.dw $3c1
-	.dw $38b
+
+.include "src/sound/notes.asm"
 
 CopyMusicAddress:
 	LDY #$00
@@ -1068,7 +1046,7 @@ GetChannelID:
 	TAX
 	RTS
 
-Sub_01_a5dc:
+DrumCheckProceedure:
 	PHA
 	CPX #CHAN_3
 	BNE CheckProClearCarry
@@ -1168,9 +1146,9 @@ ApplyChannel:
 PlayAudio:
 	STA zMusicHeaderID
 	CMP #sfx_boundary
-	BCC @01_a691
+	BCC @not_music
 	CMP #music_boundary
-	BCS @01_a691
+	BCS @not_music
 	LDA #$00
 	STA iChannelID
 	STA $068a
@@ -1179,7 +1157,7 @@ PlayAudio:
 	STA $06f7
 	STA $06f8
 	STA $06f9
-@01_a691:
+@not_music:
 	CMP #music_boundary + 1
 	BCC @01_a6d2
 	LDA #$00
@@ -1237,7 +1215,8 @@ PlayAudio:
 	AND #channel_mask
 	STA zChannelTotal
 	JMP @01_a723
-@01_a6fe:
+@read_dpcm:
+; we land here if we're on DPCM
 	INY
 	LDA (zMusicHeaderPointer), Y
 	STA zMusicWord
@@ -1257,8 +1236,8 @@ PlayAudio:
 	BPL @01_a70f
 	LDA #SQ1_F | SQ2_F | TRI_F | NOISE_F | DPCM_F
 	STA SND_CHN
-@01_a720:
-	JMP @01_a7b9
+@subexit:
+	JMP @quit
 @01_a723:
 	LDY $00e2
 	LDA (zMusicHeaderPointer), Y
@@ -1266,14 +1245,14 @@ PlayAudio:
 	STA $00e5
 	TAX
 	CMP #CHAN_8
-	BEQ @01_a6fe
+	BEQ @read_dpcm
 	LDA zMusicHeaderID
 	BEQ @01_a740
 	CMP iChannelID, X
 	BCS @01_a740
 	LDA iChannelID, X
-	CMP #$13
-	BCS @01_a720
+	CMP #drum_boundary + 1
+	BCS @subexit
 @01_a740:
 	LDY $00e2
 	INY
@@ -1331,14 +1310,14 @@ PlayAudio:
 	LDA zMusicHeaderID
 	STA iChannelID, X
 	CMP zChannelTotal
-	BMI @01_a7b9
+	BMI @quit
 	LDY $00e2
 	INY
 	INY
 	INY
 	STY $00e2
 	JMP @01_a723
-@01_a7b9:
+@quit:
 	LDA #$00
 	STA zMusicHeaderPointer + 1
 	PLA
@@ -1383,9 +1362,9 @@ ApplyPitchSlide:
 @01_a800:
 	STA iChannelPitchSlideTail
 	LDA iChannelFlags, X
-	AND #$ff ^ (SOUND_UNKNOWN_07 | SOUND_PITCH_SLIDE_DIR)
+	AND #$ff ^ (SOUND_PITCH_SWAP | SOUND_PITCH_SLIDE_DIR)
 	STA iChannelFlags, X
-	JSR Sub_01_a97b
+	JSR SwapPitch
 	LDA iChannelPitch, X
 	CMP $0624, X
 	BEQ @01_a81a
@@ -1449,11 +1428,11 @@ ApplyPitchSlide:
 	STA $061b, X
 	LDA iChannelNoteLength, X
 	STA $062d, X
-	JSR Sub_01_a97b
+	JSR SwapPitch
 	RTS
 
 HandlePitchSlide:
-	JSR Sub_01_a97b
+	JSR SwapPitch
 	LDA iChannelFlags, X
 	AND #SOUND_PITCH_SLIDE_DIR
 	BEQ @01_a8fb
@@ -1477,13 +1456,13 @@ HandlePitchSlide:
 @01_a8c7:
 	STA $061b, X
 	LDA iChannelFlags, X
-	AND #SOUND_UNKNOWN_07
+	AND #SOUND_PITCH_SWAP
 	BNE @01_a8e1
 	LDA $061e, X
 	CMP $0624, X
 	BCC @01_a8f8
 	LDA iChannelFlags, X
-	ORA #SOUND_UNKNOWN_07
+	ORA #SOUND_PITCH_SWAP
 	STA iChannelFlags, X
 @01_a8e1:
 	LDA $061b, X
@@ -1493,7 +1472,7 @@ HandlePitchSlide:
 	STA $061e, X
 	LDA $0621, X
 	STA $061b, X
-	JMP JMP_01_a958
+	JMP ClearPitchSlide
 @01_a8f8:
 	JMP UpdatePitch
 @01_a8fb:
@@ -1518,13 +1497,13 @@ HandlePitchSlide:
 @01_a924:
 	STA $061b, X
 	LDA iChannelFlags, X
-	AND #SOUND_UNKNOWN_07
+	AND #SOUND_PITCH_SWAP
 	BNE @01_a93e
 	LDA $0624, X
 	CMP $061e, X
 	BCC @01_a955
 	LDA iChannelFlags, X
-	ORA #SOUND_UNKNOWN_07
+	ORA #SOUND_PITCH_SWAP
 	STA iChannelFlags, X
 @01_a93e:
 	LDA $0621, X
@@ -1534,16 +1513,16 @@ HandlePitchSlide:
 	STA $061e, X
 	LDA $0621, X
 	STA $061b, X
-	JMP JMP_01_a958
+	JMP ClearPitchSlide
 @01_a955:
 	JMP UpdatePitch
 
 
-JMP_01_a958:
+ClearPitchSlide:
 	LDA iChannelFlags, X
-	AND #$ff ^ (SOUND_UNKNOWN_07 | SOUND_PITCH_SLIDE_DIR | SOUND_PITCH_SLIDE)
+	AND #$ff ^ (SOUND_PITCH_SWAP | SOUND_PITCH_SLIDE_DIR | SOUND_PITCH_SLIDE)
 	STA iChannelFlags, X
-	JSR Sub_01_a97b
+	JSR SwapPitch
 
 
 UpdatePitch:
@@ -1558,16 +1537,16 @@ UpdatePitch:
 @01_a97a:
 	RTS
 
-Sub_01_a97b:
+SwapPitch:
 	CPX #CHAN_2
-	BNE @01_a98d
+	BNE @quit
 	LDA iChannelPitch, X
 	PHA
 	LDA $0635
 	STA iChannelPitch, X
 	PLA
 	STA $0635
-@01_a98d:
+@quit:
 	RTS
 
 Ptrs_01_a98e:
@@ -1987,28 +1966,82 @@ PTD_01_afe7:
 	.db $00, $08, $00, $10, $00, $18, $00, $20, $08, $00, $08, $08, $08
 	.db $10, $08, $18, $08, $20
 
-Data_01_b006:
-	.db $0f, $26, $29, $20, $0f, $26, $21, $20, $0f, $29, $28, $16, $0f
-	.db $26, $28, $20, $0f, $0f, $29, $20, $0f, $31, $29, $30, $0f, $1a
-	.db $29, $39, $0f, $12, $11, $0f, $0f, $2a, $1a, $20, $0f, $27, $1a
-	.db $20, $0f, $2a, $37, $20, $0f, $09, $1a, $3a, $0f, $16, $20, $20
-	.db $0f, $16, $0f, $20, $0f, $3a, $0f, $24, $0f, $37, $0f, $20, $0f
-	.db $29, $27, $20, $0f, $1b, $27, $27, $0f, $16, $27, $20, $0f, $0b
-	.db $27, $20, $0f, $16, $20, $2b, $0f, $32, $0c, $2a, $0f, $26, $2f
-	.db $17, $0f, $23, $0f, $01, $12, $16, $0f, $20, $12, $29, $0f, $20
-	.db $12, $27, $0f, $20, $12, $2a, $0f, $20, $12, $16, $0f, $20, $12
-	.db $29, $0f, $20, $12, $27, $0f, $20, $12, $00, $20, $22, $12, $16
-	.db $0f, $20, $12, $29, $0f, $20, $12, $27, $0f, $20, $12, $2b, $0f
-	.db $20, $12, $16, $0f, $20, $12, $29, $0f, $20, $12, $27, $0f, $20
-	.db $12, $00, $0f, $26, $0f, $12, $16, $20, $0f, $29, $16, $20, $0f
-	.db $20, $02, $36, $0f, $08, $06, $06, $0f, $16, $0f, $28, $0f, $29
-	.db $0f, $20, $0f, $16, $0f, $20, $0f, $26, $0f, $29, $0f, $16, $0f
-	.db $20, $0f, $16, $29, $20, $0f, $27, $29, $20, $0f, $26, $29, $20
-	.db $0f, $24, $29, $20, $0f, $34, $0f, $2b, $0f, $24, $20, $04, $0f
-	.db $14, $17, $13, $12, $16, $0f, $20, $12, $29, $0f, $20, $12, $27
-	.db $0f, $20, $12, $25, $0f, $20, $12, $16, $0f, $20, $12, $29, $0f
-	.db $20, $12, $27, $0f, $20, $12, $00, $20, $22, $20, $25, $15, $da
-	.db $da, $da, $da, $da, $da, $da, $da, $da, $da, $da, $da, $da, $da
+Pal_01_b006:
+	.db $0f, $26, $29, $20
+	.db $0f, $26, $21, $20
+	.db $0f, $29, $28, $16
+	.db $0f, $26, $28, $20
+	.db $0f, $0f, $29, $20
+	.db $0f, $31, $29, $30
+	.db $0f, $1a, $29, $39
+	.db $0f, $12, $11, $0f
+
+	.db $0f, $2a, $1a, $20
+	.db $0f, $27, $1a, $20
+	.db $0f, $2a, $37, $20
+	.db $0f, $09, $1a, $3a
+	.db $0f, $16, $20, $20
+	.db $0f, $16, $0f, $20
+	.db $0f, $3a, $0f, $24
+	.db $0f, $37, $0f, $20
+
+	.db $0f, $29, $27, $20
+	.db $0f, $1b, $27, $27
+	.db $0f, $16, $27, $20
+	.db $0f, $0b, $27, $20
+	.db $0f, $16, $20, $2b
+	.db $0f, $32, $0c, $2a
+	.db $0f, $26, $2f, $17
+	.db $0f, $23, $0f, $01
+
+	.db $12, $16, $0f, $20
+	.db $12, $29, $0f, $20
+	.db $12, $27, $0f, $20
+	.db $12, $2a, $0f, $20
+	.db $12, $16, $0f, $20
+	.db $12, $29, $0f, $20
+	.db $12, $27, $0f, $20
+	.db $12, $00, $20, $22
+
+	.db $12, $16, $0f, $20
+	.db $12, $29, $0f, $20
+	.db $12, $27, $0f, $20
+	.db $12, $2b, $0f, $20
+	.db $12, $16, $0f, $20
+	.db $12, $29, $0f, $20
+	.db $12, $27, $0f, $20
+	.db $12, $00, $0f, $26
+
+	.db $0f, $12, $16, $20
+	.db $0f, $29, $16, $20
+	.db $0f, $20, $02, $36
+	.db $0f, $08, $06, $06
+	.db $0f, $16, $0f, $28
+	.db $0f, $29, $0f, $20
+	.db $0f, $16, $0f, $20
+	.db $0f, $26, $0f, $29
+
+	.db $0f, $16, $0f, $20
+	.db $0f, $16, $29, $20
+	.db $0f, $27, $29, $20
+	.db $0f, $26, $29, $20
+	.db $0f, $24, $29, $20
+	.db $0f, $34, $0f, $2b
+	.db $0f, $24, $20, $04
+	.db $0f, $14, $17, $13
+
+	.db $12, $16, $0f, $20
+	.db $12, $29, $0f, $20
+	.db $12, $27, $0f, $20
+	.db $12, $25, $0f, $20
+	.db $12, $16, $0f, $20
+	.db $12, $29, $0f, $20
+	.db $12, $27, $0f, $20
+	.db $12, $00, $20, $22
+
+Data_01_b106:
+	.db $20, $25, $15, $da, $da, $da, $da, $da, $da, $da, $da, $da, $da
+	.db $da, $da, $da, $da
 	.db $da, $da, $da, $da, $da, $da, $da, $da, $20, $45, $16, $da, $da
 	.db $da, $da, $da, $6b, $6c, $6d, $6e, $da, $b0, $b1, $b2, $b3, $b4
 	.db $b5, $b6, $b7, $b8, $da, $da, $da, $0c, $20, $65, $16, $da, $da

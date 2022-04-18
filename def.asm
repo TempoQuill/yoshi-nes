@@ -6,21 +6,15 @@ RESET_1 = $ffda
 CHR_A12_INVERSION = $80
 
 ; enum PPUControl (bitfield) (width 1 byte)
-PPUCtrl_BaseAddress = $03
-PPUCtrl_Base2000 = $00
-PPUCtrl_Base2400 = $01
-PPUCtrl_Base2800 = $02
-PPUCtrl_Base2C00 = $03
-PPUCtrl_WriteHorizontal = $00
-PPUCtrl_WriteVertical = $04
-PPUCtrl_Sprite0000 = $00
-PPUCtrl_Sprite1000 = $08
-PPUCtrl_Background0000 = $00
-PPUCtrl_Background1000 = $10
-PPUCtrl_SpriteSize8x8 = $00
-PPUCtrl_SpriteSize8x16 = $20
-PPUCtrl_NMIDisabled = $00
-PPUCtrl_NMIEnabled = $80
+; 0: $2000 1: $2400 2: $2800 3: $2c00
+NT_BASE_MASK = $3
+
+VRAM_INC  = $04 ; 0: horizontal 1: vertical
+OBJ_TABLE = $08 ; 0: $0000      1: $1000
+BG_TABLE  = $10 ; 0: $0000      1: $1000
+OBJ_RES   = $20 ; 0: 8x8        1: 8x16
+MS_SELECT = $40 ; 0: read       1: output
+NMI       = $80 ; 0: off        1: on
 
 PPUStatus_VBlankHit = $80
 
@@ -99,6 +93,17 @@ SND_CHN = $4015   ; master APU register: each bit is the corresponding channel p
 JOY1 = $4016
 JOY2 = $4017
 
+; mapper stuff
+4MIRROR_L = $0
+4MIRROR_H = $1
+2MIRROR_V = $2
+2MIRROR_H = $3
+PRG_32K = $0
+PRG_M0D = $4
+PRG_U16 = $8
+PRG_L16 = $c
+CHR_MODE = $10
+
 MMC1 = 1
 MMC1_Control = $8000
 MMC1_CHRBank1 = $a000
@@ -110,6 +115,7 @@ channel_mask = %00000011
 num_channels = $8
 sfx_boundary = (HeaderBoundary_SFX - MusicHeaders) / 3
 music_boundary = (HeaderBoundary_Music - MusicHeaders) / 3
+drum_boundary = (HeaderBoundary_Drums - MusicHeaders) / 3
 
 Volume_Ramp_F = %00010000
 Volume_Loop_F = %00100000
@@ -146,7 +152,7 @@ SOUND_PITCH_SWEEP     = %00001000
 SOUND_INSTRUMENT      = %00010000
 SOUND_PITCH_SLIDE     = %00100000
 SOUND_PITCH_SLIDE_DIR = %01000000
-SOUND_UNKNOWN_07      = %10000000
+SOUND_PITCH_SWAP      = %10000000
 
 NOTE_BLOCK_INSTRUMENT = %10000000
 
@@ -172,5 +178,72 @@ G# = 8
 A_ = 9
 A# = 10
 B_ = 11
+NOTE_REST = 12
+
+NOISE_2P_HIHAT      = $01
+NOISE_SNARE         = $02
+NOISE_CRASH         = $03
+NOISE_OP_HIHAT      = $04
+NOISE_CS_SNARE_1    = $05
+NOISE_CS_SNARE_2    = $06
+NOISE_CS_SNARE_3    = $07
+NOISE_CS_SNARE_4    = $08
+NOISE_TOM_1         = $09
+NOISE_TOM_2         = $0a
+DPCM_KICK           = $0b
+DPCM_SNARE          = $0c
+DPCM_SNARE_LOW      = $0d
+DPCM_CLAVE          = $0e
+DPCM_HONK_LOW       = $0f
+DPCM_CLAVE_LOW      = $10
+DPCM_HONK           = $11
+NOISE_HIHAT         = $12
+SFX_COLLECT_BONUS   = $13
+SFX_WALK_SOFT       = $15
+SFX_WALK            = $16
+SFX_ROW_1           = $17
+SFX_ROW_2           = $18
+SFX_ROW_3           = $19
+SFX_ROW_4           = $1a
+SFX_ROW_5           = $1b
+SFX_ROW_6           = $1c
+SFX_SWITCH_COLUMN   = $1d
+SFX_HATCH           = $1e
+SFX_SHELL_VANISH    = $1f
+SFX_MATCH           = $20
+SFX_PLACEMENT       = $21
+SFX_CRUNCH_BIG      = $22
+SFX_CRUNCH_1        = $24
+SFX_CRUNCH_2        = $25
+SFX_CRUNCH_3        = $26
+SFX_CRUNCH_4        = $27
+SFX_CRUNCH_5        = $28
+SFX_CRUNCH_6        = $29
+SFX_CRUNCH_7        = $2a
+SFX_SWAP            = $2b
+SFX_YOSHI           = $2c
+SFX_BIG_YOSHI       = $2e
+SFX_GARBAGE         = $30
+SFX_PAUSE           = $31
+SFX_DUMMY           = $33
+MUSIC_TITLE         = $34
+MUSIC_FLOWER        = $38
+MUSIC_FLOWER_MENU   = $3c
+MUSIC_STAR          = $40
+MUSIC_STAR_MENU     = $44
+MUSIC_MUSHROOM      = $48
+MUSIC_MUSHROOM_MENU = $4c
+MUSIC_VS_MATCH      = $50
+MUSIC_GAME_OVER     = $54
+MUSIC_STAGE_CLEAR   = $57
+MUSIC_CURRENT_SCORE = $5a
+MUSIC_VS_MENU       = $5e
+MUSIC_GAME_POINT    = $62
+MUSIC_VS_RESULTS    = $65
+MUSIC_UNUSED        = $69
+MUSIC_ROUND_END     = $6c
+MUSIC_TEST          = $6f
+
+NO_MUSIC = $ff
 
 .endinl

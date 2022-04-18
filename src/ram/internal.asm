@@ -7,7 +7,13 @@ zMMC1Ctrl:
 zMMC1Chr:
 	.dsb 2
 zMMC1Prg:
-	.dsb $60
+	.dsb $37
+zPPUControl:
+	.dsb 1
+zPPUMask:
+	.dsb $28
+zCurrentInstrumentAddress:
+zCurrentTrackPitch:
 zMusicWord:
 	.dsb 2
 zAuxPointer:
@@ -17,15 +23,18 @@ zMusicAddress:
 zMusicHeaderPointer:
 	.dsb 2
 zChannelOffset:
-	.dsb 2
+	.dsb 1
+zByteCount:
+	.dsb 1
 	.dsb 1
 zMusicHeaderID:
 	.dsb 1
 zChannelTotal:
 	.dsb 1
 	.dsb 1
-zMusicOffsetAddress:
-	.dsb $16
+ze6:
+	.dsb 4
+	.dsb $12
 zInstrumentPointer:
 	.dsb 2
 	.dsb 2
@@ -33,7 +42,9 @@ zInstrumentPointer:
 	.dsb $ff
 iStackTop:
 	.dsb 1
-	.dsb $100
+	.dsb $46
+iPPUControl:
+	.dsb $ba
 	.dsb $100
 	.dsb $100
 	.dsb $100
@@ -43,7 +54,9 @@ iChannelTargetPitch:
 iChannelPitchSlideTail:
 	.dsb 1
 	.dsb 1
-	.dsb 2
+	.dsb 1
+i637:
+	.dsb 1
 iChannelNoteTypeLength: ; 638
 	.dsb 8
 iChannelBackupAddress:
@@ -69,7 +82,9 @@ iChannelAddress: ; 691
 iChannelFlags: ; 6a1
 	.dsb 8
 iChannelOctave:
-	.dsb $12
+	.dsb $11
+iMusicID1:
+	.dsb 1
 iChannelEnvExtension: ; 6bb
 	.dsb $10
 iChannelFadeCounter: ; 6cb
@@ -79,7 +94,8 @@ iChannelInsParam:
 iChannelInsID:
 	.dsb 8
 iChannelVolumeOffset:
-	.dsb $10
+	.dsb 8
+	.dsb 8
 iChannelVibratoDelay:
 	.dsb 3
 iChannelVibratoDepth:
@@ -91,6 +107,8 @@ iChannelVibratoCounter:
 iMusicTempo:
 	.dsb 2
 iSFXTempo:
-	.dsb 4
+	.dsb 2
+iMusicID2:
+	.dsb 2
 iVirtualOAM:
 	.dsb $100

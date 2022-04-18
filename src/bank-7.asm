@@ -109,8 +109,8 @@ Sub_07_cd38:
 	BEQ @07_cd79
 	LDA $00b5
 	BEQ @07_cd79
-	LDA $00af
-	AND #$02
+	LDA zPPUControl
+	AND #2
 	BNE @07_cd72
 	LDA $00b5
 	EOR #$ff
@@ -137,19 +137,19 @@ Sub_07_cd38:
 	STA zMusicHeaderPointer + 1
 	INY
 	LDA (zMusicAddress), Y
-	STA zMusicOffsetAddress
+	STA ze6
 	INY
 	LDA (zMusicAddress), Y
-	STA zMusicOffsetAddress + 1
+	STA ze6 + 1
 	LDY #$00
 	LDA (zMusicHeaderPointer), Y
-	STA $00e1
+	STA zByteCount
 	LDY #$00
-	LDA (zMusicOffsetAddress), Y
+	LDA (ze6), Y
 	STA $00e5
 	LDA #$01
-	STA $00e8
-	STA $00e9
+	STA ze6 + 2
+	STA ze6 + 3
 	JSR Sub_07_cdb4
 	LDX zAuxPointer
 	LDY zAuxPointer + 1
@@ -158,30 +158,30 @@ Sub_07_cd38:
 Sub_07_cdb4:
 	LDX $0261
 @07_cdb7:
-	LDY $00e9
-	LDA (zMusicOffsetAddress), Y
-	INC $00e9
+	LDY ze6 + 3
+	LDA (ze6), Y
+	INC ze6 + 3
 	CLC
 	ADC zMusicHeaderID
 	STA $0700, X
 	INX
-	LDY $00e8
+	LDY ze6 + 2
 	LDA (zMusicHeaderPointer), Y
-	INC $00e8
+	INC ze6 + 2
 	STA $0700, X
 	INX
 	LDA $00e5
 	STA $0700, X
 	INX
-	LDY $00e9
-	LDA (zMusicOffsetAddress), Y
-	INC $00e9
+	LDY ze6 + 3
+	LDA (ze6), Y
+	INC ze6 + 3
 	CLC
 	ADC $00e2
 	STA $0700, X
 	INX
 	BEQ @07_cde7
-	CMP $00e1
+	CMP zByteCount
 	BNE @07_cdb7
 @07_cde7:
 	STX $0261
@@ -204,33 +204,34 @@ Sub_07_cdf0:
 	RTS
 
 
-JMP_07_ce02:
+StartGame:
 	SEI
 	CLD
-	LDA #$00
+	LDA #0 ; hide everything, no color skews
 	STA PPUMASK
-	STA $00b0
-	LDA #$10
+	STA zPPUMask
+	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, no NMI
+	LDA #BG_TABLE
 	STA PPUCTRL
-	STA $00af
+	STA zPPUControl
 	LDX #$0f
-@07_ce14:
+@wait_for_vblank:
 	LDA PPUSTATUS
-	BPL @07_ce14
+	BPL @wait_for_vblank
 	DEX
-	BPL @07_ce14
-	JSR Sub_07_cf12
-	LDA #$01
+	BPL @wait_for_vblank
+	JSR ResetMapper
+	LDA #1
 	STA JOY2
 	LDA #0
 	STA SND_CHN
-	LDA #$1f
+	LDA #CHR_MODE | PRG_L16 | 2MIRROR_H
 	STA zMMC1Ctrl
-	LDA #$00
+	LDA #0
 	STA zMMC1Chr
-	LDA #$00
+	LDA #0
 	STA zMMC1Chr + 1
-	LDA #$00
+	LDA #0
 	STA zMMC1Prg
 	JSR WriteToMapper
 	LDA $0000
@@ -281,7 +282,7 @@ JMP_07_ce02:
 	INX
 	BNE @07_ce7f
 	STY $0616
-	LDX #$ff
+	LDX #<iStackTop
 	TXS
 	LDA #$3f
 	STA PPUADDR
@@ -292,13 +293,14 @@ JMP_07_ce02:
 	JSR Sub_07_cecf
 	LDA #$00
 	STA $00b4
-	LDA #$00
+	LDA #0 ; hide everything, no color skews
 	STA PPUMASK
-	LDA #$1e
-	STA $00b0
+	LDA #$1e ; show everything, no color skews
+	STA zPPUMask
 	STA $0247
-	LDA #$90
-	STA $0246
+	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
+	LDA #NMI | BG_TABLE
+	STA iPPUControl
 	JSR Sub_00_809b
 	LDA #$00
 	STA $00b6
@@ -338,8 +340,8 @@ Sub_07_cecf:
 ; unreferenced
 	.db $00, $00
 
-Sub_07_cf12:
-	INC Sub_07_cf12 ; resets MMC1
+ResetMapper:
+	INC ResetMapper ; resets MMC1
 	RTS
 
 WriteToMapper:
@@ -428,9 +430,9 @@ JMP_07_cf8a:
 	STA PPUADDR
 	STA $00ba
 	INY
-	LDA $00af
-	AND #$fb
-	STA $00af
+	LDA zPPUControl
+	AND #NMI | MS_SELECT | OBJ_RES | BG_TABLE | OBJ_TABLE | NT_BASE_MASK
+	STA zPPUControl
 	LDA ($00b7), Y
 	ASL A
 	BMI @07_cfb1
@@ -438,8 +440,8 @@ JMP_07_cf8a:
 	; desynced, BIT $4a9
 	.db $2c
 @07_cfb1:
-	LDA #$04
-	ORA $00af
+	LDA #VRAM_INC ; vertical
+	ORA zPPUControl
 	STA PPUCTRL
 	LDA ($00b7), Y
 	AND #$3f
@@ -482,8 +484,8 @@ Branch_07_cfe1:
 	INC $00be
 	DEX
 	BMI @07_d01d
-	LDA $00b0
-	AND #$18
+	LDA zPPUMask
+	AND #$18 ; are we showing background and sprites?
 	BEQ Branch_07_cfde
 	CMP $00bc
 	BNE Branch_07_cfde
@@ -506,8 +508,8 @@ Branch_07_cfe1:
 	JMP Branch_07_d04f
 @07_d01d:
 	JSR Sub_07_d050
-	LDA $00b0
-	AND #$18
+	LDA zPPUMask
+	AND #$18 ; are we showing background and sprites?
 	BEQ Branch_07_d02a
 	CMP $00bc
 	BEQ Branch_07_d04f
@@ -611,8 +613,8 @@ Sub_07_d0bf:
 	BNE @07_d0c5
 	RTS
 @07_d0c5:
-	LDA $00af
-	AND #$fb
+	LDA zPPUControl
+	AND #NMI | MS_SELECT | OBJ_RES | BG_TABLE | OBJ_TABLE | NT_BASE_MASK
 	STA PPUCTRL
 	LDA #$3f
 	STA PPUADDR
@@ -629,7 +631,7 @@ Sub_07_d0bf:
 	LDA $0224
 	AND #$f0
 	STA $0224
-	LDA $00af
+	LDA zPPUControl
 	STA PPUCTRL
 	RTS
 
@@ -670,7 +672,7 @@ Sub_07_d124:
 	JSR SwitchToAudio
 	LDY #$00
 @07_d12f:
-	LDA Data_01_b006, X
+	LDA Pal_01_b006, X
 	STA $0100, Y
 	LDA #$0f
 	STA $0226, Y
@@ -694,7 +696,7 @@ Sub_07_d124:
 	JSR SwitchToAudio
 	LDY #$00
 @07_d159:
-	LDA Data_01_b006, X
+	LDA Pal_01_b006, X
 	STA $0226, Y
 	INX
 	INY
@@ -766,7 +768,7 @@ Sub_07_d16e:
 	CMP #$0f
 	BNE Branch_07_d202
 	JSR Sub_00_802b
-	JMP JMP_07_ce02
+	JMP StartGame
 Branch_07_d202:
 	RTS
 
@@ -788,7 +790,7 @@ JMP_07_d211:
 @07_d21a:
 	STX $0082
 	JSR Sub_00_802b
-	JMP JMP_07_ce02
+	JMP StartGame
 Branch_07_d222:
 	LDA $0082
 	ASL A
@@ -1186,8 +1188,8 @@ Sub_07_d849:
 	SBC #$09
 	EOR #$ff
 	SEC
-	ADC #$17
-	JSR Sub_07_f6ff
+	ADC #SFX_ROW_1
+	JSR StoreMusicID
 	LDA #$00
 	STA $00a4
 	LDA $0081
@@ -1429,15 +1431,15 @@ Sub_07_d9f6:
 	LDA $054e, X
 	CMP #$07
 	BEQ @07_da71
-	LDA #$2a
+	LDA #SFX_CRUNCH_7
 	SEC
 	SBC $054e, X
 	INC $054e, X
-	JSR Sub_07_f6ff
+	JSR StoreMusicID
 	JMP @07_da76
 @07_da71:
-	LDA #$22
-	JSR Sub_07_f6ff
+	LDA #SFX_CRUNCH_BIG
+	JSR StoreMusicID
 @07_da76:
 	LDX $044f
 	LDA $0552, X
@@ -2182,7 +2184,7 @@ JMP_07_e000:
 	STA $027f
 
 Sub_07_e063:
-	JSR Sub_07_e083
+	JSR GetMenuBGM
 	LDA #$48
 	LDX $007c
 	BEQ @07_e072
@@ -2195,28 +2197,34 @@ Sub_07_e063:
 	STA $0297
 	RTS
 
-Sub_07_e076:
+GetMainBGM:
 	LDA $0122
-	BNE Branch_07_e090
+	BNE BGM_Quit
 	LDX $0522
-	LDA Data_07_e095, X
-	BNE Branch_07_e088
+	LDA Main_BGM, X
+	BNE GetBGM
 
-Sub_07_e083:
+GetMenuBGM:
 	LDX $007c
-	LDA Data_07_e091, X
-Branch_07_e088:
+	LDA Menu_BGM, X
+GetBGM:
 	CMP iChannelID
-	BEQ Branch_07_e090
-	JSR Sub_07_f6ff
-Branch_07_e090:
+	BEQ BGM_Quit
+	JSR StoreMusicID
+BGM_Quit:
 	RTS
 
-Data_07_e091:
-	.db $4c, $3c, $44, $ff
+Menu_BGM:
+	.db MUSIC_MUSHROOM_MENU
+	.db MUSIC_FLOWER_MENU
+	.db MUSIC_STAR_MENU
+	.db NO_MUSIC
 
-Data_07_e095:
-	.db $48, $38, $40, $ff
+Main_BGM:
+	.db MUSIC_MUSHROOM
+	.db MUSIC_FLOWER
+	.db MUSIC_STAR
+	.db NO_MUSIC
 
 Sub_07_e099:
 	LDA #$14
@@ -2285,10 +2293,10 @@ Sub_07_e112:
 	STA $0547
 	LDA #$05
 	STA $0264, X
-	LDA #$1d
-	JSR Sub_07_f6ff
+	LDA #SFX_SWITCH_COLUMN
+	JSR StoreMusicID
 	RTS
-NMI:
+PRG_NMI:
 	PHA
 	LDA $00c6
 	BEQ @07_e129
@@ -2320,17 +2328,17 @@ NMI:
 	JSR Sub_07_e18c
 @07_e157:
 	JSR SwitchToAudio
-	LDA $06ba
+	LDA iMusicID1
 	BEQ @07_e167
 	JSR PlayAudio
-	LDA #$00
-	STA $06ba
+	LDA #0
+	STA iMusicID1
 @07_e167:
-	LDA $06fe
+	LDA iMusicID2
 	BEQ @07_e174
 	JSR PlayAudio
-	LDA #$00
-	STA $06fe
+	LDA #0
+	STA iMusicID2
 @07_e174:
 	JSR UpdateSound
 	LDA zMMC1Prg
@@ -2348,10 +2356,10 @@ NMI:
 	RTI
 
 Sub_07_e18c:
-	LDA $00af
-	AND #$3f
+	LDA zPPUControl
+	AND #OBJ_RES | BG_TABLE | OBJ_TABLE | VRAM_INC | NT_BASE_MASK
 	STA PPUCTRL
-	LDA #$00
+	LDA #0 ; hide everything, no color skews
 	STA PPUMASK
 	LDA PPUSTATUS
 	LDA #$3f
@@ -2382,20 +2390,21 @@ Sub_07_e18c:
 	STA PPUSCROLL
 	LDA $00b5
 	STA PPUSCROLL
-	LDA $00af
+	LDA zPPUControl
 	STA PPUCTRL
-	LDA $00b0
+	LDA zPPUMask
 	STA PPUMASK
 	RTS
-IRQ:
+
+DUMMY_IRQ:
 	RTI
 
 Sub_07_e1ee:
 	CMP $00b1
-	LDA $00af
-	AND #$3f
+	LDA zPPUControl
+	AND #OBJ_RES | BG_TABLE | OBJ_TABLE | VRAM_INC | NT_BASE_MASK
 	STA PPUCTRL
-	LDA #$00
+	LDA #0 ; hide everything, no color skews
 	STA PPUMASK
 	LDA PPUSTATUS
 	LDA #$3f
@@ -2428,9 +2437,9 @@ Sub_07_e1ee:
 	STA PPUSCROLL
 	LDA $00b5
 	STA PPUSCROLL
-	LDA $00af
+	LDA zPPUControl
 	STA PPUCTRL
-	LDA $00b0
+	LDA zPPUMask
 	STA PPUMASK
 	JSR Sub_07_cca8
 	JSR Sub_07_d0f2
@@ -2443,8 +2452,8 @@ Sub_07_e25d:
 	JSR Sub_07_e42f
 	LDA $0081
 	BNE @07_e2ad
-	LDA #$54
-	JSR Sub_07_f6ff
+	LDA #MUSIC_GAME_OVER
+	JSR StoreMusicID
 	JSR Sub_00_853e
 	LDA #$02
 	STA $0450
@@ -2469,7 +2478,7 @@ Sub_07_e25d:
 	BNE @07_e2aa
 	JSR Sub_00_9358
 	JSR Sub_00_802b
-	JMP JMP_07_ce02
+	JMP StartGame
 @07_e2aa:
 	JMP JMP_07_d211
 @07_e2ad:
@@ -2488,10 +2497,10 @@ Sub_07_e25d:
 	LDA $0548, X
 	CMP #$03
 	BEQ @07_e31a
-	LDA #$ff
-	JSR Sub_07_f6ff
-	LDA #$6c
-	JSR Sub_07_f6ff
+	LDA #NO_MUSIC
+	JSR StoreMusicID
+	LDA #MUSIC_ROUND_END
+	JSR StoreMusicID
 @07_e2dd:
 	LDA #$01
 	STA $00b1
@@ -2512,8 +2521,8 @@ Sub_07_e25d:
 	STA $0513
 	RTS
 @07_e31a:
-	LDA #$62
-	JSR Sub_07_f6ff
+	LDA #MUSIC_GAME_POINT
+	JSR StoreMusicID
 @07_e31f:
 	LDA #$01
 	STA $00b1
@@ -2521,12 +2530,12 @@ Sub_07_e25d:
 	LDA iChannelID
 	CMP #$62
 	BEQ @07_e31f
-	LDA #$65
-	JSR Sub_07_f6ff
+	LDA #MUSIC_VS_RESULTS
+	JSR StoreMusicID
 	JSR Sub_00_acd9
 	JSR Sub_00_8148
 	JSR Sub_00_802b
-	JMP JMP_07_ce02
+	JMP StartGame
 Branch_07_e32e:
 	RTS
 
@@ -2542,8 +2551,8 @@ Sub_07_e32f:
 	LDA $0081
 	BNE Branch_07_e32e
 	JSR Sub_00_854c
-	LDA #$57
-	JSR Sub_07_f6ff
+	LDA #MUSIC_STAGE_CLEAR
+	JSR StoreMusicID
 	LDA #$0a
 	STA $00b1
 	JSR Sub_00_806a
@@ -2579,8 +2588,8 @@ Sub_07_e32f:
 	LDA $0548, X
 	CMP #$03
 	BNE @07_e3d8
-	LDA #$62
-	JSR Sub_07_f6ff
+	LDA #MUSIC_GAME_POINT
+	JSR StoreMusicID
 	LDA #$0a
 	STA $00b1
 	JSR Sub_00_806a
@@ -2595,14 +2604,14 @@ Sub_07_e32f:
 	CMP #$62
 	BEQ @07_e3b9
 	JSR Sub_00_acd9
-	LDA #$65
-	JSR Sub_07_f6ff
+	LDA #MUSIC_VS_RESULTS
+	JSR StoreMusicID
 	JSR Sub_00_8148
 	JSR Sub_00_802b
-	JMP JMP_07_ce02
+	JMP StartGame
 @07_e3d8:
-	LDA #$6c
-	JSR Sub_07_f6ff
+	LDA #MUSIC_ROUND_END
+	JSR StoreMusicID
 	JSR Sub_07_e449
 	LDA #$0a
 	STA $00b1
@@ -2673,7 +2682,7 @@ Sub_07_e449:
 	NOP
 	NOP
 	NOP
-	LDA #$00
+	LDA #0 ; hide everything, no color skews
 	STA PPUMASK
 	LDA $0300
 	BNE @07_e471
@@ -4523,8 +4532,8 @@ Sub_07_f647:
 	STA $0505, X
 	LDA #$02
 	STA $054c, X
-	LDA #$2b
-	JSR Sub_07_f6ff
+	LDA #SFX_SWAP
+	JSR StoreMusicID
 	RTS
 
 Sub_07_f65a:
@@ -4601,33 +4610,33 @@ Sub_07_f6b3:
 	LDA #$c8
 	STA $00ff
 	JSR SwitchToAudio
-	LDA #$ff
+	LDA #NO_MUSIC
 	JSR PlayAudio
 	JSR SwitchToMain
-	LDA #$00
+	LDA #0
 	STA $0636
 	STA $06b9
-	STA $06ba
-	STA $06fe
+	STA iMusicID1
+	STA iMusicID2
 	RTS
 
-Sub_07_f6ff:
-	CMP $06ba
-	BEQ @07_f711
-	BCC @07_f712
+StoreMusicID:
+	CMP iMusicID1
+	BEQ @quit_1
+	BCC @next
 	PHA
-	LDA $06ba
-	STA $06fe
+	LDA iMusicID1
+	STA iMusicID2
 	PLA
-	STA $06ba
-@07_f711:
+	STA iMusicID1
+@quit_1:
 	RTS
-@07_f712:
-	CMP $06fe
-	BEQ @07_f711
-	BCC @07_f71c
-	STA $06fe
-@07_f71c:
+@next:
+	CMP iMusicID2
+	BEQ @quit_1
+	BCC @quit_2
+	STA iMusicID2
+@quit_2:
 	RTS
 
 Sub_07_f71d:
@@ -4694,9 +4703,9 @@ JPT_07_f781:
 	LDA #$01
 	STA $0260
 	JSR Sub_07_f7e2
-	LDA #$06
+	LDA #<Data_01_b106
 	STA $00b7
-	LDA #$b1
+	LDA #>Data_01_b106
 	STA $00b8
 	JSR SwitchToAudio
 	JSR Sub_07_cf7f
@@ -4711,8 +4720,8 @@ JPT_07_f781:
 	JSR Sub_07_d05d
 	JSR Sub_07_cf7f
 	JSR SwitchToMain
-	LDA #$34
-	JSR Sub_07_f6ff
+	LDA #MUSIC_TITLE
+	JSR StoreMusicID
 	LDA #$00
 	STA $0636
 	STA $0122
@@ -4749,8 +4758,9 @@ Sub_07_f7e2:
 	STA $02ac, X
 	LDA #$d0
 	STA $054e
-	LDA #$90
-	STA $0246
+	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
+	LDA #NMI | BG_TABLE
+	STA iPPUControl
 	LDA #$f8
 	STA $00b5
 	LDA #$08

@@ -36,6 +36,8 @@ MusicHeaders:
 
 	sound_header 1, 8, Noise_caf5
 
+HeaderBoundary_Drums:
+
 	sound_header 2, 5, Pulse_cbf3
 	sound_subheader 6, Pulse_cbe2
 
