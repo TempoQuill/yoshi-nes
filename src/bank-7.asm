@@ -1532,7 +1532,7 @@ Sub_07_db39:
 	LDA $02f6
 	CMP #$03
 	BNE @07_db55
-	LDA $007c
+	LDA zBGMCursor
 	CMP #$03
 	BEQ @07_db55
 	CLC
@@ -1904,7 +1904,7 @@ Sub_07_de2c:
 	LDA $02f6
 	CMP #$03
 	BNE @07_de39
-	LDA $007c
+	LDA zBGMCursor
 	CMP #$03
 	BNE @07_de59
 @07_de39:
@@ -2146,9 +2146,9 @@ JMP_07_e000:
 	LDA #$40
 	AND $024b
 	BEQ @07_e022
-	LDA $007c
+	LDA zBGMCursor
 	BEQ Sub_07_e063
-	CMP $007c
+	CMP zBGMCursor
 	JSR Sub_07_e099
 	LDA #$05
 	STA $0267
@@ -2157,10 +2157,10 @@ JMP_07_e000:
 	LDA #$80
 	AND $024b
 	BEQ @07_e03c
-	LDA $007c
+	LDA zBGMCursor
 	CMP #$03
 	BEQ Sub_07_e063
-	INC $007c
+	INC zBGMCursor
 	JSR Sub_07_e099
 	LDA #$05
 	STA $0267
@@ -2186,7 +2186,7 @@ JMP_07_e000:
 Sub_07_e063:
 	JSR GetMenuBGM
 	LDA #$48
-	LDX $007c
+	LDX zBGMCursor
 	BEQ @07_e072
 @07_e06c:
 	CLC
@@ -2205,7 +2205,7 @@ GetMainBGM:
 	BNE GetBGM
 
 GetMenuBGM:
-	LDX $007c
+	LDX zBGMCursor
 	LDA Menu_BGM, X
 GetBGM:
 	CMP iChannelID
@@ -2252,7 +2252,7 @@ Sub_07_e0ae:
 	STX $02c4
 	LDA $007b
 	STA $0521
-	LDA $007c
+	LDA zBGMCursor
 	STA $0522
 	INC $0248
 	RTS

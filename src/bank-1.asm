@@ -924,7 +924,7 @@ Sub_01_a4d9:
 	INC zCurrentTrackPitch
 @01_a4f6:
 	LDA zCurrentTrackPitch
-	ORA #$08
+	ORA #8
 	STA zCurrentTrackPitch
 	CPX #CHAN_2
 	BEQ @01_a50d
@@ -1332,9 +1332,9 @@ ApplyPitchSlide:
 	ASL A
 	TAY
 	LDA Pitches, Y
-	STA $0621, X
+	STA iChannelTargetRawPitch, X
 	LDA Pitches + 1, Y
-	STA $0624, X
+	STA iChannelTargetRawPitch + 3, X
 	LDA iChannelTargetPitch
 	LSR A
 	LSR A
@@ -1344,14 +1344,14 @@ ApplyPitchSlide:
 @01_a7dd:
 	CPY #$07
 	BEQ @01_a7eb
-	LSR $0624, X
-	ROR $0621, X
+	LSR iChannelTargetRawPitch + 3, X
+	ROR iChannelTargetRawPitch, X
 	INY
 	JMP @01_a7dd
 @01_a7eb:
-	LDA $0624, X
-	ORA #$08
-	STA $0624, X
+	LDA iChannelTargetRawPitch + 3, X
+	ORA #8
+	STA iChannelTargetRawPitch + 3, X
 	LDA iChannelNoteLength, X
 	SEC
 	SBC iChannelPitchSlideTail
@@ -1366,20 +1366,20 @@ ApplyPitchSlide:
 	STA iChannelFlags, X
 	JSR SwapPitch
 	LDA iChannelPitch, X
-	CMP $0624, X
+	CMP iChannelTargetRawPitch + 3, X
 	BEQ @01_a81a
 	BCS @01_a844
 	BCC @01_a822
 @01_a81a:
 	LDA iChannelPitch + 8, X
-	CMP $0621, X
+	CMP iChannelTargetRawPitch, X
 	BCS @01_a844
 @01_a822:
-	LDA $0621, X
+	LDA iChannelTargetRawPitch, X
 	SEC
 	SBC $0442, X
 	STA $061b, X
-	LDA $0624, X
+	LDA iChannelTargetRawPitch + 3, X
 	SBC iChannelPitch, X
 	BPL @01_a836
 	LDA #$00
@@ -1392,10 +1392,10 @@ ApplyPitchSlide:
 @01_a844:
 	LDA iChannelPitch + 8, X
 	SEC
-	SBC $0621, X
+	SBC iChannelTargetRawPitch, X
 	STA $061b, X
 	LDA iChannelPitch, X
-	SBC $0624, X
+	SBC iChannelTargetRawPitch + 3, X
 	BPL @01_a858
 	LDA #$00
 @01_a858:
@@ -1459,18 +1459,18 @@ HandlePitchSlide:
 	AND #SOUND_PITCH_SWAP
 	BNE @01_a8e1
 	LDA $061e, X
-	CMP $0624, X
+	CMP iChannelTargetRawPitch + 3, X
 	BCC @01_a8f8
 	LDA iChannelFlags, X
 	ORA #SOUND_PITCH_SWAP
 	STA iChannelFlags, X
 @01_a8e1:
 	LDA $061b, X
-	CMP $0621, X
+	CMP iChannelTargetRawPitch, X
 	BCC @01_a8f8
-	LDA $0624, X
+	LDA iChannelTargetRawPitch + 3, X
 	STA $061e, X
-	LDA $0621, X
+	LDA iChannelTargetRawPitch, X
 	STA $061b, X
 	JMP ClearPitchSlide
 @01_a8f8:
@@ -1499,19 +1499,19 @@ HandlePitchSlide:
 	LDA iChannelFlags, X
 	AND #SOUND_PITCH_SWAP
 	BNE @01_a93e
-	LDA $0624, X
+	LDA iChannelTargetRawPitch + 3, X
 	CMP $061e, X
 	BCC @01_a955
 	LDA iChannelFlags, X
 	ORA #SOUND_PITCH_SWAP
 	STA iChannelFlags, X
 @01_a93e:
-	LDA $0621, X
+	LDA iChannelTargetRawPitch, X
 	CMP $061b, X
 	BCC @01_a955
-	LDA $0624, X
+	LDA iChannelTargetRawPitch + 3, X
 	STA $061e, X
-	LDA $0621, X
+	LDA iChannelTargetRawPitch, X
 	STA $061b, X
 	JMP ClearPitchSlide
 @01_a955:

@@ -7,7 +7,9 @@ zMMC1Ctrl:
 zMMC1Chr:
 	.dsb 2
 zMMC1Prg:
-	.dsb $37
+	.dsb 4
+zBGMCursor:
+	.dsb $33
 zPPUControl:
 	.dsb 1
 zPPUMask:
@@ -34,7 +36,9 @@ zChannelTotal:
 	.dsb 1
 ze6:
 	.dsb 4
-	.dsb $12
+	.dsb 8
+zf8:
+	.dsb 4
 zInstrumentPointer:
 	.dsb 2
 	.dsb 2
@@ -48,7 +52,9 @@ iPPUControl:
 	.dsb $100
 	.dsb $100
 	.dsb $100
-	.dsb $33
+	.dsb $21
+iChannelTargetRawPitch:
+	.dsb $12
 iChannelTargetPitch:
 	.dsb 1
 iChannelPitchSlideTail:

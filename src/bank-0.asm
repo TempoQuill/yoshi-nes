@@ -1,7 +1,7 @@
 Sub_00_8000:
 	JMP ($00ad)
 ; unreferenced
-	JMP ($00f8)
+	JMP (zf8)
 
 Sub_00_8006:
 	LDA #$20
