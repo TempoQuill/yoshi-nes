@@ -27,7 +27,7 @@ There are 3 total gameplay modes: continual, stage clear, and 2 player.
 ## 2 Player:
 -	Goal: Beat the opponent
 -	Handicap: Configurable
--	Tip: Stack as many enemies as you can onto the shell halves.  The more enemies, the bigger the Yoshi, the most garbage sent.
+-	Tip: Stack as many enemies as you can onto the shell halves.  The more enemies, the bigger the Yoshi, the more garbage sent.
 
 ## General Tips:
 -	Use the upcoming enemies to decide where to put the current ones; this will help you clear as efficiently as possible.  This is most applicable for the stage clear and 2 player modes.
