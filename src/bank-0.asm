@@ -1,5 +1,5 @@
-Sub_00_8000:
-	JMP ($00ad)
+PointerJump:
+	JMP (zPointerAD)
 ; unreferenced
 	JMP (zf8)
 
@@ -93,7 +93,7 @@ Sub_00_8086:
 	STA PPUCTRL
 	RTS
 
-Sub_00_809b:
+CopyPPUControl:
 	LDA iPPUControl
 	STA PPUCTRL
 	STA zPPUControl
@@ -314,7 +314,7 @@ Data_00_8393:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 Sub_00_8415:
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @00_8450
 	LDA $044f
 	BNE @00_8450
@@ -408,7 +408,7 @@ Sub_00_84bb:
 	STA $02cf
 	LDA $00a4
 	STA $02d0
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @00_84e0
 	LDA #$23
 	STA $02ce
@@ -421,7 +421,7 @@ Sub_00_84bb:
 	STA $02d2
 	LDA $00a4
 	STA $02d3
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @00_84e0
 	LDA #$23
 	STA $02d1
@@ -646,7 +646,7 @@ Data_00_87be:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 Sub_00_8840:
-	LDA $0081
+	LDA zPlayerMode
 	BNE @00_8863
 	LDA $02df
 	CMP #$62
@@ -717,7 +717,7 @@ Sub_00_8883:
 	INX
 	CPX #$08
 	BNE @00_88bc
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @00_8925
 	LDA #$20
 	STA $05fa
@@ -923,19 +923,19 @@ Sub_00_89b4:
 	LDA $0536
 	BEQ @00_8a5e
 	LDA #$06
-	STA $0551
+	STA iStageNum
 	JMP @00_8a73
 @00_8a5e:
 	LDA $0535
 	CMP #$07
 	BCC @00_8a6d
 	LDA #$06
-	STA $0551
+	STA iStageNum
 	JMP @00_8a73
 @00_8a6d:
 	SEC
 	SBC #$01
-	STA $0551
+	STA iStageNum
 @00_8a73:
 	LDA #$01
 	STA $0567
@@ -943,7 +943,7 @@ Sub_00_89b4:
 	STA $044f
 	STA $0552
 	LDA #$04
-	STA $054e
+	STA iCrunchCounter
 	LDA #$12
 	STA $0527
 @00_8a8a:
@@ -979,7 +979,7 @@ Sub_00_89b4:
 	JSR Sub_00_91c9
 	LDA #$08
 	STA $0530
-	LDA $0551
+	LDA iStageNum
 	ASL A
 	ASL A
 	TAX
@@ -1067,11 +1067,11 @@ Sub_00_89b4:
 	JSR Sub_00_8d8c
 	JMP @00_8bfe
 @00_8ba4:
-	LDA $0551
+	LDA iStageNum
 	JSR Sub_00_8c7f
 	LDA #$0b
 	STA $05ab
-	LDX $0551
+	LDX iStageNum
 	LDA Data_00_8fb1, X
 	STA $05b4
 	LDA $0552
@@ -1113,7 +1113,7 @@ Sub_00_89b4:
 	AND #$03
 	BEQ @00_8bfe
 	INC $0552
-	DEC $054e
+	DEC iCrunchCounter
 	BEQ @00_8c1a
 	JMP @00_8a8a
 @00_8c1a:
@@ -1344,10 +1344,10 @@ Data_00_8dd6:
 	.db $00, $00, $05, $00, $00, $01, $00, $00, $00, $02, $00, $00, $00
 	.db $05, $00, $00
 Data_00_8de6:
-	.db $53, $54, $55, $56, $57, $58, $59, $5a, $5b, $5c
-	.db $5d, $5e, $5f, $60, $61, $62, $9c, $9d, $ac, $ad, $9e, $9f, $ae
-	.db $af, $89, $8a, $8b, $8c, $92, $93, $a2, $a3, $b0, $b1, $c0, $c1
-	.db $b2, $b3, $c2, $c3
+	.db $53, $54, $55, $56, $57, $58, $59, $5a, $5b, $5c, $5d, $5e, $5f
+	.db $60, $61, $62, $9c, $9d, $ac, $ad, $9e, $9f, $ae, $af, $89, $8a
+	.db $8b, $8c, $92, $93, $a2, $a3, $b0, $b1, $c0, $c1, $b2, $b3, $c2
+	.db $c3
 Data_00_8e0e:
 	.db $00, $00, $b7, $d1, $e0, $e1, $f0, $f1, $00, $00, $d2, $d3, $e2
 	.db $e3, $f2, $f3
@@ -1471,7 +1471,7 @@ Sub_00_9000:
 	LDA #$02
 	JSR Sub_07_d929
 @00_9073:
-	LDA $0081
+	LDA zPlayerMode
 	BNE @00_907c
 	LDA #$21
 	STA $02e7
@@ -1499,10 +1499,9 @@ Sub_00_9000:
 Data_00_90a6:
 	.db $00, $00, $01, $01, $01, $02, $02, $03
 Data_00_90ae:
-	.db $00, $00, $05, $00, $00
-	.db $00, $05, $00, $00, $01, $00, $00, $00, $01, $00, $00, $00, $01
-	.db $00, $00, $00, $02, $00, $00, $00, $02, $00, $00, $00, $05, $00
-	.db $00
+	.db $00, $00, $05, $00, $00, $00, $05, $00, $00, $01, $00, $00, $00
+	.db $01, $00, $00, $00, $01, $00, $00, $00, $02, $00, $00, $00, $02
+	.db $00, $00, $00, $05, $00, $00
 
 Sub_00_90ce:
 	LDX $044f
@@ -1603,7 +1602,7 @@ Sub_00_9118:
 	LDA $0542, X
 	CMP #$05
 	BNE @00_91aa
-	LDA #$2e
+	LDA #SFX_BIG_YOSHI
 	JMP @00_91ac
 @00_91aa:
 	LDA #SFX_YOSHI
@@ -1777,11 +1776,11 @@ Data_00_92d8:
 Data_00_931b:
 	.db $01, $00, $01, $00, $01, $01, $01
 Data_00_9322:
-	.db $00, $01, $00, $01, $01, $01
-	.db $00, $01, $01, $01, $01, $01, $01, $01, $01, $00, $01, $00, $01
-	.db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $01, $01, $00
-	.db $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01
-	.db $00, $01, $00, $01, $00, $01, $00, $01, $10
+	.db $00, $01, $00, $01, $01, $01, $00, $01, $01, $01, $01, $01, $01
+	.db $01, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00
+	.db $01, $00, $01, $01, $01, $00, $01, $00, $01, $00, $01, $00, $01
+	.db $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00, $01, $00
+	.db $01, $10
 
 Sub_00_9358:
 	JSR Sub_00_802b
@@ -1858,7 +1857,7 @@ Sub_00_9358:
 	LDA #>Data_00_970d
 	STA $00b8
 	LDA #$00
-	STA $0551
+	STA iStageNum
 	JMP @00_940d
 @00_9400:
 	LDA #<Data_00_9761
@@ -1866,10 +1865,10 @@ Sub_00_9358:
 	LDA #>Data_00_9761
 	STA $00b8
 	LDA #$39
-	STA $0551
+	STA iStageNum
 @00_940d:
 	JSR Sub_07_cf7f
-	JSR Sub_00_809b
+	JSR CopyPPUControl
 	JSR Sub_00_8061
 	LDA #$fc
 	STA $0083
@@ -1924,7 +1923,7 @@ Sub_00_9358:
 	STA $05c7
 @00_9487:
 	LDA #$00
-	STA $054e
+	STA iCrunchCounter
 	LDA #$03
 	STA $054f
 @00_9491:
@@ -1957,10 +1956,10 @@ Sub_00_9358:
 	BEQ @00_94da
 	BCC @00_94da
 @00_94c9:
-	LDA $054e
+	LDA iCrunchCounter
 	CLC
 	ADC #$13
-	STA $054e
+	STA iCrunchCounter
 	DEC $054f
 	BNE @00_9491
 	JMP @00_955a
@@ -2128,15 +2127,15 @@ Sub_00_9358:
 	LDA #$05
 	STA $0264
 	LDA #$14
-	STA $054e
+	STA iCrunchCounter
 @00_962d:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
-	DEC $054e
+	DEC iCrunchCounter
 	BNE @00_9652
 	LDA #$14
-	STA $054e
+	STA iCrunchCounter
 	LDA $0264
 	CMP #$ff
 	BNE @00_964d
@@ -2178,32 +2177,31 @@ Data_00_968b:
 Data_00_9690:
 	.db $21, $44, $18, $09, $00
 Data_00_9695:
-	.db $21, $23, $00, $e0
-	.db $21, $3c, $00, $e2, $22, $63, $00, $f0, $22, $7c, $00, $f2, $20
-	.db $a6, $13, $34, $35, $e5, $e5, $3c, $3d, $3e, $3f, $e5, $d6, $d7
-	.db $d8, $d9, $da, $db, $dc, $e5, $e5, $36, $37, $20, $c6, $13, $44
-	.db $45, $e5, $e5, $4c, $4d, $4e, $4f, $e5, $e6, $e7, $e8, $e9, $ea
-	.db $eb, $ec, $e5, $e5, $46, $47, $21, $0d, $00, $d0, $21, $0f, $03
-	.db $97, $a7, $b7, $c7, $21, $13, $00, $d1, $21, $a5, $02, $1c, $13
-	.db $14, $21, $e5, $02, $1d, $0e, $04, $22, $25, $02, $1e, $12, $04
-	.db $21, $ed, $00, $26, $21, $f3, $00, $26, $21, $fa, $00, $26, $22
-	.db $2d, $00, $26, $22, $33, $00, $26, $22, $3a, $00, $26, $ff
+	.db $21, $23, $00, $e0, $21, $3c, $00, $e2, $22, $63, $00, $f0, $22
+	.db $7c, $00, $f2, $20, $a6, $13, $34, $35, $e5, $e5, $3c, $3d, $3e
+	.db $3f, $e5, $d6, $d7, $d8, $d9, $da, $db, $dc, $e5, $e5, $36, $37
+	.db $20, $c6, $13, $44, $45, $e5, $e5, $4c, $4d, $4e, $4f, $e5, $e6
+	.db $e7, $e8, $e9, $ea, $eb, $ec, $e5, $e5, $46, $47, $21, $0d, $00
+	.db $d0, $21, $0f, $03, $97, $a7, $b7, $c7, $21, $13, $00, $d1, $21
+	.db $a5, $02, $1c, $13, $14, $21, $e5, $02, $1d, $0e, $04, $22, $25
+	.db $02, $1e, $12, $04, $21, $ed, $00, $26, $21, $f3, $00, $26, $21
+	.db $fa, $00, $26, $22, $2d, $00, $26, $22, $33, $00, $26, $22, $3a
+	.db $00, $26, $ff
 Data_00_970d:
-	.db $21
-	.db $0e, $00, $d2, $21, $69, $11, $13, $03, $1b, $12, $05, $00, $0c
-	.db $05, $16, $05, $0c, $00, $00, $00, $05, $07, $07, $13, $22, $a7
-	.db $02, $cd, $ce, $cf, $22, $c7, $02, $dd, $de, $df, $22, $e7, $02
-	.db $ed, $ee, $ef, $23, $07, $02, $fd, $fe, $e5, $22, $f3, $01, $3a
-	.db $3b, $23, $13, $01, $4a, $4b, $22, $b6, $02, $94, $95, $96, $22
-	.db $d6, $02, $a4, $a5, $a6, $22, $f6, $02, $b4, $b5, $b6, $23, $16
-	.db $02, $c4, $c5, $c6, $ff
+	.db $21, $0e, $00, $d2, $21, $69, $11, $13, $03, $1b, $12, $05, $00
+	.db $0c, $05, $16, $05, $0c, $00, $00, $00, $05, $07, $07, $13, $22
+	.db $a7, $02, $cd, $ce, $cf, $22, $c7, $02, $dd, $de, $df, $22, $e7
+	.db $02, $ed, $ee, $ef, $23, $07, $02, $fd, $fe, $e5, $22, $f3, $01
+	.db $3a, $3b, $23, $13, $01, $4a, $4b, $22, $b6, $02, $94, $95, $96
+	.db $22, $d6, $02, $a4, $a5, $a6, $22, $f6, $02, $b4, $b5, $b6, $23
+	.db $16, $02, $c4, $c5, $c6, $ff
 Data_00_9761:
-	.db $21, $0e, $00, $d3, $21, $69, $11, $13
-	.db $03, $1b, $12, $05, $00, $0c, $05, $16, $05, $0c, $00, $00, $00
-	.db $14, $09, $0d, $05, $22, $a8, $04, $98, $99, $9a, $9b, $9c, $22
-	.db $c8, $04, $a8, $a9, $aa, $ab, $ac, $22, $e8, $04, $b8, $b9, $ba
-	.db $bb, $bc, $23, $08, $04, $c8, $c9, $ca, $cb, $cc, $22, $f3, $01
-	.db $38, $39, $23, $13, $01, $48, $49, $ff
+	.db $21, $0e, $00, $d3, $21, $69, $11, $13, $03, $1b, $12, $05, $00
+	.db $0c, $05, $16, $05, $0c, $00, $00, $00, $14, $09, $0d, $05, $22
+	.db $a8, $04, $98, $99, $9a, $9b, $9c, $22, $c8, $04, $a8, $a9, $aa
+	.db $ab, $ac, $22, $e8, $04, $b8, $b9, $ba, $bb, $bc, $23, $08, $04
+	.db $c8, $c9, $ca, $cb, $cc, $22, $f3, $01, $38, $39, $23, $13, $01
+	.db $48, $49, $ff
 
 Sub_00_97a5:
 	LDX #$0a
@@ -2230,7 +2228,7 @@ Sub_00_97a5:
 Sub_00_97cb:
 	LDA $0085
 	CLC
-	ADC $0551
+	ADC iStageNum
 	STA $0085
 	BCC @00_97d7
 	INC $0086
@@ -2241,7 +2239,7 @@ Sub_00_97d8:
 	JSR Sub_00_97cb
 
 Sub_00_97db:
-	LDA $0551
+	LDA iStageNum
 	STA $00a6
 	JSR Sub_00_84af
 	JSR Sub_00_a771
@@ -2252,8 +2250,8 @@ Sub_00_97e7:
 	TXA
 	TAY
 	CLC
-	ADC $054e
-	ADC $0551
+	ADC iCrunchCounter
+	ADC iStageNum
 	TAX
 @00_97f3:
 	LDA $05b5, Y
@@ -2333,7 +2331,7 @@ Sub_00_98a8:
 	STA $00b4
 	LDA $00a4
 	STA $00b5
-	LDA $0081
+	LDA zPlayerMode
 	BNE @00_9905
 	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
 	LDA #NMI | BG_TABLE
@@ -2346,7 +2344,7 @@ Sub_00_98a8:
 @00_990f:
 	RTS
 
-Sub_00_9910:
+FieldScene:
 	JSR Sub_00_802b
 	JSR Sub_00_8086
 	LDA #$00
@@ -2391,9 +2389,9 @@ Sub_00_9910:
 	BCC @00_9977
 	LDA #$1b
 @00_9977:
-	STA $0551
+	STA iStageNum
 	TAX
-	LDA Data_00_9d74, X
+	LDA FieldSprites, X
 	STA $027c
 	LDA #$07
 	STA $0264
@@ -2401,8 +2399,8 @@ Sub_00_9910:
 	STA $0294
 	LDA #$9c
 	STA $02ac
-	LDX $0551
-	LDA Data_00_9d74, X
+	LDX iStageNum
+	LDA FieldSprites, X
 	STA $00a3
 	CLC
 	ADC $00a3
@@ -2416,7 +2414,7 @@ Sub_00_9910:
 	STA $011e
 	LDA Data_00_9e17, X
 	STA $011f
-	JSR Sub_00_809b
+	JSR CopyPPUControl
 	JSR Sub_00_8061
 	LDA #$00
 	STA $00b4
@@ -2426,16 +2424,16 @@ Sub_00_9910:
 	LDA #$01
 	STA $0552
 	LDA #$02
-	STA $054e
+	STA iCrunchCounter
 	LDA #$00
 	STA $054f
 	LDA #$58
 	STA $0550
 @00_99d7:
-	DEC $054e
+	DEC iCrunchCounter
 	BNE @00_99f0
 	LDA #$02
-	STA $054e
+	STA iCrunchCounter
 	LDA $054f
 	EOR $0001
 	STA $054f
@@ -2477,14 +2475,14 @@ Sub_00_9910:
 	LDA #$ff
 	STA $0552
 	LDA #$02
-	STA $054e
+	STA iCrunchCounter
 	LDA #$00
 	STA $054f
 @00_9a42:
-	DEC $054e
+	DEC iCrunchCounter
 	BNE @00_9a5b
 	LDA #$02
-	STA $054e
+	STA iCrunchCounter
 	LDA $054f
 	EOR $0001
 	STA $054f
@@ -2552,17 +2550,17 @@ Sub_00_9910:
 	LDA #$98
 	STA $0295
 	LDA #$08
-	STA $054e
+	STA iCrunchCounter
 @00_9ae5:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
 	INC $0295
 	INC $0295
-	DEC $054e
+	DEC iCrunchCounter
 	BNE @00_9ae5
 	LDA #$08
-	STA $054e
+	STA iCrunchCounter
 @00_9afc:
 	LDA #$01
 	STA $00b1
@@ -2571,7 +2569,7 @@ Sub_00_9910:
 	DEC $0294
 	DEC $0295
 	DEC $0295
-	DEC $054e
+	DEC iCrunchCounter
 	BNE @00_9afc
 	LDA #$ff
 	STA $0265
@@ -2612,28 +2610,28 @@ Sub_00_9910:
 	JSR Sub_00_9bde
 	LDA #$08
 	STA $0264
-	LDX $0551
-	LDA Data_00_9d74, X
+	LDX iStageNum
+	LDA FieldSprites, X
 	STA $027c
 	LDA #$80
 	STA $02ac
 	LDA #$80
 	STA $0294
 	LDA #$10
-	STA $054e
+	STA iCrunchCounter
 @00_9b83:
 	LDA #$01
 	STA $00b1
 	JSR Sub_00_806a
 	DEC $02ac
-	DEC $054e
+	DEC iCrunchCounter
 	BNE @00_9b83
 	LDA #<Data_00_9d38
 	STA $0083
 	LDA #>Data_00_9d38
 	STA $0084
-	LDX $0551
-	LDA Data_00_9d74, X
+	LDX iStageNum
+	LDA FieldSprites, X
 	JSR Sub_00_8939
 	JSR Sub_00_9e44
 	LDA #MUSIC_CURRENT_SCORE
@@ -2643,7 +2641,7 @@ Sub_00_9910:
 	STA $00b1
 	JSR Sub_00_806a
 	LDA iChannelID
-	CMP #$5a
+	CMP #MUSIC_CURRENT_SCORE
 	BEQ @00_9bab
 	LDA #CHR_MODE | PRG_L16 | 2MIRROR_H
 	STA zMMC1Ctrl
@@ -2761,7 +2759,7 @@ Data_00_9d38:
 	.db $00, $00, $08, $00, $00, $00, $09, $00, $00, $01, $00, $00, $00
 	.db $01, $02, $00, $00, $01, $05, $00, $00
 
-Data_00_9d74:
+FieldSprites:
 	.db $00, $01, $02, $03, $04, $05, $05, $06, $06, $07, $07, $08, $08
 	.db $09, $09, $0a, $0a, $0a, $0b, $0b, $0b, $0c, $0c, $0c, $0d, $0d
 	.db $0d, $0e
@@ -2961,18 +2959,18 @@ Sub_00_9e44:
 	JSR JMP_00_846b
 	RTS
 
-JPT_00_9f8e
-	LDA $0081
-	BNE @00_9f98
-	JSR Sub_00_9f9f
-	JMP @00_9f9b
-@00_9f98:
-	JSR Sub_00_a029
-@00_9f9b:
+HandleMenus
+	LDA zPlayerMode
+	BNE @2_player
+	JSR DoMainMenu
+	JMP @done
+@2_player:
+	JSR DoVSMenu
+@done:
 	INC $0248
 	RTS
 
-Sub_00_9f9f:
+DoMainMenu:
 	JSR Sub_00_802b
 	JSR Sub_00_8086
 	LDA #$07
@@ -2981,7 +2979,7 @@ Sub_00_9f9f:
 	STA zMMC1Chr + 1
 	JSR Sub_00_a206
 	JSR Sub_00_9fbd
-	JSR Sub_00_809b
+	JSR CopyPPUControl
 	JSR Sub_00_8061
 	JSR GetMenuBGM
 	RTS
@@ -3016,7 +3014,7 @@ Data_00_a003:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
-Sub_00_a029:
+DoVSMenu:
 	JSR Sub_00_802b
 	JSR Sub_00_8086
 	LDA #$07
@@ -3027,7 +3025,7 @@ Sub_00_a029:
 	JSR Sub_00_a049
 	LDA #MUSIC_VS_MENU
 	JSR StoreMusicID
-	JSR Sub_00_809b
+	JSR CopyPPUControl
 	JSR Sub_00_8061
 	RTS
 
@@ -3194,16 +3192,16 @@ JMP_00_a37c:
 	ASL A
 	TAX
 	LDA Ptrs_00_a3a1, X
-	STA $00ad
+	STA zPointerAD
 	LDA Ptrs_00_a3a1 + 1, X
-	STA $00ae
-	JSR Sub_00_8000
+	STA zPointerAD + 1
+	JSR PointerJump
 	JMP @00_a381
 
 Ptrs_00_a3a1:
-	.dw JPT_07_f781
+	.dw TitleScreen
 	.dw JPT_07_f831
-	.dw JPT_00_9f8e
+	.dw HandleMenus
 	.dw JPT_07_dc10
 	.dw JPT_00_ae16
 	.dw JPT_00_b57c
@@ -4372,7 +4370,7 @@ Sub_00_ae28:
 	LDA #$00
 	STA $050c
 	STA $050d
-	LDA $0081
+	LDA zPlayerMode
 	BNE @00_ae88
 	JSR Sub_00_aee1
 	JSR GetMainBGM
@@ -4402,7 +4400,7 @@ Sub_00_ae28:
 	JSR Sub_00_8883
 	JSR Sub_00_8fd4
 	JSR Sub_00_9000
-	JSR Sub_07_d849
+	JSR SetStartingGarbage
 	RTS
 @00_ae88:
 	LDA #$00
@@ -4431,7 +4429,7 @@ Sub_00_ae28:
 	JSR StoreMusicID
 @00_aec8:
 	JSR Sub_00_8883
-	JSR Sub_07_d849
+	JSR SetStartingGarbage
 	JSR Sub_00_b20c
 	RTS
 
@@ -4565,7 +4563,7 @@ Sub_00_afb0:
 	STA $0262
 	LDA #$01
 	STA $0260
-	LDA $0081
+	LDA zPlayerMode
 	BNE @00_b02a
 	LDA #$08
 	STA $00b5
@@ -4604,7 +4602,7 @@ Sub_00_afb0:
 	JSR Sub_00_b0fd
 	JSR Sub_00_b52b
 @00_b048:
-	JSR Sub_00_809b
+	JSR CopyPPUControl
 	JSR Sub_00_8061
 	RTS
 
@@ -4945,7 +4943,7 @@ JPT_00_b57c:
 	JSR Sub_00_b60a
 	JSR Sub_00_8883
 	JSR Sub_00_bcb3
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @00_b5c2
 	JSR Sub_00_b6c7
 	JSR Sub_00_b6a7
@@ -5013,7 +5011,7 @@ Sub_00_b61c:
 	BNE Branch_00_b5d1
 	LDA $051e
 	BEQ Branch_00_b5d1
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @00_b634
 	LDA $0249
 	CMP #$08
@@ -5048,7 +5046,7 @@ Sub_00_b660:
 	BNE @00_b68b
 	LDA $0512
 	BEQ @00_b68b
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @00_b678
 	LDA $0249
 	CMP #$08
@@ -5119,7 +5117,7 @@ Sub_00_b6de:
 	BNE Branch_00_b6af
 	LDA #$00
 	STA $044f
-	JSR Sub_00_b72c
+	JSR HandleInGameInput
 	LDA $0523
 	BNE Branch_00_b6af
 	JSR Sub_00_b800
@@ -5132,7 +5130,7 @@ Sub_00_b6fa:
 	BNE Branch_00_b6af
 	LDA #$01
 	STA $044f
-	JSR Sub_00_b72c
+	JSR HandleInGameInput
 	LDA $0524
 	BNE Branch_00_b6af
 	JSR Sub_00_b800
@@ -5150,7 +5148,7 @@ Sub_00_b6fa:
 	STA PPUSCROLL
 	RTS
 
-Sub_00_b72c:
+HandleInGameInput:
 	LDX $044f
 	LDA $024b, X
 	AND #$40
@@ -5194,7 +5192,7 @@ Sub_00_b72c:
 @00_b785:
 	JSR Sub_07_f600
 	LDX $044f
-	JSR Sub_07_f647
+	JSR SwapColumns
 	RTS
 @00_b78f:
 	LDX $044f
@@ -5303,9 +5301,9 @@ Sub_00_b800:
 	STA $0472
 	RTS
 @00_b865:
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @00_b86f
-	JSR Sub_00_b898
+	JSR HandleGarbage
 	JMP @00_b874
 @00_b86f:
 	LDA #$02
@@ -5325,10 +5323,10 @@ Sub_00_b800:
 	LDA $02d0, X
 	CMP #$1b
 	BNE @00_b834
-	JSR Sub_07_e32f
+	JSR StageIsClear
 	RTS
 
-Sub_00_b898:
+HandleGarbage:
 	LDA $044f
 	EOR #$01
 	TAX
@@ -5382,7 +5380,7 @@ Sub_00_b8cc:
 	LDA $0472, Y
 @00_b902:
 	STA $046a, X
-	JSR Sub_00_b930
+	JSR CollisionLogic
 @00_b908:
 	RTS
 @00_b909:
@@ -5407,7 +5405,7 @@ Sub_00_b8cc:
 	STA $0462, X
 	RTS
 
-Sub_00_b930:
+CollisionLogic:
 	LDX $0451
 	LDA $0452, X
 	CMP #$03
@@ -5454,7 +5452,7 @@ Sub_00_b930:
 	JSR StoreMusicID
 	RTS
 @00_b998:
-	JSR Sub_00_ba1b
+	JSR NormalCollision
 	LDA $0509
 	BEQ @00_b9a4
 	JSR Sub_00_baaa
@@ -5471,7 +5469,7 @@ Sub_00_b930:
 	LDA $0452, X
 	CMP #$02
 	BNE @00_b9cd
-	JSR Sub_07_e25d
+	JSR EndTheGame
 	LDX $0451
 	JSR Sub_00_b9d4
 	RTS
@@ -5518,7 +5516,7 @@ Sub_00_ba12:
 	STA $050a, Y
 	RTS
 
-Sub_00_ba1b:
+NormalCollision:
 	LDX $0451
 	LDA $0452, X
 	CMP #$12
@@ -5830,7 +5828,7 @@ Data_00_bc85:
 	.db $01, $01, $01, $01, $01, $01, $01, $01, $01, $01
 
 Sub_00_bc9c:
-	LDA $0081
+	LDA zPlayerMode
 	BNE Branch_00_bcce
 	LDA #$01
 	STA $0610
@@ -5842,7 +5840,7 @@ Sub_00_bc9c:
 	RTS
 
 Sub_00_bcb3:
-	LDA $0081
+	LDA zPlayerMode
 	BNE Branch_00_bcce
 	LDA $0610
 	BEQ Branch_00_bcce

@@ -260,7 +260,7 @@ StartGame:
 	LDA $0122
 	BEQ @07_ce71
 	AND #$01
-	STA $0081
+	STA zPlayerMode
 @07_ce71:
 	LDX #$83
 @07_ce73:
@@ -301,7 +301,7 @@ StartGame:
 	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
 	LDA #NMI | BG_TABLE
 	STA iPPUControl
-	JSR Sub_00_809b
+	JSR CopyPPUControl
 	LDA #$00
 	STA $00b6
 	JMP JMP_00_a37c
@@ -1149,7 +1149,7 @@ PTD_07_d65a:
 	.db $02, $06, $08, $02, $05, $08, $03, $04, $08, $03, $03, $08, $03
 	.db $02
 
-Sub_07_d849:
+SetStartingGarbage:
 	LDX $02df
 	INX
 	TXA
@@ -1192,7 +1192,7 @@ Sub_07_d849:
 	JSR StoreMusicID
 	LDA #$00
 	STA $00a4
-	LDA $0081
+	LDA zPlayerMode
 	ASL A
 	ASL A
 	CLC
@@ -1325,7 +1325,7 @@ Sub_07_d94c:
 	STA $0523, X
 	STA $062b, X
 	LDA #$00
-	STA $054e, X
+	STA iCrunchCounter, X
 	INC $0532, X
 	TXA
 	CLC
@@ -1368,7 +1368,7 @@ Sub_07_d9d3:
 	LDA $0248
 	CMP #$05
 	BNE Branch_07_d9d2
-	LDA $0081
+	LDA zPlayerMode
 	BNE @07_d9f5
 	LDA #$22
 	STA $02e4
@@ -1428,13 +1428,13 @@ Sub_07_d9f6:
 	CMP $0529, X
 	BEQ @07_dabc
 	LDX $044f
-	LDA $054e, X
+	LDA iCrunchCounter, X
 	CMP #$07
 	BEQ @07_da71
 	LDA #SFX_CRUNCH_7
 	SEC
-	SBC $054e, X
-	INC $054e, X
+	SBC iCrunchCounter, X
+	INC iCrunchCounter, X
 	JSR StoreMusicID
 	JMP @07_da76
 @07_da71:
@@ -1626,7 +1626,7 @@ Sub_07_dba5:
 
 JPT_07_dc10:
 	JSR Sub_00_80cb
-	LDA $0081
+	LDA zPlayerMode
 	BNE @07_dc1d
 	JSR Sub_07_de2c
 	JMP @07_dc20
@@ -2445,12 +2445,12 @@ Sub_07_e1ee:
 	JSR Sub_07_d0f2
 	RTS
 
-Sub_07_e25d:
+EndTheGame:
 	LDY $044f
 	LDA #$01
 	STA $0512, Y
 	JSR Sub_07_e42f
-	LDA $0081
+	LDA zPlayerMode
 	BNE @07_e2ad
 	LDA #MUSIC_GAME_OVER
 	JSR StoreMusicID
@@ -2539,16 +2539,16 @@ Sub_07_e25d:
 Branch_07_e32e:
 	RTS
 
-Sub_07_e32f:
+StageIsClear:
 	JSR Sub_07_e42f
-	LDA $0081
+	LDA zPlayerMode
 	BNE @07_e381
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
 	LDX $044f
 	LDA #$01
 	STA $0512, X
-	LDA $0081
+	LDA zPlayerMode
 	BNE Branch_07_e32e
 	JSR Sub_00_854c
 	LDA #MUSIC_STAGE_CLEAR
@@ -2562,7 +2562,7 @@ Sub_07_e32f:
 	STA $00b1
 	JSR Sub_00_806a
 	LDA iChannelID
-	CMP #$57
+	CMP #MUSIC_STAGE_CLEAR
 	BEQ @07_e35a
 	LDA #$02
 	STA $0450
@@ -2570,7 +2570,7 @@ Sub_07_e32f:
 	LDA #$78
 	STA $00b1
 	JSR Sub_00_806a
-	JSR Sub_00_9910
+	JSR FieldScene
 	JSR Sub_00_add3
 	JSR Sub_00_8840
 	RTS
@@ -4526,7 +4526,7 @@ Sub_07_f600:
 	DEC $0501, X
 	RTS
 
-Sub_07_f647:
+SwapColumns:
 	LDX $044f
 	LDA #$01
 	STA $0505, X
@@ -4640,7 +4640,7 @@ StoreMusicID:
 	RTS
 
 Sub_07_f71d:
-	LDA $0081
+	LDA zPlayerMode
 	BNE @07_f74f
 	LDA $0248
 	CMP #$05
@@ -4652,7 +4652,7 @@ Sub_07_f71d:
 @07_f732:
 	LDA $0612
 	BEQ @07_f74f
-	LDA $0081
+	LDA zPlayerMode
 	BNE @07_f74f
 	LDA $0544
 	CMP #$02
@@ -4690,7 +4690,7 @@ Sub_07_f750:
 	STA $02ac, X
 	RTS
 
-JPT_07_f781:
+TitleScreen:
 	JSR Sub_00_802b
 	JSR Sub_00_8086
 	JSR Sub_00_9881
@@ -4725,7 +4725,7 @@ JPT_07_f781:
 	LDA #$00
 	STA $0636
 	STA $0122
-	JSR Sub_00_809b
+	JSR CopyPPUControl
 	JSR Sub_00_8061
 	INC $0248
 	RTS
@@ -4757,7 +4757,7 @@ Sub_07_f7e2:
 	LDA #$6c
 	STA $02ac, X
 	LDA #$d0
-	STA $054e
+	STA iCrunchCounter
 	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
 	LDA #NMI | BG_TABLE
 	STA iPPUControl
@@ -4778,9 +4778,9 @@ JPT_07_f831:
 @07_f842:
 	JSR Sub_00_80cb
 	LDA iChannelID
-	CMP #$34
+	CMP #MUSIC_TITLE
 	BEQ @07_f897
-	LDA $0081
+	LDA zPlayerMode
 	ORA #$80
 	STA $0122
 	LDA $0082
@@ -4788,7 +4788,7 @@ JPT_07_f831:
 	BEQ @07_f870
 	STA $0520
 	LDA #$00
-	STA $0081
+	STA zPlayerMode
 	LDX #$04
 	STX $02df
 	INX
@@ -4798,7 +4798,7 @@ JPT_07_f831:
 	BNE @07_f882
 @07_f870:
 	LDA #$01
-	STA $0081
+	STA zPlayerMode
 	LDA #$00
 	STA $0521
 	STA $0522
@@ -4814,7 +4814,7 @@ JPT_07_f831:
 	STA $0248
 	BNE @07_f912
 @07_f897:
-	DEC $054e
+	DEC iCrunchCounter
 	BNE @07_f8ba
 	LDA $027d
 	CMP #$02
@@ -4822,13 +4822,13 @@ JPT_07_f831:
 	LDA #$03
 	STA $027d
 	LDA #$0a
-	STA $054e
+	STA iCrunchCounter
 	JMP @07_f8ba
 @07_f8b0:
 	LDA #$02
 	STA $027d
 	LDA #$d0
-	STA $054e
+	STA iCrunchCounter
 @07_f8ba:
 	LDA #$04
 	STA $0264
@@ -4840,29 +4840,29 @@ JPT_07_f831:
 	AND #$10
 	BEQ @07_f8d6
 	LDA #$00
-	STA $0081
+	STA zPlayerMode
 	BEQ @07_f8f8
 @07_f8d6:
 	LDA $024b
 	AND #$20
 	BEQ @07_f8e3
 	LDA #$01
-	STA $0081
+	STA zPlayerMode
 	BNE @07_f8f8
 @07_f8e3:
 	LDA $024b
 	AND #$04
 	BEQ @07_f8f8
-	LDA $0081
+	LDA zPlayerMode
 	BEQ @07_f8f4
 	LDA #$00
-	STA $0081
+	STA zPlayerMode
 	BEQ @07_f8f8
 @07_f8f4:
 	LDA #$01
-	STA $0081
+	STA zPlayerMode
 @07_f8f8:
-	LDA $0081
+	LDA zPlayerMode
 	BNE @07_f903
 	LDA #$c0
 	STA $02ac

@@ -2,36 +2,40 @@
 	.dsb $34
 z34:
 	.dsb $41
-zMMC1Ctrl:
+zMMC1Ctrl: ; 75
 	.dsb 1
-zMMC1Chr:
+zMMC1Chr: ; 76
 	.dsb 2
-zMMC1Prg:
+zMMC1Prg: ; 78
 	.dsb 4
-zBGMCursor:
-	.dsb $33
-zPPUControl:
+zBGMCursor: ; 7c
+	.dsb 5
+zPlayerMode: ; 81
+	.dsb $2c
+zPointerAD:
+	.dsb 2
+zPPUControl: ; af
 	.dsb 1
-zPPUMask:
+zPPUMask: ; b0
 	.dsb $28
-zCurrentInstrumentAddress:
+zCurrentInstrumentAddress: ; d8
 zCurrentTrackPitch:
 zMusicWord:
 	.dsb 2
-zAuxPointer:
+zAuxPointer: ; da
 	.dsb 2
-zMusicAddress:
+zMusicAddress: ; dc
 	.dsb 2
-zMusicHeaderPointer:
+zMusicHeaderPointer: ; de
 	.dsb 2
-zChannelOffset:
+zChannelOffset: ; e0
 	.dsb 1
-zByteCount:
+zByteCount: ; e1
 	.dsb 1
 	.dsb 1
-zMusicHeaderID:
+zMusicHeaderID: ; e3
 	.dsb 1
-zChannelTotal:
+zChannelTotal: ; e4
 	.dsb 1
 	.dsb 1
 ze6:
@@ -51,7 +55,11 @@ iPPUControl:
 	.dsb $ba
 	.dsb $100
 	.dsb $100
-	.dsb $100
+	.dsb $4e
+iCrunchCounter: ; 54e
+	.dsb 3
+iStageNum: ; 551
+	.dsb $af
 	.dsb $21
 iChannelTargetRawPitch:
 	.dsb $12
