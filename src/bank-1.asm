@@ -242,10 +242,7 @@ UpdateChannel:
 	BNE @01_a045
 @01_a019:
 	LDA iChannelEnvExtension, X
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	STA iChannelFadeCounter, X
 @01_a023:
 	LDA iChannelVolumeRamp, X
@@ -334,9 +331,7 @@ ParseByte:
 	LDA #$00
 	STA iChannelLoopCounter, X
 	; skip the parameters
-	INY
-	INY
-	INY
+	YAD 3
 	; update the music address
 	TYA
 	CLC
@@ -465,10 +460,7 @@ ParseNote:
 	INY
 	LDA (zMusicAddress), Y
 @01_a1b0:
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	STA iChannelVolumeRamp, X
 	ORA iChannelTimbre, X
 	JSR ChannelCheckProceedure
@@ -598,11 +590,9 @@ Pitch_Inc_Switch:
 
 Frame_Swap:
 	PHA
-	TXA
-	PHA
+	PHX
 	JSR Sub_07_f71d
-	PLA
-	TAX
+	PLX
 	PLA
 	JMP ParseNextByte
 
@@ -620,10 +610,7 @@ Vibrato:
 	AND #%00001111
 	STA iChannelVibratoSpeed, X
 	LDA (zMusicAddress), Y
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	STA iChannelVibratoDepth, X
 	LDA #0
 	STA iChannelVibratoCounter, X
@@ -713,10 +700,7 @@ GetNotePitch:
 	BEQ PlayQuit
 	JSR DrumCheckProceedure
 	BCS PlayQuit
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	CMP #B_
 	BNE PlayFromPitch
 
@@ -856,8 +840,7 @@ GetNoteLength:
 	LDA iChannelFlags, X
 	AND #SOUND_INSTRUMENT
 	BNE @01_a495
-	TYA
-	PHA
+	PHY
 	LDA iChannelInsParam, X
 	ASL A
 	TAY
@@ -872,8 +855,7 @@ GetNoteLength:
 	STA iChannelNoteTypeMainParam, X
 	LDA #$01
 	STA iChannelInsID, X
-	PLA
-	TAY
+	PLY
 	JMP @01_a49d
 @01_a495:
 	LDA iChannelInsParam, X
@@ -895,11 +877,7 @@ GetNoteLength:
 	JSR UpdateEnv
 @01_a4b8:
 	LDA (zMusicAddress), Y
-	LSR A
-	LSR A
-	LSR A
-	; these two shift instructions are useless
-	LSR A
+	HTL A
 	ASL A
 	TAY
 	LDA Pitches + 1, Y
@@ -1094,32 +1072,24 @@ Env_Off:
 
 
 ApplyPulse1:
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	LDY #CHAN_0 << 2
 	LDX #CHAN_0
 	JSR ApplyChannel
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	RTS
 
 
 ApplyPulse2:
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	LDY #CHAN_1 << 2
 	LDX #CHAN_1
 	JSR ApplyChannel
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	RTS
 
 ApplyChannel:
@@ -1187,10 +1157,8 @@ PlayAudio:
 @01_a6cf:
 	STA $06b9
 @01_a6d2:
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	LDX #header_byte_length
 	LDA $00fa
 	STA zMusicHeaderPointer
@@ -1312,18 +1280,14 @@ PlayAudio:
 	CMP zChannelTotal
 	BMI @quit
 	LDY $00e2
-	INY
-	INY
-	INY
+	YAD 3
 	STY $00e2
 	JMP @01_a723
 @quit:
 	LDA #$00
 	STA zMusicHeaderPointer + 1
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	RTS
 
 ApplyPitchSlide:
@@ -1336,10 +1300,7 @@ ApplyPitchSlide:
 	LDA Pitches + 1, Y
 	STA iChannelTargetRawPitch + 3, X
 	LDA iChannelTargetPitch
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	TAY
 @01_a7dd:
 	CPY #$07

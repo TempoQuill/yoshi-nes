@@ -114,3 +114,64 @@ ENDM
 MACRO sound_ret
 	.db sound_ret_cmd
 ENDM
+
+; code
+MACRO PHX
+	TXA
+	PHA
+ENDM
+
+MACRO PLX
+	PLA
+	TAX
+ENDM
+
+MACRO PHY
+	TYA
+	PHA
+ENDM
+
+MACRO PLY
+	PLA
+	TAY
+ENDM
+
+MACRO XAD num
+	REPT num
+		INX
+	ENDR
+ENDM
+
+MACRO YAD num
+	REPT num
+		INY
+	ENDR
+ENDM
+
+MACRO XSB num
+	REPT num
+		DEX
+	ENDR
+ENDM
+
+MACRO YSB num
+	REPT num
+		DEY
+	ENDR
+ENDM
+
+; low to high nybble
+MACRO LTH register
+	ASL register
+	ASL register
+	ASL register
+	ASL register
+ENDM
+
+; high to low nybble
+MACRO HTL register
+	LSR register
+	LSR register
+	LSR register
+	LSR register
+ENDM

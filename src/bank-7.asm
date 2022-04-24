@@ -72,11 +72,8 @@ Sub_07_cca8:
 	BEQ @07_cd2f
 @07_cd24:
 	LDA #$f8
-	STA $0700, X
-	INX
-	INX
-	INX
-	INX
+	STA iVirtualOAM, X
+	XAD 4
 	BNE @07_cd24
 @07_cd2f:
 	LDA $0260
@@ -163,22 +160,22 @@ Sub_07_cdb4:
 	INC ze6 + 3
 	CLC
 	ADC zMusicHeaderID
-	STA $0700, X
+	STA iVirtualOAM, X
 	INX
 	LDY ze6 + 2
 	LDA (zMusicHeaderPointer), Y
 	INC ze6 + 2
-	STA $0700, X
+	STA iVirtualOAM, X
 	INX
 	LDA $00e5
-	STA $0700, X
+	STA iVirtualOAM, X
 	INX
 	LDY ze6 + 3
 	LDA (ze6), Y
 	INC ze6 + 3
 	CLC
 	ADC $00e2
-	STA $0700, X
+	STA iVirtualOAM, X
 	INX
 	BEQ @07_cde7
 	CMP zByteCount
@@ -327,15 +324,15 @@ Sub_07_cecf:
 	STA $0222
 	LDA #$10
 	STA PPUSTATUS
-	JSR Sub_00_8006
+	JSR InitNametable
 	LDA #$0f
 	LDX #$1f
 @07_cf03:
 	STA $0226, X
 	DEX
 	BPL @07_cf03
-	JSR Sub_00_80ba
-	JSR Sub_07_f6b3
+	JSR HideSprites
+	JSR InitSound
 	RTS
 ; unreferenced
 	.db $00, $00
@@ -454,8 +451,7 @@ JMP_07_cf8a:
 @07_cfc8:
 	PHP
 	INY
-	TYA
-	PHA
+	PHY
 	LDA ($00b7), Y
 	TAY
 	LDA $0221, Y
@@ -463,8 +459,7 @@ JMP_07_cf8a:
 	BNE @07_cfd6
 @07_cfd6:
 	STA $00c0
-	PLA
-	TAY
+	PLY
 	PLP
 	JMP Branch_07_cfe0
 Branch_07_cfde:
@@ -585,10 +580,7 @@ Sub_07_d097:
 	STA $00c4
 	STA $00c5
 	LDA $00c2
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	ROL $00c5
 	ASL A
 	ROL $00c5
@@ -663,10 +655,7 @@ Sub_07_d0f2:
 	RTS
 
 Sub_07_d124:
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	ASL A
 	TAX
 	JSR SwitchToAudio
@@ -687,10 +676,7 @@ Sub_07_d124:
 	STA $0225
 	RTS
 ; unreferenced
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	ASL A
 	TAX
 	JSR SwitchToAudio
@@ -767,7 +753,7 @@ Sub_07_d16e:
 	AND #$0f
 	CMP #$0f
 	BNE Branch_07_d202
-	JSR Sub_00_802b
+	JSR DisablePicture
 	JMP StartGame
 Branch_07_d202:
 	RTS
@@ -789,7 +775,7 @@ JMP_07_d211:
 	LDX #$00
 @07_d21a:
 	STX $0082
-	JSR Sub_00_802b
+	JSR DisablePicture
 	JMP StartGame
 Branch_07_d222:
 	LDA $0082
@@ -860,8 +846,7 @@ Branch_07_d222:
 	BNE @07_d2b6
 	DEY
 @07_d2aa:
-	INY
-	INY
+	YAD 2
 	STY $0124
 	STA ($0083), Y
 	LDA #$01
@@ -880,8 +865,7 @@ Branch_07_d222:
 	BNE @07_d2d7
 	DEY
 @07_d2cb:
-	INY
-	INY
+	YAD 2
 	STY $0125
 	STA ($0085), Y
 	LDA #$01
@@ -2309,10 +2293,8 @@ PRG_NMI:
 @07_e131:
 	LDA #$ff
 	STA $0222
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	JSR WriteChr2
 	JSR WriteChr1
 	LDA $00b1
@@ -2343,10 +2325,8 @@ PRG_NMI:
 	JSR UpdateSound
 	LDA zMMC1Prg
 	JSR SwitchToMain
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	LDA #$00
 	STA $0222
 @07_e185:
@@ -2477,7 +2457,7 @@ EndTheGame:
 	LDA $0122
 	BNE @07_e2aa
 	JSR Sub_00_9358
-	JSR Sub_00_802b
+	JSR DisablePicture
 	JMP StartGame
 @07_e2aa:
 	JMP JMP_07_d211
@@ -2534,7 +2514,7 @@ EndTheGame:
 	JSR StoreMusicID
 	JSR Sub_00_acd9
 	JSR Sub_00_8148
-	JSR Sub_00_802b
+	JSR DisablePicture
 	JMP StartGame
 Branch_07_e32e:
 	RTS
@@ -2607,7 +2587,7 @@ StageIsClear:
 	LDA #MUSIC_VS_RESULTS
 	JSR StoreMusicID
 	JSR Sub_00_8148
-	JSR Sub_00_802b
+	JSR DisablePicture
 	JMP StartGame
 @07_e3d8:
 	LDA #MUSIC_ROUND_END
@@ -3891,11 +3871,9 @@ Sub_07_f10d:
 	LDA $0474
 	STA $0450
 @07_f127:
-	TXA
-	PHA
+	PHX
 	JSR Sub_07_f184
-	PLA
-	TAX
+	PLX
 	LDA $0255
 	STA $0475, X
 	INX
@@ -4585,7 +4563,7 @@ Sub_07_f66c:
 Data_07_f6af:
 	.db $00, $01, $02, $03
 
-Sub_07_f6b3:
+InitSound:
 	LDA #0
 	STA DPCM_DELTA
 	STA DPCM_OFFSET
@@ -4596,10 +4574,10 @@ Sub_07_f6b3:
 	STA SND_CHN
 	LDA #<MusicHeaders
 	SEC
-	SBC #$03
+	SBC #header_byte_length
 	STA $00fa
 	LDA #>MusicHeaders
-	SBC #$00
+	SBC #0
 	STA $00fb
 	LDA #<Instruments
 	STA zInstrumentPointer
@@ -4691,14 +4669,14 @@ Sub_07_f750:
 	RTS
 
 TitleScreen:
-	JSR Sub_00_802b
-	JSR Sub_00_8086
+	JSR DisablePicture
+	JSR DisableNMI
 	JSR Sub_00_9881
 	LDA #$00
 	STA zMMC1Chr
 	LDA #$00
 	STA zMMC1Chr + 1
-	JSR Sub_00_8006
+	JSR InitNametable
 	JSR Sub_07_cdeb
 	LDA #$01
 	STA $0260

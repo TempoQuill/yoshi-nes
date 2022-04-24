@@ -3,30 +3,30 @@ PointerJump:
 ; unreferenced
 	JMP (zf8)
 
-Sub_00_8006:
-	LDA #$20
-	JSR @00_800d
-	LDA #$24
-@00_800d:
+InitNametable:
+	LDA #NAMETABLE_0
+	JSR @copy_to_ppu
+	LDA #NAMETABLE_1
+@copy_to_ppu:
 	LDX PPUSTATUS
 	STA PPUADDR
-	LDA #$00
+	LDA #0
 	STA PPUADDR
-	LDA #$00
-	LDX #$c0
-	LDY #$04
-@00_801e:
+	LDA #0
+	LDX #<NAMETABLE_SIZE
+	LDY #>NAMETABLE_SIZE + 1
+@loop:
 	STA PPUDATA
 	DEX
-	BNE @00_801e
+	BNE @loop
 	DEY
-	BNE @00_801e
-	JSR Sub_00_80a4
+	BNE @loop
+	JSR InitNTAttributes
 	RTS
 
-Sub_00_802b:
+DisablePicture:
 	LDA zPPUMask
-	AND #$1e ; show everything, no color skews
+	AND #$1e ; are we showing anything?
 	BEQ @00_805d
 	LDY #$03
 @00_8033:
@@ -80,7 +80,7 @@ Sub_00_806a:
 	STA PPUMASK
 	RTS
 
-Sub_00_8086:
+DisableNMI:
 	LDA zPPUControl
 	AND #NMI
 	BEQ @00_8095
@@ -99,11 +99,11 @@ CopyPPUControl:
 	STA zPPUControl
 	RTS
 
-Sub_00_80a4:
-	LDX #$c0
-	LDY #$40
+InitNTAttributes:
+	LDX #<NT_ATTRIBUTE_0
+	LDY #NT_ATTRIBUTE_SIZE
 @00_80a8:
-	LDA #$23
+	LDA #>NT_ATTRIBUTE_0
 	STA PPUADDR
 	STX PPUADDR
 	LDA #$00
@@ -113,17 +113,15 @@ Sub_00_80a4:
 	BNE @00_80a8
 	RTS
 
-Sub_00_80ba:
+HideSprites:
 	LDA #$ef
 	LDX #$00
-@00_80be:
-	STA $0700, X
+@loop:
+	STA iVirtualOAM, X
+	XAD 3
+	STA iVirtualOAM, X
 	INX
-	INX
-	INX
-	STA $0700, X
-	INX
-	BNE @00_80be
+	BNE @loop
 	RTS
 
 Sub_00_80cb:
@@ -1568,11 +1566,9 @@ Sub_00_9118:
 	LDA $0530, X
 	ORA #$08
 	STA $0530, X
-	TYA
-	PHA
+	PHY
 	JSR Sub_00_91c9
-	PLA
-	TAY
+	PLY
 @00_9167:
 	LDX $044f
 	LDA $0540, X
@@ -1783,8 +1779,8 @@ Data_00_9322:
 	.db $01, $10
 
 Sub_00_9358:
-	JSR Sub_00_802b
-	JSR Sub_00_8086
+	JSR DisablePicture
+	JSR DisableNMI
 	LDA #$00
 	STA $00b5
 	LDA $0520
@@ -2345,8 +2341,8 @@ Sub_00_98a8:
 	RTS
 
 FieldScene:
-	JSR Sub_00_802b
-	JSR Sub_00_8086
+	JSR DisablePicture
+	JSR DisableNMI
 	LDA #$00
 	STA $00b5
 	JSR Sub_07_efd1
@@ -2971,8 +2967,8 @@ HandleMenus
 	RTS
 
 DoMainMenu:
-	JSR Sub_00_802b
-	JSR Sub_00_8086
+	JSR DisablePicture
+	JSR DisableNMI
 	LDA #$07
 	STA zMMC1Chr
 	LDA #$05
@@ -3015,8 +3011,8 @@ Data_00_a003:
 	.db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
 DoVSMenu:
-	JSR Sub_00_802b
-	JSR Sub_00_8086
+	JSR DisablePicture
+	JSR DisableNMI
 	LDA #$07
 	STA zMMC1Chr
 	LDA #$05
@@ -3236,11 +3232,9 @@ Sub_00_a3b0:
 	LDA #$ff
 	STA $0095
 @00_a3da:
-	TXA
-	PHA
+	PHX
 	JSR Sub_07_cf7f
-	PLA
-	TAX
+	PLX
 	DEX
 	BEQ @00_a3fa
 	LDA #$91
@@ -3630,15 +3624,11 @@ Sub_00_a87d:
 	STX $0444
 	LDA $0452, X
 	STA $0445
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	JSR Sub_00_a77d
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 @00_a8a6:
 	INX
 	INY
@@ -4539,20 +4529,20 @@ Sub_00_af93:
 	RTS
 
 Sub_00_afb0:
-	JSR Sub_00_802b
-	JSR Sub_00_8086
-	JSR Sub_00_8006
-	JSR Sub_00_80a4
-	JSR Sub_00_80ba
+	JSR DisablePicture
+	JSR DisableNMI
+	JSR InitNametable
+	JSR InitNTAttributes
+	JSR HideSprites
 	JSR Sub_07_cdeb
-	JSR Sub_07_f6b3
+	JSR InitSound
 	LDA #$02
 	STA zMMC1Chr
 	LDA #$05
 	STA zMMC1Chr + 1
 	JSR Sub_00_9881
 	LDA #$de
-	STA $0700
+	STA iVirtualOAM
 	LDA #$02
 	STA $0701
 	LDA #$00
@@ -5568,15 +5558,11 @@ Sub_00_ba5d:
 	LDA $0475, X
 	BEQ @00_ba93
 	STA $0446
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	JSR Sub_00_a77d
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 @00_ba93:
 	INX
 	INY
@@ -5663,10 +5649,7 @@ Sub_00_bb1d:
 	RTS
 @00_bb41:
 	LDA $05b4
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	ASL A
 	ASL A
 	STA $00a3
@@ -5685,10 +5668,7 @@ Sub_00_bb1d:
 	RTS
 @00_bb63:
 	LDA $05b4
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	STA $00a3
 	LDY #$00
 	LDA ($00d3), Y
