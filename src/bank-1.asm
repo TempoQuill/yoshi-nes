@@ -1,20 +1,20 @@
 ; PRG 1 contains all the music as well as the sound engine
 ; and something to do with music ID's
 
-.include "sfx/sound/music/title.asm"
-.include "sfx/sound/music/starman.asm"
-.include "sfx/sound/music/flower.asm"
-.include "sfx/sound/music/mushroom.asm"
-.include "sfx/sound/music/vsmatch.asm"
-.include "sfx/sound/music/gameover.asm"
-.include "sfx/sound/music/stageclear.asm"
-.include "sfx/sound/music/currentscore.asm"
-.include "sfx/sound/music/gamepoint.asm"
-.include "sfx/sound/music/vsresults.asm"
-.include "sfx/sound/music/unused.asm"
-.include "sfx/sound/music/vsmenu.asm"
-.include "sfx/sound/sfx-1.asm"
-.include "sfx/sound/music/roundend.asm"
+.include "src/sound/music/title.asm"
+.include "src/sound/music/starman.asm"
+.include "src/sound/music/flower.asm"
+.include "src/sound/music/mushroom.asm"
+.include "src/sound/music/vsmatch.asm"
+.include "src/sound/music/gameover.asm"
+.include "src/sound/music/stageclear.asm"
+.include "src/sound/music/currentscore.asm"
+.include "src/sound/music/gamepoint.asm"
+.include "src/sound/music/vsresults.asm"
+.include "src/sound/music/unused.asm"
+.include "src/sound/music/vsmenu.asm"
+.include "src/sound/sfx-1.asm"
+.include "src/sound/music/roundend.asm"
 
 UpdateSound:
 ; This routine is responsible for what we hear
