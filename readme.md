@@ -5,7 +5,7 @@ A full disassembly of the NES version of Yoshi
 -	Mapper: MMC1
 -	RAM: 2K (all internal)
 -	ROM: 256K PRG - 128K / CHR - 128K
--	Window: 16K PRG / 4K PRG
+-	Window: 16K PRG / 4K CHR
 -	Mirroring: Horizontal (unused)
 
 # Premise:
