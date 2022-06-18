@@ -430,7 +430,7 @@ Music_Cities1_Ch3_mainloop::
 	note B_, 2
 	note E_, 2
 	vibrato 8, 2, 2
-	hill_type 12, 1, 4
+	hill_type 12, 1, 1
 	note A_, 8
 	note E_, 8
 	note A_, 8
@@ -443,7 +443,7 @@ Music_Cities1_Ch3_mainloop::
 	note F#, 2
 	note F#, 2
 	note D#, 2
-	hill_type 12, 1, 4
+	hill_type 12, 1, 1
 	note E_, 4
 	hill_type 12, 0, 49
 	note F#, 2
@@ -471,7 +471,7 @@ Music_Cities1_Ch3_mainloop::
 	note A_, 2
 	note G#, 2
 	note F#, 2
-	hill_type 12, 1, 4
+	hill_type 12, 1, 1
 	note A_, 8
 	note E_, 8
 	note A_, 8
@@ -493,7 +493,7 @@ Music_Cities1_Ch3_mainloop::
 	note F#, 2
 	note B_, 2
 	note A_, 2
-	hill_type 12, 1, 4
+	hill_type 12, 1, 1
 	note A_, 4
 	note G#, 4
 	note F#, 2

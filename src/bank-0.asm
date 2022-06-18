@@ -44,7 +44,7 @@ DisablePicture:
 	LDA #$01
 	STA $0224
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	DEY
 	BNE @00_8033
@@ -65,12 +65,12 @@ Sub_00_8061:
 Sub_00_806a:
 	LDA zPPUControl
 	BPL @00_807b
-	LDA $00b1
+	LDA zb1
 	BNE @00_8076
 	LDA #$01
-	STA $00b1
+	STA zb1
 @00_8076:
-	LDA $00b1
+	LDA zb1
 	BNE @00_8076
 	RTS
 @00_807b:
@@ -86,7 +86,7 @@ DisableNMI:
 	BEQ @00_8095
 	LDA zPPUControl
 	STA iPPUControl
-	AND #OBJ_RES | BG_TABLE | OBJ_TABLE | VRAM_INC | NT_BASE_MASK
+	AND #$ff ^ (NMI | MS_SELECT)
 	STA zPPUControl
 @00_8095:
 	LDA zPPUControl
@@ -191,15 +191,15 @@ Sub_00_8148:
 	STA $05b0
 	JSR Sub_00_8586
 	LDA #<Data_00_820d
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_820d
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$02
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$05
 	JSR JMP_00_846b
 	LDA #$03
@@ -211,30 +211,30 @@ Sub_00_8148:
 	LDA #$0a
 	STA $027c
 	LDA #<Data_00_8393
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8393
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$11
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$05
 	JSR JMP_00_846b
 	JMP @00_81fd
 @00_81b4:
 	JSR Sub_00_8564
 	LDA #<Data_00_8311
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8311
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$11
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$05
 	JSR JMP_00_846b
 	LDA #$03
@@ -246,15 +246,15 @@ Sub_00_8148:
 	LDA #$0b
 	STA $027c
 	LDA #<Data_00_828f
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_828f
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$02
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$05
 	JSR JMP_00_846b
 @00_81fd:
@@ -317,27 +317,27 @@ Sub_00_8415:
 	LDA $044f
 	BNE @00_8450
 	LDA #<Data_00_8451
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8451
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$23
-	STA $00a4
+	STA za4
 	LDA #$02
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA #<Data_00_8451
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8451
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$23
-	STA $00a4
+	STA za4
 	LDA #$11
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 @00_8450:
@@ -349,62 +349,62 @@ Data_00_8451:
 
 
 JMP_00_846b:
-	STA $00a3
-	LDA $00a6
+	STA za3
+	LDA za6
 	STA $02cd
 @00_8472:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
-	LDA $00a4
+	LDA za4
 	STA $02cb
-	LDA $00a5
+	LDA za5
 	STA $02cc
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
-	LDA $00b4
+	LDA zPPUScrollX
 	CLC
 	ADC $0552
-	STA $00b4
+	STA zPPUScrollX
 	LDA $0567
 	BEQ @00_8499
 	JSR Sub_00_920f
 @00_8499:
-	LDA $00a5
+	LDA za5
 	CLC
 	ADC #$40
-	STA $00a5
+	STA za5
 	BCC @00_84a4
-	INC $00a4
+	INC za4
 @00_84a4:
 	JSR Sub_00_84af
 	JSR Sub_00_84af
-	CMP $00a3
+	CMP za3
 	BNE @00_8472
 	RTS
 
 Sub_00_84af:
-	LDA $0083
+	LDA zPointer83
 	CLC
-	ADC $00a6
-	STA $0083
+	ADC za6
+	STA zPointer83
 	BCC @00_84ba
-	INC $0084
+	INC zPointer83 + 1
 @00_84ba:
 	RTS
 
 Sub_00_84bb:
 	LDA #$87
-	STA $0083
+	STA zPointer83
 	LDA #$04
-	STA $0084
+	STA zPointer83 + 1
 	LDA $044f
 	BNE @00_84e1
 	LDY #$00
 	JSR Sub_00_84fa
-	LDA $00a3
+	LDA za3
 	STA $02cf
-	LDA $00a4
+	LDA za4
 	STA $02d0
 	LDA zPlayerMode
 	BEQ @00_84e0
@@ -415,9 +415,9 @@ Sub_00_84bb:
 @00_84e1:
 	LDY #$04
 	JSR Sub_00_84fa
-	LDA $00a3
+	LDA za3
 	STA $02d2
-	LDA $00a4
+	LDA za4
 	STA $02d3
 	LDA zPlayerMode
 	BEQ @00_84e0
@@ -428,35 +428,35 @@ Sub_00_84bb:
 Sub_00_84fa:
 	LDA #$00
 	CLC
-	ADC ($0083), Y
+	ADC (zPointer83), Y
 	INY
-	ADC ($0083), Y
+	ADC (zPointer83), Y
 	INY
-	ADC ($0083), Y
+	ADC (zPointer83), Y
 	INY
-	ADC ($0083), Y
+	ADC (zPointer83), Y
 	LSR A
-	STA $00a3
+	STA za3
 	LDA #$28
 	SEC
-	SBC $00a3
+	SBC za3
 	JSR Sub_00_8521
 	CLC
 	LDA #$1b
-	ADC $00a3
-	STA $00a3
+	ADC za3
+	STA za3
 	LDA #$1b
-	ADC $00a4
-	STA $00a4
+	ADC za4
+	STA za4
 	RTS
 
 Sub_00_8521:
 	LDX #$00
-	STA $00a5
+	STA za5
 	LDA #$00
-	STA $00a3
-	STA $00a4
-	LDA $00a5
+	STA za3
+	STA za4
+	LDA za5
 @00_852d:	
 	CMP #$0a
 	BCC @00_8538
@@ -465,9 +465,9 @@ Sub_00_8521:
 	SBC #$0a
 	JMP @00_852d
 @00_8538:
-	STA $00a4
+	STA za4
 	TXA
-	STA $00a3
+	STA za3
 	RTS
 
 Sub_00_853e:
@@ -484,7 +484,7 @@ Sub_00_854c:
 	LDA #$0d
 	STA $02ca
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
@@ -522,7 +522,7 @@ Sub_00_8586:
 
 Sub_00_859e:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_e449
 	JSR Sub_07_cdf0
@@ -532,30 +532,30 @@ Sub_00_859e:
 	BNE @00_85d2
 	JSR Sub_00_8564
 	LDA #<Data_00_85ef
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_85ef
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$02
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$05
 	JSR JMP_00_846b
 	RTS
 @00_85d2:
 	JSR Sub_00_8581
 	LDA #<Data_00_8671
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8671
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$11
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$05
 	JSR JMP_00_846b
 	RTS
@@ -585,37 +585,37 @@ Data_00_8671:
 
 Sub_00_86f3:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_e449
 	LDA $044f
 	BNE @00_871f
 	JSR Sub_00_8564
 	LDA #<Data_00_873c
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_873c
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$02
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$05
 	JSR JMP_00_846b
 	RTS
 @00_871f:
 	JSR Sub_00_8581
 	LDA #<Data_00_87be
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_87be
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$11
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$05
 	JSR JMP_00_846b
 	RTS
@@ -688,15 +688,15 @@ Sub_00_8883:
 	LDA #$f1
 	STA $05fb
 	LDA #$ee
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$fc
-	STA $0085
+	STA zPointer85
 	LDA #$05
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$06
-	STA $0087
+	STA z87
 	JSR Sub_00_a771
 	LDX #$02
 @00_88ad:
@@ -726,15 +726,15 @@ Sub_00_8883:
 	LDA #$33
 	STA $0603
 	LDA #$f4
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$04
-	STA $0085
+	STA zPointer85
 	LDA #$06
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$06
-	STA $0087
+	STA z87
 	JSR Sub_00_a771
 	LDX #$02
 @00_8ffb:
@@ -777,7 +777,7 @@ Sub_00_8926:
 Sub_00_8939:
 	ASL A
 	ASL A
-	STA $00a4
+	STA za4
 	LDA $044f
 	BNE @00_895f
 	LDA #$03
@@ -807,12 +807,12 @@ Sub_00_8939:
 	LDX #$09
 @00_8978:
 	CLC
-	ADC $00a4
+	ADC za4
 	TAY
-	LDA ($0083), Y
-	STA $00a3
+	LDA (zPointer83), Y
+	STA za3
 @00_8980:
-	LDA $00a3
+	LDA za3
 	CLC
 	ADC $05ed, X
 	STA $05ed, X
@@ -822,7 +822,7 @@ Sub_00_8939:
 	SBC #$0a
 	STA $05ed, X
 	LDA #$01
-	STA $00a3
+	STA za3
 	DEX
 	BNE @00_8980
 	LDX #$06
@@ -847,34 +847,34 @@ Sub_00_89b4:
 	ORA $0535
 	BNE @00_89c4
 	LDA #$78
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	RTS
 @00_89c4:
 	LDA #<Data_00_8e8c
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8e8c
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$20
-	STA $00a4
+	STA za4
 	LDA #$c2
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$0a
 	JSR JMP_00_846b
 	LDA #$06
 	STA zMMC1Chr
 	LDA #<Data_00_8f90
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8f90
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$c2
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA #$01
@@ -891,31 +891,31 @@ Sub_00_89b4:
 	LDA $0536
 	BEQ @00_8a26
 	LDA #<Data_00_8e72
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8e72
-	STA $0084
+	STA zPointer83 + 1
 	JMP @00_8a40
 @00_8a26:
 	LDA $0535
 	CMP #$04
 	BCC @00_8a38
 	LDA #<Data_00_8e58
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8e58
-	STA $0084
+	STA zPointer83 + 1
 	JMP @00_8a40
 @00_8a38:
 	LDA #<Data_00_8e3e
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8e3e
-	STA $0084
+	STA zPointer83 + 1
 @00_8a40:
 	LDA #$23
-	STA $00a4
+	STA za4
 	LDA #$22
-	STA $00a5
+	STA za5
 	LDA #$0d
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA $0536
@@ -959,7 +959,7 @@ Sub_00_89b4:
 	LDA #SFX_HATCH
 	JSR StoreMusicID
 	LDA #$0a
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #$ff
 	STA $0550
@@ -1104,7 +1104,7 @@ Sub_00_89b4:
 	JSR Sub_00_bbc1
 @00_8bfe:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_00_920f
 	LDA $0530
@@ -1118,7 +1118,7 @@ Sub_00_89b4:
 	JSR Sub_00_8c6d
 @00_8c1d:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
 	LDA $024b
@@ -1132,21 +1132,21 @@ Sub_00_89b4:
 
 Sub_00_8c39:
 	LDA #$05
-	STA $00a3
+	STA za3
 @00_8c3d:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_00_920f
-	CMP $00a3
+	CMP za3
 	BNE @00_8c3d
 	RTS
 
 Sub_00_8c4c:
-	STA $00a3
+	STA za3
 @00_8c4e:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
 	LDA $024b
@@ -1156,7 +1156,7 @@ Sub_00_8c4c:
 	STA $0550
 @00_8c65:
 	INC $054f
-	CMP $00a3
+	CMP za3
 	BNE @00_8c4e
 	RTS
 
@@ -1172,22 +1172,22 @@ Sub_00_8c6d:
 Sub_00_8c7f:
 	ASL A
 	ASL A
-	STA $00a6
+	STA za6
 	LDA #<Data_00_8de6
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8de6
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_84af
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$c3
 	CLC
 	ADC $0552
 	ADC $0552
 	ADC $0552
-	STA $00a5
+	STA za5
 	LDA #$02
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	RTS
@@ -1197,28 +1197,28 @@ Sub_00_8c7f:
 	RTS
 
 Sub_00_8cb0:
-	STA $00a6
+	STA za6
 	LDA #<Data_00_8e0e
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8e0e
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_84af
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$83
 	CLC
 	ADC $0552
 	ADC $0552
 	ADC $0552
-	STA $00a5
+	STA za5
 	LDA #$02
-	STA $00a6
+	STA za6
 	JSR JMP_00_846b
 	JSR Sub_00_8c39
 	RTS
 
 Sub_00_8cda:
-	STA $00a6
+	STA za6
 	LDX $0552
 	LDA #$03
 	STA $0264, X
@@ -1235,33 +1235,33 @@ Sub_00_8cda:
 	STA $0294, X
 	LDA #$06
 	STA $027c, X
-	LDA $00a6
+	LDA za6
 	BEQ @00_8d09
 	LDA #$07
 	STA $027c, X
 @00_8d09:
 	LDA #<Data_00_8e1e
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8e1e
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_84af
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$83
 	CLC
 	ADC $0552
 	ADC $0552
 	ADC $0552
-	STA $00a5
+	STA za5
 	LDA #$02
-	STA $00a6
+	STA za6
 	LDA #$02
 	JSR JMP_00_846b
 	JSR Sub_00_8c39
 	RTS
 
 Sub_00_8d33:
-	STA $00a6
+	STA za6
 	LDX $0552
 	LDA #<Data_00_a003
 	STA $0264, X
@@ -1278,26 +1278,26 @@ Sub_00_8d33:
 	STA $0294, X
 	LDA #$08
 	STA $027c, X
-	LDA $00a6
+	LDA za6
 	BEQ @00_8d62
 	LDA #$09
 	STA $027c, X
 @00_8d62:
 	LDA #<Data_00_8e2e
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8e2e
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_84af
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$83
 	CLC
 	ADC $0552
 	ADC $0552
 	ADC $0552
-	STA $00a5
+	STA za5
 	LDA #$02
-	STA $00a6
+	STA za6
 	LDA #$02
 	JSR JMP_00_846b
 	JSR Sub_00_8c39
@@ -1315,24 +1315,24 @@ Sub_00_8d8c:
 	ADC #$08
 	STA $0298
 	LDA #$10
-	STA $00a3
+	STA za3
 @00_8da8:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_00_920f
 	DEC $02b0
-	CMP $00a3
+	CMP za3
 	BNE @00_8da8
 	LDA #<Data_00_8dd6
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_8dd6
-	STA $0084
+	STA zPointer83 + 1
 	PLA
 	JSR Sub_00_8939
 	JSR Sub_00_8883
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
@@ -1428,9 +1428,9 @@ Sub_00_9000:
 	LDA #$3c
 	STA $02f1
 	LDA #$ef
-	STA $0083
+	STA zPointer83
 	LDA #$02
-	STA $0084
+	STA zPointer83 + 1
 	LDY #$00
 	LDA #$02
 	JSR Sub_07_d929
@@ -1441,17 +1441,17 @@ Sub_00_9000:
 	STA $02ef
 	STA $02f0
 	LDA #$ed
-	STA $0083
+	STA zPointer83
 	LDA #$02
-	STA $0084
+	STA zPointer83 + 1
 	LDY #$00
 	LDA #$02
 	JSR Sub_07_d929
 @00_9046:
 	LDA #$f4
-	STA $0083
+	STA zPointer83
 	LDA #$02
-	STA $0084
+	STA zPointer83 + 1
 	LDY #$00
 	LDA #$02
 	JSR Sub_07_d929
@@ -1462,9 +1462,9 @@ Sub_00_9000:
 	STA $02f4
 	STA $02f5
 	LDA #$f2
-	STA $0083
+	STA zPointer83
 	LDA #$02
-	STA $0084
+	STA zPointer83 + 1
 	LDY #$00
 	LDA #$02
 	JSR Sub_07_d929
@@ -1589,9 +1589,9 @@ Sub_00_9118:
 	LDA #$32
 	STA $053e, X
 	LDA #<Data_00_90ae
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_90ae
-	STA $0084
+	STA zPointer83 + 1
 	LDA $053a, X
 	JSR Sub_00_8939
 	LDX $044f
@@ -1636,21 +1636,21 @@ Sub_00_91c9:
 	ADC #$0c
 	TAX
 	LDA #$00
-	STA $00c7
+	STA zc7
 	LDA #$04
-	STA $00c9
+	STA zc9
 @00_91f1:
 	LDA #$02
 	STA $0264, X
-	LDA $00c7
+	LDA zc7
 	STA $027c, X
 	LDA $051a
 	STA $0294, X
 	LDA $051b
 	STA $02ac, X
 	INX
-	INC $00c7
-	CMP $00c9
+	INC zc7
+	CMP zc9
 	BNE @00_91f1
 Branch_00_920e:
 	RTS
@@ -1662,21 +1662,21 @@ Sub_00_920f:
 	BEQ Branch_00_920e
 	LDY $052e, X
 	LDA Data_00_92d8, Y
-	STA $00c7
+	STA zc7
 	LDA Data_00_931b, Y
-	STA $00cd
+	STA zcd
 	INY
 	LDA Data_00_92d8, Y
-	STA $00c9
+	STA zc9
 	LDA Data_00_931b, Y
-	STA $00cf
+	STA zcf
 	INY
 	TYA
 	STA $052e, X
 	LDA $0530, X
 	AND #$01
 	BNE @00_925a
-	LDA $00c7
+	LDA zc7
 	CMP #$10
 	BNE @00_924e
 	LDA $0530, X
@@ -1685,15 +1685,15 @@ Sub_00_920f:
 	JMP @00_925a
 @00_924e:
 	LDA #$00
-	STA $00cb
+	STA zcb
 	JSR Sub_00_92a4
-	INC $00cb
+	INC zcb
 	JSR Sub_00_92a4
 @00_925a:
 	LDA $0530, X
 	AND #$02
 	BNE @00_9286
-	LDA $00cd
+	LDA zcd
 	CMP #$10
 	BNE @00_9272
 	LDA $0530, X
@@ -1701,14 +1701,14 @@ Sub_00_920f:
 	STA $0530, X
 	JMP @00_9286
 @00_9272:
-	LDA $00cd
-	STA $00c7
-	LDA $00cf
-	STA $00c9
+	LDA zcd
+	STA zc7
+	LDA zcf
+	STA zc9
 	LDA #$02
-	STA $00cb
+	STA zcb
 	JSR Sub_00_92a4
-	INC $00cb
+	INC zcb
 	JSR Sub_00_92a4
 @00_9286:
 	LDA $0530, X
@@ -1732,33 +1732,33 @@ Sub_00_920f:
 	RTS
 
 Sub_00_92a4:
-	STX $00d1
+	STX zd1
 	LDA $044f
 	ASL A
 	ASL A
 	CLC
 	ADC #$0c
-	ADC $00cb
+	ADC zcb
 	TAX
-	LDA $00cb
+	LDA zcb
 	AND #$01
 	BEQ @00_92c3
 	LDA $0294, X
 	CLC
-	ADC $00c7
+	ADC zc7
 	STA $0294, X
 	JMP @00_92cc
 @00_92c3:
 	LDA $0294, X
 	SEC
-	SBC $00c7
+	SBC zc7
 	STA $0294, X
 @00_92cc:
 	STA $02ac, X
 	CLC
-	ADC $00c9
+	ADC zc9
 	STA $02ac, X
-	LDX $00d1
+	LDX zd1
 	RTS
 
 Data_00_92d8:
@@ -1782,19 +1782,19 @@ Sub_00_9358:
 	JSR DisablePicture
 	JSR DisableNMI
 	LDA #$00
-	STA $00b5
+	STA zPPUScrollY
 	LDA $0520
 	BNE @00_9372
 	LDA #<Attr_00_9801
-	STA $0083
+	STA zPointer83
 	LDA #>Attr_00_9801
-	STA $0084
+	STA zPointer83 + 1
 	JMP @00_937a
 @00_9372:
 	LDA #<Attr_00_9841
-	STA $0083
+	STA zPointer83
 	LDA #>Attr_00_9841
-	STA $0084
+	STA zPointer83 + 1
 @00_937a:
 	JSR Sub_00_adc3
 	LDA #$06
@@ -1803,63 +1803,63 @@ Sub_00_9358:
 	JSR Sub_07_cdf0
 	LDA #$00
 	STA $0263
-	STA $00b4
+	STA zPPUScrollX
 	LDA #$07
 	STA zMMC1Chr
 	LDA #<Data_00_9672
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9672
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_9677
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9677
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_967c
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_967c
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_9681
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9681
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_9686
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9686
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_968b
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_968b
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_9690
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9690
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_9695
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_9695
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	LDA $0520
 	BNE @00_9400
 	LDA #<Data_00_970d
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_970d
-	STA $00b8
+	STA zPointerB7 + 1
 	LDA #$00
 	STA iStageNum
 	JMP @00_940d
 @00_9400:
 	LDA #<Data_00_9761
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_9761
-	STA $00b8
+	STA zPointerB7 + 1
 	LDA #$39
 	STA iStageNum
 @00_940d:
@@ -1867,15 +1867,15 @@ Sub_00_9358:
 	JSR CopyPPUControl
 	JSR Sub_00_8061
 	LDA #$fc
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$b5
-	STA $0085
+	STA zPointer85
 	LDA #$05
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$06
-	STA $0087
+	STA z87
 	JSR Sub_00_a771
 	LDA $02c7
 	STA $05bf
@@ -1964,140 +1964,140 @@ Sub_00_9358:
 	CMP #$03
 	BNE @00_951a
 	LDA #$16
-	STA $0083
+	STA zPointer83
 	LDA #$00
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$29
-	STA $0085
+	STA zPointer85
 	LDA #$00
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$13
-	STA $0087
+	STA z87
 	JSR Sub_00_97d8
 	LDA #$03
-	STA $0083
+	STA zPointer83
 	LDA #$00
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$16
-	STA $0085
+	STA zPointer85
 	LDA #$00
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$13
-	STA $0087
+	STA z87
 	JSR Sub_00_97d8
 	LDA #$03
-	STA $0085
+	STA zPointer85
 	LDA #$00
-	STA $0086
+	STA zPointer85 + 1
 	JMP @00_9548
 @00_951a:
 	CMP #$02
 	BNE @00_9540
 	LDA #$16
-	STA $0083
+	STA zPointer83
 	LDA #$00
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$29
-	STA $0085
+	STA zPointer85
 	LDA #$00
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$13
-	STA $0087
+	STA z87
 	JSR Sub_00_97d8
 	LDA #$16
-	STA $0085
+	STA zPointer85
 	LDA #$00
-	STA $0086
+	STA zPointer85 + 1
 	JMP @00_9548
 @00_9540:
 	LDA #$29
-	STA $0085
+	STA zPointer85
 	LDA #$00
-	STA $0086
+	STA zPointer85 + 1
 @00_9548:
 	LDA #$b5
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$13
-	STA $0087
+	STA z87
 	JSR Sub_00_97cb
 	JSR Sub_00_a771
 @00_955a:
 	LDA #$03
-	STA $0083
+	STA zPointer83
 	LDA #$00
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$c8
-	STA $0085
+	STA zPointer85
 	LDA #$05
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$13
-	STA $0087
+	STA z87
 	JSR Sub_00_97db
 	JSR Sub_00_97a5
 	LDA #$c8
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$21
-	STA $00a4
+	STA za4
 	LDA #$a8
-	STA $00a5
+	STA za5
 	LDA #$13
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA #$16
-	STA $0083
+	STA zPointer83
 	LDA #$00
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$c8
-	STA $0085
+	STA zPointer85
 	LDA #$05
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$13
-	STA $0087
+	STA z87
 	JSR Sub_00_97db
 	LDA $05cd
 	BEQ @00_95fd
 	JSR Sub_00_97a5
 	LDA #$c8
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$21
-	STA $00a4
+	STA za4
 	LDA #$e8
-	STA $00a5
+	STA za5
 	LDA #$13
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA #$29
-	STA $0083
+	STA zPointer83
 	LDA #$00
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$c8
-	STA $0085
+	STA zPointer85
 	LDA #$05
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$13
-	STA $0087
+	STA z87
 	JSR Sub_00_97db
 	LDA $05cd
 	BEQ @00_95fd
 	JSR Sub_00_97a5
 	LDA #$c8
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$28
-	STA $00a5
+	STA za5
 	LDA #$13
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 @00_95fd:
@@ -2126,7 +2126,7 @@ Sub_00_9358:
 	STA iCrunchCounter
 @00_962d:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	DEC iCrunchCounter
 	BNE @00_9652
@@ -2222,12 +2222,12 @@ Sub_00_97a5:
 	RTS
 
 Sub_00_97cb:
-	LDA $0085
+	LDA zPointer85
 	CLC
 	ADC iStageNum
-	STA $0085
+	STA zPointer85
 	BCC @00_97d7
-	INC $0086
+	INC zPointer85 + 1
 @00_97d7:
 	RTS
 
@@ -2236,13 +2236,13 @@ Sub_00_97d8:
 
 Sub_00_97db:
 	LDA iStageNum
-	STA $00a6
+	STA za6
 	JSR Sub_00_84af
 	JSR Sub_00_a771
 	RTS
 
 Sub_00_97e7:
-	STA $00a3
+	STA za3
 	TXA
 	TAY
 	CLC
@@ -2251,11 +2251,11 @@ Sub_00_97e7:
 	TAX
 @00_97f3:
 	LDA $05b5, Y
-	CMP $0003, X
+	CMP z03, X
 	BNE @00_9800
 	INY
 	INX
-	CMP $00a3
+	CMP za3
 	BNE @00_97f3
 @00_9800:
 	RTS
@@ -2267,14 +2267,14 @@ Attr_00_9841:
 
 Sub_00_9881:
 	LDA #<Data_00_9898
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9898
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_989d
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_989d
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	RTS
 
@@ -2304,29 +2304,29 @@ Sub_00_98a8:
 	STA $0636
 	LDA #SFX_PAUSE
 	JSR StoreMusicID
-	LDA $00b4
-	STA $00a3
-	LDA $00b5
-	STA $00a4
+	LDA zPPUScrollX
+	STA za3
+	LDA zPPUScrollY
+	STA za4
 	LDA #$00
-	STA $00b4
+	STA zPPUScrollX
 	; $2800 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
 	LDA #NMI | BG_TABLE | 2
 	STA zPPUControl
 	LDA #$00
-	STA $00b5
+	STA zPPUScrollY
 @00_98e4:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
 	LDA $024b
 	AND #$08
 	BEQ @00_98e4
-	LDA $00a3
-	STA $00b4
-	LDA $00a4
-	STA $00b5
+	LDA za3
+	STA zPPUScrollX
+	LDA za4
+	STA zPPUScrollY
 	LDA zPlayerMode
 	BNE @00_9905
 	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
@@ -2344,7 +2344,7 @@ FieldScene:
 	JSR DisablePicture
 	JSR DisableNMI
 	LDA #$00
-	STA $00b5
+	STA zPPUScrollY
 	JSR Sub_07_efd1
 	JSR Sub_07_cdf0
 	LDA #$00
@@ -2397,10 +2397,10 @@ FieldScene:
 	STA $02ac
 	LDX iStageNum
 	LDA FieldSprites, X
-	STA $00a3
+	STA za3
 	CLC
-	ADC $00a3
-	ADC $00a3
+	ADC za3
+	ADC za3
 	TAX
 	LDA Data_00_9e17, X
 	INX
@@ -2413,9 +2413,9 @@ FieldScene:
 	JSR CopyPPUControl
 	JSR Sub_00_8061
 	LDA #$00
-	STA $00b4
+	STA zPPUScrollX
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #$01
 	STA $0552
@@ -2431,7 +2431,7 @@ FieldScene:
 	LDA #$02
 	STA iCrunchCounter
 	LDA $054f
-	EOR $0001
+	EOR z01
 	STA $054f
 	BNE @00_99f0
 	LDA #SFX_WALK_SOFT
@@ -2440,16 +2440,16 @@ FieldScene:
 	LDA $054f
 	BNE @00_9a03
 	LDA #<Data_00_9c17
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c17
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bcc
 	JMP @00_9a0e
 @00_9a03:
 	LDA #<Data_00_9c23
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c23
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bcc
 @00_9a0e:
 	DEC $0550
@@ -2457,15 +2457,15 @@ FieldScene:
 	LDA #$00
 	STA $0552
 	LDA #<Data_00_9c2f
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c2f
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bcc
 	LDA #$28
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #$96
-	STA $00b4
+	STA zPPUScrollX
 	LDA #$32
 	STA $0550
 	LDA #$ff
@@ -2480,7 +2480,7 @@ FieldScene:
 	LDA #$02
 	STA iCrunchCounter
 	LDA $054f
-	EOR $0001
+	EOR z01
 	STA $054f
 	BNE @00_9a5b
 	LDA #SFX_WALK
@@ -2489,16 +2489,16 @@ FieldScene:
 	LDA $054f
 	BNE @00_9a6e
 	LDA #<Data_00_9c3b
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c3b
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	JMP @00_9a79
 @00_9a6e:
 	LDA #<Data_00_9c65
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c65
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bde
 @00_9a79:
 	DEC $0550
@@ -2506,36 +2506,36 @@ FieldScene:
 	LDA #$00
 	STA $0552
 	LDA #<Data_00_9c3b
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c3b
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	JSR Sub_00_9e44
 	LDA #$1e
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #<Data_00_9c8f
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c8f
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #$0a
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #<Data_00_9cb9
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9cb9
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #SFX_COLLECT_BONUS
 	JSR StoreMusicID
 	LDA #$05
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #<Data_00_9c0b
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c0b
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bf0
 	LDA #$07
 	STA $0265
@@ -2549,7 +2549,7 @@ FieldScene:
 	STA iCrunchCounter
 @00_9ae5:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	INC $0295
 	INC $0295
@@ -2559,7 +2559,7 @@ FieldScene:
 	STA iCrunchCounter
 @00_9afc:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	DEC $0294
 	DEC $0294
@@ -2570,39 +2570,39 @@ FieldScene:
 	LDA #$ff
 	STA $0265
 	LDA #<Data_00_9c11
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c11
-	STA $0084
+	STA zPointer83 + 1
 	LDA #<Data_00_9322
-	STA $00a4
+	STA za4
 	LDA #>Data_00_9322
-	STA $00a5
+	STA za5
 	LDA #$03
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA #<Data_00_9cb9
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9cb9
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #$05
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #$ff
 	STA $0264
 	LDA #<Data_00_9c8f
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c8f
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #$0a
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #<Data_00_9c3b
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9c3b
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #$08
 	STA $0264
@@ -2617,15 +2617,15 @@ FieldScene:
 	STA iCrunchCounter
 @00_9b83:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	DEC $02ac
 	DEC iCrunchCounter
 	BNE @00_9b83
 	LDA #<Data_00_9d38
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9d38
-	STA $0084
+	STA zPointer83 + 1
 	LDX iStageNum
 	LDA FieldSprites, X
 	JSR Sub_00_8939
@@ -2634,7 +2634,7 @@ FieldScene:
 	JSR StoreMusicID
 @00_9bab:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA iChannelID
 	CMP #MUSIC_CURRENT_SCORE
@@ -2654,33 +2654,33 @@ Data_00_9bc9:
 
 Sub_00_9bcc:
 	LDA #$21
-	STA $00a4
+	STA za4
 	LDA #$33
-	STA $00a5
+	STA za5
 	LDA #$03
-	STA $00a6
+	STA za6
 	LDA #$02
 	JSR JMP_00_846b
 	RTS
 
 Sub_00_9bde:
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$0d
-	STA $00a5
+	STA za5
 	LDA #$07
-	STA $00a6
+	STA za6
 	LDA #$03
 	JSR JMP_00_846b
 	RTS
 
 Sub_00_9bf0:
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$92
-	STA $00a5
+	STA za5
 	LDA #$03
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	RTS
@@ -2730,7 +2730,7 @@ Data_00_9ce3:
 
 Sub_00_9d03:
 	LDA #$1e
-	STA $00a3
+	STA za3
 	LDX #$00
 @00_9d09:
 	LDY #$20
@@ -2740,7 +2740,7 @@ Sub_00_9d03:
 	DEY
 	BNE @00_9d0b
 	INX
-	CMP $00a3
+	CMP za3
 	BNE @00_9d09
 	RTS
 
@@ -2769,9 +2769,9 @@ Sub_00_9dae:
 	LDA #$05
 	JSR Sub_07_d124
 	LDA #<Attr_00_9dd7
-	STA $0083
+	STA zPointer83
 	LDA #>Attr_00_9dd7
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_adc3
 	LDA #$27
 	STA PPUADDR
@@ -2798,39 +2798,39 @@ Data_00_9e17:
 
 Sub_00_9e44:
 	LDA #<Data_00_9ce3
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9ce3
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$20
-	STA $00a4
+	STA za4
 	LDA #$a8
-	STA $00a5
+	STA za5
 	LDA #$10
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA #<Data_00_9d90
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9d90
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$21
-	STA $00a4
+	STA za4
 	LDA #$0a
-	STA $00a5
+	STA za5
 	LDA #$05
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA #<Data_00_9d9a
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9d9a
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$eb
-	STA $00a5
+	STA za5
 	LDA #$05
-	STA $00a6
+	STA za6
 	LDA #$02
 	JSR JMP_00_846b
 	LDA #$eb
@@ -2871,15 +2871,15 @@ Sub_00_9e44:
 	BNE @00_9ecc
 @00_9edd:
 	LDA #$53
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$21
-	STA $00a4
+	STA za4
 	LDA #$10
-	STA $00a5
+	STA za5
 	LDA #$06
-	STA $00a6
+	STA za6
 	LDA #$01
 	JSR JMP_00_846b
 	LDA #$ea
@@ -2942,15 +2942,15 @@ Sub_00_9e44:
 	STA $055b
 @00_9f74:
 	LDA #$53
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$22
-	STA $00a4
+	STA za4
 	LDA #$f0
-	STA $00a5
+	STA za5
 	LDA #$05
-	STA $00a6
+	STA za6
 	LDA #$02
 	JSR JMP_00_846b
 	RTS
@@ -2984,13 +2984,13 @@ Sub_00_9fbd:
 	LDA #$01
 	JSR Sub_07_d124
 	LDA #<Data_00_9fe9
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_9fe9
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_adc3
 	LDA #$00
-	STA $00b4
-	STA $00b5
+	STA zPPUScrollX
+	STA zPPUScrollY
 	LDY #$07
 	LDX #$03
 	JSR Sub_07_e0d5
@@ -3029,13 +3029,13 @@ Sub_00_a049:
 	LDA #$02
 	JSR Sub_07_d124
 	LDA #<Attr_00_a06e
-	STA $0083
+	STA zPointer83
 	LDA #>Attr_00_a06e
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_adc3
 	LDA #$00
-	STA $00b4
-	STA $00b5
+	STA zPPUScrollX
+	STA zPPUScrollY
 	LDY #$07
 	LDX #$01
 	JSR Sub_07_e0d5
@@ -3049,24 +3049,24 @@ Attr_00_a06e:
 
 Sub_00_a0ae:
 	LDA #<Data_00_a35e
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a35e
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a1fc
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a1fc
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a201
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a201
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a0de
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_a0de
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	JSR Sub_07_db56
 	RTS
@@ -3101,39 +3101,39 @@ Data_00_a201:
 
 Sub_00_a206:
 	LDA #<Data_00_a35e
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a35e
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a363
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a363
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a368
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a368
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a36d
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a36d
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a372
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a372
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a377
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_a377
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #<Data_00_a257
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_a257
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	JSR Sub_07_dba5
 	RTS
@@ -3179,9 +3179,9 @@ JMP_00_a37c:
 	STA $0248
 @00_a381:
 	LDA #$01
-	STA $00b1
+	STA zb1
 @00_a385:
-	LDA $00b1
+	LDA zb1
 	BNE @00_a385
 	JSR Sub_07_d16e
 	LDA $0248
@@ -3208,29 +3208,29 @@ JPT_00_a3af:
 
 Sub_00_a3b0:
 	LDA #$91
-	STA $00b7
+	STA zPointerB7
 	LDA #$00
-	STA $00b8
+	STA zPointerB7 + 1
 	LDY #$00
-	LDA ($0083), Y
+	LDA (zPointer83), Y
 	INY
-	STA $0091
-	LDA ($0083), Y
+	STA z91
+	LDA (zPointer83), Y
 	INY
-	STA $0092
-	LDA ($0083), Y
+	STA z92
+	LDA (zPointer83), Y
 	INY
 	ORA #$80
 	SEC
 	SBC #$01
-	STA $0093
-	LDA ($0083), Y
+	STA z93
+	LDA (zPointer83), Y
 	INY
 	TAX
-	LDA ($0083), Y
-	STA $0094
+	LDA (zPointer83), Y
+	STA z94
 	LDA #$ff
-	STA $0095
+	STA z95
 @00_a3da:
 	PHX
 	JSR Sub_07_cf7f
@@ -3238,16 +3238,16 @@ Sub_00_a3b0:
 	DEX
 	BEQ @00_a3fa
 	LDA #$91
-	STA $00b7
+	STA zPointerB7
 	LDA #$00
-	STA $00b8
-	LDA $0092
+	STA zPointerB7 + 1
+	LDA z92
 	CLC
 	ADC #$20
 	BCC @00_a3f5
-	INC $0091
+	INC z91
 @00_a3f5:
-	STA $0092
+	STA z92
 	JMP @00_a3da
 @00_a3fa:
 	RTS
@@ -3266,15 +3266,15 @@ Sub_00_a3fb:
 	ADC $0442
 	TAX
 	LDA Ptrs_00_a47a, X
-	STA $0083
+	STA zPointer83
 	LDA Ptrs_00_a47a + 1, X
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$00
-	STA $0085
+	STA zPointer85
 	LDA #$03
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$1b
-	STA $0087
+	STA z87
 	JSR Sub_00_a771
 	RTS
 
@@ -3290,15 +3290,15 @@ Sub_00_a42e:
 	ADC $0443
 	TAX
 	LDA Ptrs_00_a45c, X
-	STA $0083
+	STA zPointer83
 	LDA Ptrs_00_a45c + 1, X
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$1b
-	STA $0085
+	STA zPointer85
 	LDA #$03
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$1b
-	STA $0087
+	STA z87
 	JSR Sub_00_a771
 	RTS
 
@@ -3447,10 +3447,10 @@ PTD_00_a756:
 Sub_00_a771:
 	LDY #$00
 @00_a773:
-	LDA ($0083), Y
-	STA ($0085), Y
+	LDA (zPointer83), Y
+	STA (zPointer85), Y
 	INY
-	CPY $0087
+	CPY z87
 	BNE @00_a773
 	RTS
 
@@ -3473,20 +3473,20 @@ Sub_00_a77d:
 
 Sub_00_a7a1:
 	LDY #$00
-	LDA $008a
-	STA ($008d), Y
+	LDA z8a
+	STA (zPointer8D), Y
 	INY
-	LDA $0089
-	STA ($008d), Y
+	LDA z89
+	STA (zPointer8D), Y
 	INY
-	LDA $008b
-	STA ($008d), Y
+	LDA z8b
+	STA (zPointer8D), Y
 	INY
-	LDA $0090
-	STA ($008d), Y
+	LDA z90
+	STA (zPointer8D), Y
 	INY
-	LDA $008f
-	STA ($008d), Y
+	LDA z8f
+	STA (zPointer8D), Y
 	RTS
 
 Sub_00_a7bc:
@@ -3498,13 +3498,13 @@ Sub_00_a7bc:
 @00_a7c8:
 	LDA #$ff
 @00_a7ca:
-	STA $008b
-	LDA $0089
+	STA z8b
+	LDA z89
 	SEC
 	SBC #$20
-	STA $0089
+	STA z89
 	BCS @00_a7d7
-	CMP $008a
+	CMP z8a
 @00_a7d7:
 	RTS
 
@@ -3513,57 +3513,57 @@ Sub_00_a7d8:
 	LDA $0445
 	CMP #$02
 	BEQ @00_a7f0
-	LDA $008a
-	STA ($008d), Y
+	LDA z8a
+	STA (zPointer8D), Y
 	INY
-	LDA $0089
-	STA ($008d), Y
+	LDA z89
+	STA (zPointer8D), Y
 	INY
-	LDA $008b
-	STA ($008d), Y
+	LDA z8b
+	STA (zPointer8D), Y
 	RTS
 @00_a7f0:
 	LDA #$00
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	RTS
 
 Sub_00_a7f5:
 	LDA #$00
-	STA $008a
+	STA z8a
 	LDA $0445
 	CLC
 	ADC #$04
-	STA $0089
-	ASL $0089
-	ASL $0089
-	ROL $008a
-	ASL $0089
-	ROL $008a
-	ASL $0089
-	ROL $008a
-	ASL $0089
-	ROL $008a
-	LDA $008a
+	STA z89
+	ASL z89
+	ASL z89
+	ROL z8a
+	ASL z89
+	ROL z8a
+	ASL z89
+	ROL z8a
+	ASL z89
+	ROL z8a
+	LDA z8a
 	CLC
 	ADC #$20
-	STA $008a
+	STA z8a
 	LDX $0444
 	LDA Data_00_a839, X
 	CLC
 
-	ADC $0089
-	STA $0089
+	ADC z89
+	STA z89
 	BCC @00_a829
-	INC $008a
+	INC z8a
 @00_a829:
-	LDA $008a
-	STA $0090
-	LDA $0089
+	LDA z8a
+	STA z90
+	LDA z89
 	CLC
 	ADC #$20
-	STA $008f
+	STA z8f
 	BCC @00_a838
-	INC $0090
+	INC z90
 @00_a838:
 	RTS
 
@@ -3575,7 +3575,7 @@ Sub_00_a841:
 	CPX #$0a
 	BCS @00_a84e
 	LDA Data_00_a85b, X
-	STA $008b
+	STA z8b
 	RTS
 @00_a84e:
 	LDA $0446
@@ -3583,7 +3583,7 @@ Sub_00_a841:
 	SBC #$15
 	TAX
 	LDA Data_00_a863, X
-	STA $008b
+	STA z8b
 	RTS
 
 Data_00_a85b:
@@ -3594,19 +3594,19 @@ Data_00_a863:
 
 Sub_00_a865:
 	LDA #$36
-	STA $008d
+	STA zPointer8D
 	LDA #$03
-	STA $008e
+	STA zPointer8D + 1
 	LDA $0444
 	ASL A
 	ASL A
 	ASL A
 	CLC
-	ADC $008d
+	ADC zPointer8D
 	BCC @00_a87a
-	INC $008e
+	INC zPointer8D + 1
 @00_a87a:
-	STA $008d
+	STA zPointer8D
 	RTS
 
 Sub_00_a87d:
@@ -3638,16 +3638,16 @@ Sub_00_a87d:
 
 Sub_00_a8ad:
 	LDA #$8f
-	STA $00c7
+	STA zPointerC7
 	LDA #$04
-	STA $00c8
+	STA zPointerC7 + 1
 	LDA $04e9
 	ASL A
 	ASL A
 	ASL A
 	CLC
 	ADC $04e9
-	STA $00a3
+	STA za3
 	LDA $04ea
 	BEQ @00_a8ca
 	LSR A
@@ -3655,13 +3655,13 @@ Sub_00_a8ad:
 	SBC #$01
 @00_a8ca:
 	CLC
-	ADC $00a3
-	ADC $00c7
-	STA $00c7
+	ADC za3
+	ADC zPointerC7
+	STA zPointerC7
 	BCC @00_a8d5
-	INC $00c8
+	INC zPointerC7 + 1
 @00_a8d5:
-	STA $00c7
+	STA zPointerC7
 	RTS
 
 Sub_00_a8d8:
@@ -3706,7 +3706,7 @@ Sub_00_a915:
 	STA $04ea
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	BEQ @00_a957
 	CMP #$05
 	BCS @00_a957
@@ -3777,7 +3777,7 @@ Sub_00_a915:
 	STA $04ea
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	BEQ @00_a9ea
 	CMP #$05
 	BCS @00_a9ea
@@ -3879,77 +3879,77 @@ Data_00_aa8c:
 	.db $6b, $6f, $73, $77, $7b, $7f
 
 Sub_00_aa92:
-	CMP $0089
+	CMP z89
 	BNE @00_aa98
-	CMP $008a
+	CMP z8a
 @00_aa98:
-	CMP $008f
+	CMP z8f
 	BNE @00_aa9e
-	CMP $0090
+	CMP z90
 @00_aa9e:
 	RTS
 
 Sub_00_aa9f:
 	LDY #$00
 	LDX #$00
-	LDA $008a
-	STA ($008d), Y
+	LDA z8a
+	STA (zPointer8D), Y
 	INY
-	LDA $0089
-	STA ($008d), Y
+	LDA z89
+	STA (zPointer8D), Y
 	INY
 	LDA $0438
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	INY
 	LDA $0439
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	INY
 	LDA $043a
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	INY
 	LDA $043b
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	INY
-	LDA $0090
-	STA ($008d), Y
+	LDA z90
+	STA (zPointer8D), Y
 	INY
-	LDA $008f
-	STA ($008d), Y
+	LDA z8f
+	STA (zPointer8D), Y
 	INY
 	LDA $043c
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	INY
 	LDA $043d
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	INY
 	LDA $043e
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	INY
 	LDA $043f
-	STA ($008d), Y
+	STA (zPointer8D), Y
 	RTS
 
 Sub_00_aae7:
 	LDA #$76
-	STA $008d
+	STA zPointer8D
 	LDA #$03
-	STA $008e
+	STA zPointer8D + 1
 	LDA $0436
 	ASL A
 	ASL A
 	ASL A
-	STA $00a3
+	STA za3
 	LDA $0436
 	ASL A
 	ASL A
 	CLC
-	ADC $00a3
+	ADC za3
 	CLC
-	ADC $008d
+	ADC zPointer8D
 	BCC @00_ab06
-	INC $008e
+	INC zPointer8D + 1
 @00_ab06:
-	STA $008d
+	STA zPointer8D
 	RTS
 
 Sub_00_ab09:
@@ -3961,7 +3961,7 @@ Sub_00_ab09:
 	STA $0445
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	STA $0446
 	JSR Sub_00_a8d8
 	RTS
@@ -4002,28 +4002,28 @@ Sub_00_ab29:
 	RTS
 
 Sub_00_ab72:
-	CMP $0089
+	CMP z89
 	BNE @00_ab78
-	CMP $008a
+	CMP z8a
 @00_ab78:
-	CMP $008f
+	CMP z8f
 	BNE @00_ab7e
-	CMP $0090
+	CMP z90
 @00_ab7e:
-	LDA $0089
+	LDA z89
 	SEC
 	SBC $0514
 	BCS @00_ab88
-	CMP $008a
+	CMP z8a
 @00_ab88:
-	STA $0089
-	LDA $008f
+	STA z89
+	LDA z8f
 	SEC
 	SBC $0514
 	BCS @00_ab94
-	CMP $0090
+	CMP z90
 @00_ab94:
-	STA $008f
+	STA z8f
 	RTS
 
 Sub_00_ab97:
@@ -4088,28 +4088,28 @@ Sub_00_abe0:
 	RTS
 
 Sub_00_ac14:
-	CMP $0089
+	CMP z89
 	BNE @00_ac1a
-	CMP $008a
+	CMP z8a
 @00_ac1a:
-	CMP $008f
+	CMP z8f
 	BNE @00_ac20
-	CMP $0090
+	CMP z90
 @00_ac20:
-	LDA $0089
+	LDA z89
 	CLC
 	ADC $0514
 	BCC @00_ac2a
-	INC $008a
+	INC z8a
 @00_ac2a:
-	STA $0089
-	LDA $008f
+	STA z89
+	LDA z8f
 	CLC
 	ADC $0514
 	BCC @00_ac36
-	INC $0090
+	INC z90
 @00_ac36:
-	STA $008f
+	STA z8f
 	RTS
 
 Sub_00_ac39:
@@ -4184,22 +4184,22 @@ Data_00_acb5:
 
 Sub_00_acb9:
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	INY
-	STA $0083
-	LDA ($00c7), Y
+	STA zPointer83
+	LDA (zPointerC7), Y
 	INY
-	STA $0084
-	LDA ($00c7), Y
+	STA zPointer83 + 1
+	LDA (zPointerC7), Y
 	INY
-	STA $00a4
-	LDA ($00c7), Y
+	STA za4
+	LDA (zPointerC7), Y
 	INY
-	STA $00a5
-	LDA ($00c7), Y
+	STA za5
+	LDA (zPointerC7), Y
 	INY
-	STA $00a6
-	LDA ($00c7), Y
+	STA za6
+	LDA (zPointerC7), Y
 	JMP JMP_00_846b
 
 Sub_00_acd9:
@@ -4211,30 +4211,30 @@ Sub_00_acd9:
 	CMP #$03
 	BEQ @00_ad12
 	LDA #<Data_00_ad93
-	STA $00c7
+	STA zPointerC7
 	LDA #>Data_00_ad93
-	STA $00c8
+	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 	JMP @00_ad1e
 @00_acf6:
 	LDA #<Data_00_ad99
-	STA $00c7
+	STA zPointerC7
 	LDA #>Data_00_ad99
-	STA $00c8
+	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 	JMP @00_ad1e
 @00_ad04:
 	LDA #<Data_00_ad9f
-	STA $00c7
+	STA zPointerC7
 	LDA #>Data_00_ad9f
-	STA $00c8
+	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 	JMP @00_ad1e
 @00_ad12:
 	LDA #<Data_00_ada5
-	STA $00c7
+	STA zPointerC7
 	LDA #>Data_00_ada5
-	STA $00c8
+	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 	RTS
 @00_ad1e:
@@ -4246,30 +4246,30 @@ Sub_00_acd9:
 	CMP #$03
 	BEQ @00_ad57
 	LDA #<Data_00_adab
-	STA $00c7
+	STA zPointerC7
 	LDA #<Data_00_adab
-	STA $00c8
+	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 	JMP @00_ad62
 @00_ad3b:
 	LDA #<Data_00_adb1
-	STA $00c7
+	STA zPointerC7
 	LDA #>Data_00_adb1
-	STA $00c8
+	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 	JMP @00_ad62
 @00_ad49:
 	LDA #<Data_00_adb7
-	STA $00c7
+	STA zPointerC7
 	LDA #>Data_00_adb7
-	STA $00c8
+	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 	JMP @00_ad62
 @00_ad57:
 	LDA #<Data_00_adbd
-	STA $00c7
+	STA zPointerC7
 	LDA #>Data_00_adbd
-	STA $00c8
+	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 @00_ad62:
 	RTS
@@ -4298,17 +4298,17 @@ Data_00_adbd:
 
 Sub_00_adc3:
 	LDA #$6a
-	STA $0085
+	STA zPointer85
 	LDA #$05
-	STA $0086
+	STA zPointer85 + 1
 	LDA #$40
-	STA $0087
+	STA z87
 	JSR Sub_00_a771
 	RTS
 
 Sub_00_add3:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
 	LDA $024b
@@ -4326,14 +4326,14 @@ Sub_00_ade5:
 	LDA $02cf, X
 	SEC
 	SBC #$1b
-	STA $00a3
+	STA za3
 	ASL A
 	ASL A
 	ASL A
 	CLC
-	ADC $00a3
+	ADC za3
 	CLC
-	ADC $00a3
+	ADC za3
 	LDY $044f
 	STA $060d, Y
 	LDA $02d0, X
@@ -4383,7 +4383,7 @@ Sub_00_ae28:
 	STA $0539
 	JSR Sub_07_d9d3
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
@@ -4409,7 +4409,7 @@ Sub_00_ae28:
 	STA $044f
 	JSR Sub_00_af93
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
@@ -4556,9 +4556,9 @@ Sub_00_afb0:
 	LDA zPlayerMode
 	BNE @00_b02a
 	LDA #$08
-	STA $00b5
+	STA zPPUScrollY
 	LDA #$c8
-	STA $00b4
+	STA zPPUScrollX
 	LDX #$15
 	LDA #$06
 	STA $0264, X
@@ -4579,13 +4579,13 @@ Sub_00_afb0:
 	JMP @00_b048
 @00_b02a:
 	LDA #$00
-	STA $00b5
-	STA $00b4
+	STA zPPUScrollY
+	STA zPPUScrollX
 	; $2800 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
 	LDA #NMI | BG_TABLE | 2
 	STA iPPUControl
 	LDA #$e8
-	STA $00b5
+	STA zPPUScrollY
 	JSR Sub_00_b064
 	JSR Sub_00_b197
 	JSR Sub_00_b1ae
@@ -4604,67 +4604,67 @@ Sub_00_b04f:
 
 Sub_00_b058:
 	LDA #<Data_00_b1d0
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_b1d0
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	RTS
 
 Sub_00_b064:
 	LDA #<Data_00_b1d5
-	STA $0083
+	STA zPointer83
 	LDA #>Data_00_b1d5
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	RTS
 
 Sub_00_b070:
 	LDA #$73
-	STA $00b7
+	STA zPointerB7
 	LDA #$b3
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	LDA $0521
 	BNE @00_b08e
 	LDA #<Data_00_b4a3
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_b4a3
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	JMP @00_b099
 @00_b08e:
 	LDA #<Data_00_b4aa
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_b4aa
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 @00_b099:
 	LDA $0520
 	BEQ @00_b0b7
 	LDA #$7b
-	STA $00b7
+	STA zPointerB7
 	LDA #$b4
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	LDA #<Data_00_b0d7
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_b0d7
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	JMP JMP_00_b0c2
 @00_b0b7:
 	LDA #<Data_00_b0ce
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_b0ce
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 
 
 JMP_00_b0c2:
 	LDA #<Data_00_b0e0
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_00_b0e0
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	RTS
 
@@ -4679,9 +4679,9 @@ Data_00_b0e0:
 
 Sub_00_b0fd:
 	LDA #$4f
-	STA $00b7
+	STA zPointerB7
 	LDA #$b2
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	LDX #$16
 	LDA #$03
@@ -4695,31 +4695,31 @@ Sub_00_b0fd:
 	LDA $0521
 	BNE @00_b031
 	LDA #$b2
-	STA $00b7
+	STA zPointerB7
 	LDA #$b4
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	JMP @00_b13c
 @00_b131:
 	LDA #$b9
-	STA $00b7
+	STA zPointerB7
 	LDA #$b4
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 @00_b13c:
 	LDA $0522
 	BNE @00_b14f
 	LDA #$c1
-	STA $00b7
+	STA zPointerB7
 	LDA #$b4
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 	JMP @00_b15a
 @00_b14f:
 	LDA #$c8
-	STA $00b7
+	STA zPointerB7
 	LDA #$b4
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR Sub_07_cf7f
 @00_b15a:
 	LDA #$20
@@ -4750,32 +4750,32 @@ Sub_00_b0fd:
 
 Sub_00_b197:
 	LDA #$1d
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #$2c
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	RTS
 
 Sub_00_b1ae:
 	LDA #$22
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #$27
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #$31
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	RTS
 
@@ -4786,27 +4786,27 @@ Data_00_b1d5:
 
 Sub_00_b1da:
 	LDA #$36
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA $0520
 	BEQ @00_b1f5
 	LDA #$3b
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 @00_b1f5:
 	LDA #$40
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	LDA #$45
-	STA $0083
+	STA zPointer83
 	LDA #$b2
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_a3b0
 	RTS
 
@@ -4888,9 +4888,9 @@ Sub_00_b4d0:
 @00_b4dc:
 	JSR Sub_07_d124
 	LDA #$eb
-	STA $0083
+	STA zPointer83
 	LDA #$b4
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_adc3
 	RTS
 
@@ -4905,9 +4905,9 @@ Sub_00_b52b:
 	LDA #$04
 	JSR Sub_07_d124
 	LDA #$3c
-	STA $0083
+	STA zPointer83
 	LDA #$b5
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_adc3
 	RTS
 
@@ -5133,7 +5133,7 @@ Sub_00_b6fa:
 @00_b720:
 	DEX
 	BNE @00_b720
-	LDA $00b4
+	LDA zPPUScrollX
 	STA PPUSCROLL
 	STA PPUSCROLL
 	RTS
@@ -5284,10 +5284,10 @@ Sub_00_b800:
 	JSR Sub_07_d582
 	JSR Sub_07_f0bc
 	LDA $0613
-	STA $00a3
+	STA za3
 	LDA $0472
 	STA $0613
-	LDA $00a3
+	LDA za3
 	STA $0472
 	RTS
 @00_b865:
@@ -5476,7 +5476,7 @@ Sub_00_b9d4:
 	JSR Sub_00_a8ad
 	LDA $045a, X
 	LDY #$00
-	STA ($00c7), Y
+	STA (zPointerC7), Y
 	JSR Sub_00_ba9b
 	DEC $0487, X
 	DEC $0487, X
@@ -5519,10 +5519,10 @@ NormalCollision:
 	STA $04e9
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
-	STA $00a3
+	LDA (zPointerC7), Y
+	STA za3
 	LDA $045a, X
-	CMP $00a3
+	CMP za3
 	BEQ @00_ba52
 @00_ba47:
 	LDA #SFX_PLACEMENT
@@ -5594,13 +5594,13 @@ Sub_00_baaa:
 	JSR Sub_00_a8ad
 	LDA #$00
 	TAY
-	STA ($00c7), Y
+	STA (zPointerC7), Y
 	INC $04ea
 	INC $04ea
 	JSR Sub_00_a8ad
 	LDA #$00
 	TAY
-	STA ($00c7), Y
+	STA (zPointerC7), Y
 	LDX $0451
 	STX $0444
 	LDA $0452, X
@@ -5618,9 +5618,9 @@ Sub_00_baaa:
 	LDA #SFX_MATCH
 	JSR StoreMusicID
 	LDA #$19
-	STA $0083
+	STA zPointer83
 	LDA #$bb
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$00
 	JSR Sub_00_8939
 	RTS
@@ -5640,63 +5640,63 @@ Sub_00_bb1d:
 	LDA $05b4
 	ASL A
 	ASL A
-	STA $00a3
+	STA za3
 	LDY #$00
-	LDA ($00d3), Y
+	LDA (zPointerD3), Y
 	AND #$f3
-	ORA $00a3
-	STA ($00d3), Y
+	ORA za3
+	STA (zPointerD3), Y
 	RTS
 @00_bb41:
 	LDA $05b4
 	LTH A
 	ASL A
 	ASL A
-	STA $00a3
+	STA za3
 	LDY #$00
-	LDA ($00d3), Y
+	LDA (zPointerD3), Y
 	AND #$3f
-	ORA $00a3
-	STA ($00d3), Y
+	ORA za3
+	STA (zPointerD3), Y
 	RTS
 @00_bb57:
 	LDY #$00
-	LDA ($00d3), Y
+	LDA (zPointerD3), Y
 	AND #$fc
 	ORA $05b4
-	STA ($00d3), Y
+	STA (zPointerD3), Y
 	RTS
 @00_bb63:
 	LDA $05b4
 	LTH A
-	STA $00a3
+	STA za3
 	LDY #$00
-	LDA ($00d3), Y
+	LDA (zPointerD3), Y
 	AND #$cf
-	ORA $00a3
-	STA ($00d3), Y
+	ORA za3
+	STA (zPointerD3), Y
 	RTS
 
 Sub_00_bb77:
 	LDA #$6a
-	STA $00d3
+	STA zPointerD3
 	LDA #$05
-	STA $00d4
+	STA zPointerD3 + 1
 	LDA $05ac
 	CLC
-	ADC $00d3
-	STA $00d3
+	ADC zPointerD3
+	STA zPointerD3
 	BCC @00_bb8b
-	INC $00d4
+	INC zPointerD3 + 1
 @00_bb8b:
 	LDA $05ad
 	ASL A
 	ASL A
 	ASL A
-	ADC $00d3
-	STA $00d3
+	ADC zPointerD3
+	STA zPointerD3
 	BCC @00_bb99
-	INC $00d4
+	INC zPointerD3 + 1
 @00_bb99:
 	RTS
 
@@ -5736,7 +5736,7 @@ Sub_00_bbcb:
 	LDA $05b1
 	STA $05ab
 	LDA $05b2
-	STA $00a8
+	STA za8
 @00_bbdc:
 	JSR Sub_00_bbc1
 	DEC $05b2
@@ -5746,7 +5746,7 @@ Sub_00_bbcb:
 @00_bbea:
 	LDA $05b0
 	STA $05aa
-	LDA $00a8
+	LDA za8
 	STA $05b2
 	DEC $05b3
 	BEQ Branch_00_bbca

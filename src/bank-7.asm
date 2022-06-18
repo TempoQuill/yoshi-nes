@@ -86,35 +86,35 @@ Sub_07_cd38:
 	STY zAuxPointer + 1
 	ASL A
 	TAY
-	LDA Ptrs_01_a98e, Y
-	STA zMusicAddress
-	LDA Ptrs_01_a98e + 1, Y
-	STA zMusicAddress + 1
+	LDA OAMPointers, Y
+	STA zOAMOverheadPointer
+	LDA OAMPointers + 1, Y
+	STA zOAMOverheadPointer + 1
 	CLC
 	LDA $0263
 	BEQ @07_cd53
-	LDA $00b4
+	LDA zPPUScrollX
 	EOR #$ff
 	SEC
 @07_cd53:
 	ADC $0294, X
 	CLC
-	ADC #$00
-	STA $00e2
+	ADC #0
+	STA zOAMOffset
 	CLC
 	LDA $0263
 	BEQ @07_cd79
-	LDA $00b5
+	LDA zPPUScrollY
 	BEQ @07_cd79
 	LDA zPPUControl
 	AND #2
 	BNE @07_cd72
-	LDA $00b5
+	LDA zPPUScrollY
 	EOR #$ff
 	SEC
 	BCS @07_cd79
 @07_cd72:
-	LDA $00b5
+	LDA zPPUScrollY
 	ADC #$10
 	EOR #$ff
 	SEC
@@ -122,31 +122,31 @@ Sub_07_cd38:
 	ADC $02ac, X
 	CLC
 	ADC #$ff
-	STA zMusicHeaderID
+	STA ze3
 	LDA $027c, X
 	ASL A
 	ASL A
 	TAY
-	LDA (zMusicAddress), Y
-	STA zMusicHeaderPointer
+	LDA (zOAMOverheadPointer), Y
+	STA zOAMTileNumPointer
 	INY
-	LDA (zMusicAddress), Y
-	STA zMusicHeaderPointer + 1
+	LDA (zOAMOverheadPointer), Y
+	STA zOAMTileNumPointer + 1
 	INY
-	LDA (zMusicAddress), Y
-	STA ze6
+	LDA (zOAMOverheadPointer), Y
+	STA zOAMAttrCoordPointer
 	INY
-	LDA (zMusicAddress), Y
-	STA ze6 + 1
-	LDY #$00
-	LDA (zMusicHeaderPointer), Y
-	STA zByteCount
-	LDY #$00
-	LDA (ze6), Y
-	STA $00e5
-	LDA #$01
-	STA ze6 + 2
-	STA ze6 + 3
+	LDA (zOAMOverheadPointer), Y
+	STA zOAMAttrCoordPointer + 1
+	LDY #0
+	LDA (zOAMTileNumPointer), Y
+	STA zNumOAMTiles
+	LDY #0
+	LDA (zOAMAttrCoordPointer), Y
+	STA zOAMAttributes
+	LDA #1
+	STA zOAMTileNoIndex
+	STA zOAMCoordID
 	JSR Sub_07_cdb4
 	LDX zAuxPointer
 	LDY zAuxPointer + 1
@@ -155,30 +155,34 @@ Sub_07_cd38:
 Sub_07_cdb4:
 	LDX $0261
 @07_cdb7:
-	LDY ze6 + 3
-	LDA (ze6), Y
-	INC ze6 + 3
+; y-pos
+	LDY zOAMCoordID
+	LDA (zOAMAttrCoordPointer), Y
+	INC zOAMCoordID
 	CLC
-	ADC zMusicHeaderID
+	ADC ze3
 	STA iVirtualOAM, X
+; tile no.
 	INX
-	LDY ze6 + 2
-	LDA (zMusicHeaderPointer), Y
-	INC ze6 + 2
+	LDY zOAMTileNoIndex
+	LDA (zOAMTileNumPointer), Y
+	INC zOAMTileNoIndex
 	STA iVirtualOAM, X
+; attr
 	INX
-	LDA $00e5
+	LDA zOAMAttributes
 	STA iVirtualOAM, X
+; x-pos
 	INX
-	LDY ze6 + 3
-	LDA (ze6), Y
-	INC ze6 + 3
+	LDY zOAMCoordID
+	LDA (zOAMAttrCoordPointer), Y
+	INC zOAMCoordID
 	CLC
-	ADC $00e2
+	ADC zOAMOffset
 	STA iVirtualOAM, X
 	INX
 	BEQ @07_cde7
-	CMP zByteCount
+	CMP zNumOAMTiles
 	BNE @07_cdb7
 @07_cde7:
 	STX $0261
@@ -231,24 +235,24 @@ StartGame:
 	LDA #0
 	STA zMMC1Prg
 	JSR WriteToMapper
-	LDA $0000
+	LDA z00
 	CMP #$12
 	BNE @07_ce4e
-	LDA $0001
+	LDA z01
 	CMP #$48
 	BNE @07_ce4e
-	LDA $0002
+	LDA z02
 	CMP #$9e
 	BEQ @07_ce63
 @07_ce4e:
 	LDA #$01
 	STA $0616
 	LDA #$12
-	STA $0000
+	STA z00
 	LDA #$48
-	STA $0001
+	STA z01
 	LDA #$9e
-	STA $0002
+	STA z02
 	LDX #$03
 	BNE @07_ce73
 @07_ce63:
@@ -263,7 +267,7 @@ StartGame:
 @07_ce73:
 	LDA #$00
 @07_ce75:
-	STA $0000, X
+	STA z00, X
 	INX
 	BNE @07_ce75
 	LDY $0616
@@ -289,7 +293,7 @@ StartGame:
 	STA PPUADDR
 	JSR Sub_07_cecf
 	LDA #$00
-	STA $00b4
+	STA zPPUScrollX
 	LDA #0 ; hide everything, no color skews
 	STA PPUMASK
 	LDA #$1e ; show everything, no color skews
@@ -300,7 +304,7 @@ StartGame:
 	STA iPPUControl
 	JSR CopyPPUControl
 	LDA #$00
-	STA $00b6
+	STA zb6
 	JMP JMP_00_a37c
 
 Sub_07_cecf:
@@ -312,15 +316,15 @@ Sub_07_cecf:
 	LDA #$ff
 	STA $0200
 	LDA #$00
-	STA $00b7
+	STA zPointerB7
 	LDA #$02
-	STA $00b8
+	STA zPointerB7 + 1
 	LDA #$20
-	STA $00c3
+	STA zc3
 	LDA #$00
-	STA $00b9
-	STA $00b4
-	STA $00b5
+	STA zb9
+	STA zPPUScrollX
+	STA zPPUScrollY
 	STA $0222
 	LDA #$10
 	STA PPUSTATUS
@@ -337,80 +341,14 @@ Sub_07_cecf:
 ; unreferenced
 	.db $00, $00
 
-ResetMapper:
-	INC ResetMapper ; resets MMC1
-	RTS
-
-WriteToMapper:
-	JSR WriteMapperControl
-	JSR WriteChr1
-	JSR WriteChr2
-	JSR SwitchToMain
-	RTS
-
-WriteMapperControl:
-	LDA zMMC1Ctrl
-	STA MMC1_Control + $1000
-	LSR A
-	STA MMC1_Control + $1000
-	LSR A
-	STA MMC1_Control + $1000
-	LSR A
-	STA MMC1_Control + $1000
-	LSR A
-	STA MMC1_Control + $1000
-	RTS
-
-WriteChr1:
-	LDA zMMC1Chr + 1
-	STA MMC1_CHRBank1 + $1000
-	LSR A
-	STA MMC1_CHRBank1 + $1000
-	LSR A
-	STA MMC1_CHRBank1 + $1000
-	LSR A
-	STA MMC1_CHRBank1 + $1000
-	LSR A
-	STA MMC1_CHRBank1 + $1000
-	RTS
-
-WriteChr2:
-	LDA zMMC1Chr
-	STA MMC1_CHRBank2 + $1000
-	LSR A
-	STA MMC1_CHRBank2 + $1000
-	LSR A
-	STA MMC1_CHRBank2 + $1000
-	LSR A
-	STA MMC1_CHRBank2 + $1000
-	LSR A
-	STA MMC1_CHRBank2 + $1000
-	RTS
-
-SwitchToAudio:
-	LDA #$01
-	BNE PrgSwitch
-
-SwitchToMain:
-	LDA zMMC1Prg
-PrgSwitch:
-	STA MMC1_RomBank + $1000
-	LSR A
-	STA MMC1_RomBank + $1000
-	LSR A
-	STA MMC1_RomBank + $1000
-	LSR A
-	STA MMC1_RomBank + $1000
-	LSR A
-	STA MMC1_RomBank + $1000
-	RTS
+.include "src/home/mapper.asm"
 
 Sub_07_cf7f:
 	LDA PPUSTATUS
 	BNE @07_cf85
 	RTS
 @07_cf85:
-	STA $00bc
+	STA zbc
 	JMP Branch_07_d02a
 
 
@@ -418,19 +356,19 @@ JMP_07_cf8a:
 	LDX PPUSTATUS
 	AND #$3f
 	STA PPUADDR
-	STA $00bb
-	LDA ($00b7), Y
+	STA zbb
+	LDA (zPointerB7), Y
 	AND #$c0
-	STA $00bd
+	STA zbd
 	INY
-	LDA ($00b7), Y
+	LDA (zPointerB7), Y
 	STA PPUADDR
-	STA $00ba
+	STA zba
 	INY
 	LDA zPPUControl
 	AND #NMI | MS_SELECT | OBJ_RES | BG_TABLE | OBJ_TABLE | NT_BASE_MASK
 	STA zPPUControl
-	LDA ($00b7), Y
+	LDA (zPointerB7), Y
 	ASL A
 	BMI @07_cfb1
 	LDA #$00
@@ -440,11 +378,11 @@ JMP_07_cf8a:
 	LDA #VRAM_INC ; vertical
 	ORA zPPUControl
 	STA PPUCTRL
-	LDA ($00b7), Y
+	LDA (zPointerB7), Y
 	AND #$3f
 	TAX
 	LDA #$ff
-	BIT $00bd
+	BIT zbd
 	BEQ Branch_07_cfe0
 	BVS @07_cfc8
 	JMP Sub_07_d050
@@ -452,13 +390,13 @@ JMP_07_cf8a:
 	PHP
 	INY
 	PHY
-	LDA ($00b7), Y
+	LDA (zPointerB7), Y
 	TAY
 	LDA $0221, Y
 	CMP #$ff
 	BNE @07_cfd6
 @07_cfd6:
-	STA $00c0
+	STA zc0
 	PLY
 	PLP
 	JMP Branch_07_cfe0
@@ -467,36 +405,36 @@ Branch_07_cfde:
 Branch_07_cfe0:
 	INY
 Branch_07_cfe1:
-	LDA ($00b7), Y
-	BIT $00bd
+	LDA (zPointerB7), Y
+	BIT zbd
 	BVC @07_cfec
 	PHP
 	CLC
-	ADC $00c0
+	ADC zc0
 	PLP
 @07_cfec:
 	STA PPUDATA
-	INC $00be
+	INC zPPUDataCounter
 	DEX
 	BMI @07_d01d
 	LDA zPPUMask
 	AND #$18 ; are we showing background and sprites?
 	BEQ Branch_07_cfde
-	CMP $00bc
+	CMP zbc
 	BNE Branch_07_cfde
-	STX $00bc
+	STX zbc
 	ROR A
-	ORA $00bc
-	STA ($00b7), Y
+	ORA zbc
+	STA (zPointerB7), Y
 	DEY
 	CLC
-	LDA $00be
-	ADC $00ba
-	STA ($00b7), Y
+	LDA zPPUDataCounter
+	ADC zba
+	STA (zPointerB7), Y
 	DEY
 	LDA #$00
-	ADC $00bb
-	STA ($00b7), Y
+	ADC zbb
+	STA (zPointerB7), Y
 	DEY
 	BMI Branch_07_d04f
 	JSR Sub_07_d050
@@ -506,25 +444,25 @@ Branch_07_cfe1:
 	LDA zPPUMask
 	AND #$18 ; are we showing background and sprites?
 	BEQ Branch_07_d02a
-	CMP $00bc
+	CMP zbc
 	BEQ Branch_07_d04f
 Branch_07_d02a:
 	LDX PPUSTATUS
 	LDY #$00
-	STY $00bd
-	STY $00be
-	STY $00bf
-	LDA ($00b7), Y
+	STY zbd
+	STY zPPUDataCounter
+	STY zbf
+	LDA (zPointerB7), Y
 	CMP #$ff
 	BEQ @07_d03e
 	JMP JMP_07_cf8a
 @07_d03e:
 	LDA #$00
-	STA $00b9
+	STA zb9
 	LDA #$00
-	STA $00b7
+	STA zPointerB7
 	LDA #$02
-	STA $00b8
+	STA zPointerB7 + 1
 	LDA #$ff
 	STA $0200
 Branch_07_d04f:
@@ -533,63 +471,63 @@ Branch_07_d04f:
 Sub_07_d050:
 	TYA
 	SEC
-	ADC $00b7
-	STA $00b7
+	ADC zPointerB7
+	STA zPointerB7
 	LDA #$00
-	ADC $00b8
-	STA $00b8
+	ADC zPointerB7 + 1
+	STA zPointerB7 + 1
 	RTS
 
 Sub_07_d05d:
-	LDX $00b9
+	LDX zb9
 	STA $0200, X
-	INC $00b9
+	INC zb9
 	RTS
 
 Sub_07_d065:
 	LDA #$ff
-	LDX $00b9
+	LDX zb9
 	STA $0200, X
 	RTS
 ; unreferenced
 	JSR Sub_07_d097
-	LDX $00b9
-	LDA $00c5
+	LDX zb9
+	LDA zc5
 	STA $0200, X
 	INX
-	LDA $00c4
+	LDA zc4
 	STA $0200, X
 	INX
-	STX $00b9
+	STX zb9
 	RTS
 ; unreferenced
 	JSR Sub_07_d097
-	LDX $00b9
-	LDA $00c5
+	LDX zb9
+	LDA zc5
 	ORA #$40
 	STA $0200, X
 	INX
-	LDA $00c4
+	LDA zc4
 	STA $0200, X
 	INX
-	STX $00b9
+	STX zb9
 	RTS
 
 Sub_07_d097:
 	LDA #$00
-	STA $00c4
-	STA $00c5
-	LDA $00c2
+	STA zc4
+	STA zc5
+	LDA zc2
 	LTH A
-	ROL $00c5
+	ROL zc5
 	ASL A
-	ROL $00c5
+	ROL zc5
 	CLC
-	ADC $00c1
-	STA $00c4
-	LDA $00c3
-	ADC $00c5
-	STA $00c5
+	ADC zc1
+	STA zc4
+	LDA zc3
+	ADC zc5
+	STA zc5
 	RTS
 ; unreferenced
 	LDA #$ff
@@ -606,7 +544,7 @@ Sub_07_d0bf:
 	RTS
 @07_d0c5:
 	LDA zPPUControl
-	AND #NMI | MS_SELECT | OBJ_RES | BG_TABLE | OBJ_TABLE | NT_BASE_MASK
+	AND #$ff ^ VRAM_INC
 	STA PPUCTRL
 	LDA #$3f
 	STA PPUADDR
@@ -768,35 +706,35 @@ Sub_07_d203:
 
 
 JMP_07_d211:
-	LDX $0082
+	LDX z82
 	INX
 	CPX #$03
 	BCC @07_d21a
 	LDX #$00
 @07_d21a:
-	STX $0082
+	STX z82
 	JSR DisablePicture
 	JMP StartGame
 Branch_07_d222:
-	LDA $0082
+	LDA z82
 	ASL A
 	ASL A
 	TAX
 	LDA $0123
 	BNE @07_d281
 	LDA Ptrs_07_d302, X
-	STA $0083
+	STA zPointer83
 	LDA Ptrs_07_d302 + 1, X
-	STA $0084
+	STA zPointer83 + 1
 	LDA Ptrs_07_d302 + 2, X
-	STA $0085
+	STA zPointer85
 	LDA Ptrs_07_d302 + 3, X
-	STA $0086
+	STA zPointer85 + 1
 	LDY $0124
 	INC $0126
 	LDA $0126
 	INY
-	CMP ($0083), Y
+	CMP (zPointer83), Y
 	BNE @07_d258
 	LDA #$00
 	STA $0126
@@ -805,7 +743,7 @@ Branch_07_d222:
 	INY
 @07_d258:
 	DEY
-	LDA ($0083), Y
+	LDA (zPointer83), Y
 	STA $0251
 	AND #$08
 	BNE JMP_07_d211
@@ -813,7 +751,7 @@ Branch_07_d222:
 	INC $0127
 	LDA $0127
 	INY
-	CMP ($0085), Y
+	CMP (zPointer85), Y
 	BNE @07_d27a
 	LDA #$00
 	STA $0127
@@ -822,55 +760,55 @@ Branch_07_d222:
 	INY
 @07_d27a:
 	DEY
-	LDA ($0085), Y
+	LDA (zPointer85), Y
 	STA $0252
 	RTS
 @07_d281:
 	LDA Data_07_d30e, X
-	STA $0083
+	STA zPointer83
 	LDA Data_07_d30e + 1, X
-	STA $0084
+	STA zPointer83 + 1
 	LDA Data_07_d30e + 2, X
-	STA $0085
+	STA zPointer85
 	LDA Data_07_d30e + 3, X
-	STA $0086
+	STA zPointer85 + 1
 	LDY $0124
 	LDA $0251
-	CMP ($0083), Y
+	CMP (zPointer83), Y
 	BNE @07_d2aa
 	INY
-	LDA ($0083), Y
+	LDA (zPointer83), Y
 	CLC
 	ADC #$01
-	STA ($0083), Y
+	STA (zPointer83), Y
 	BNE @07_d2b6
 	DEY
 @07_d2aa:
 	YAD 2
 	STY $0124
-	STA ($0083), Y
+	STA (zPointer83), Y
 	LDA #$01
 	INY
-	STA ($0083), Y
+	STA (zPointer83), Y
 @07_d2b6:
 	LDY $0125
 	LDA $0252
-	CMP ($0085), Y
+	CMP (zPointer85), Y
 	BNE @07_d2cb
 	INY
-	LDA ($0085), Y
+	LDA (zPointer85), Y
 	CLC
 	ADC #$01
-	STA ($0085), Y
+	STA (zPointer85), Y
 	BNE @07_d2d7
 	DEY
 @07_d2cb:
 	YAD 2
 	STY $0125
-	STA ($0085), Y
+	STA (zPointer85), Y
 	LDA #$01
 	INY
-	STA ($0085), Y
+	STA (zPointer85), Y
 @07_d2d7:
 	RTS
 
@@ -1002,12 +940,12 @@ Sub_07_d543:
 	ASL A
 	TAX
 	LDA Ptrs_07_d5d8, X
-	STA $00d5
+	STA zPointerD5
 	INX
 	LDA Ptrs_07_d5d8, X
-	STA $00d6
+	STA zPointerD5 + 1
 	LDY #$00
-	LDA ($00d5), Y
+	LDA (zPointerD5), Y
 	STA $02e1
 	INY
 	JSR Sub_07_d56e
@@ -1015,10 +953,10 @@ Sub_07_d543:
 	RTS
 
 Sub_07_d56e:
-	LDA ($00d5), Y
+	LDA (zPointerD5), Y
 	STA $0474
 	INY
-	LDA ($00d5), Y
+	LDA (zPointerD5), Y
 	STA $0472
 	LDA $0521
 	BEQ @07_d581
@@ -1032,10 +970,10 @@ Sub_07_d582:
 	LDA #$cc
 	CMP $02e3
 	BNE @07_d5a6
-	LDA #$3a
-	STA $00d5
-	LDA #$d8
-	STA $00d6
+	LDA #<Data_00_d83a
+	STA zPointerD5
+	LDA #>Data_00_d83a
+	STA zPointerD5 + 1
 	LDA #$c8
 	STA $02e3
 	LDA #$00
@@ -1052,15 +990,15 @@ Sub_07_d582:
 	STA $02e2
 	JSR Sub_00_8840
 @07_d5bb:
-	LDA $00d5
+	LDA zPointerD5
 	CLC
 	ADC #$03
-	STA $00d5
+	STA zPointerD5
 	BCC @07_d5c6
-	INC $00d6
+	INC zPointerD5 + 1
 @07_d5c6:
-	LDY #$00
-	LDA ($00d5), Y
+	LDY #0
+	LDA (zPointerD5), Y
 	STA $02e1
 @07_d5cd:
 	LDY #$01
@@ -1129,9 +1067,10 @@ PTD_07_d65a:
 	.db $04, $02, $02, $04, $02, $02, $02, $02, $02, $06, $03, $06, $04
 	.db $03, $05, $04, $03, $04, $04, $03, $03, $04, $02, $0f, $04, $02
 	.db $02, $04, $02, $02, $04, $02, $02, $04, $02, $02, $01, $02, $02
-	.db $07, $03, $06, $04, $03, $05, $04, $03, $04, $04, $03, $03, $08
-	.db $02, $06, $08, $02, $05, $08, $03, $04, $08, $03, $03, $08, $03
-	.db $02
+	.db $07, $03, $06, $04, $03, $05, $04, $03, $04, $04, $03, $03
+Data_00_d83a:
+	.db $08, $02, $06, $08, $02, $05, $08, $03, $04, $08, $03, $03, $08
+	.db $03, $02
 
 SetStartingGarbage:
 	LDX $02df
@@ -1141,11 +1080,11 @@ SetStartingGarbage:
 	BCC @07_d854
 	LDX #$06
 @07_d854:
-	STX $00a3
+	STX za3
 	LDY #$00
 	JSR Sub_07_d916
 	LDA #$08
-	STA $00a4
+	STA za4
 	JSR Sub_07_d8de
 	LDX $02e0
 	INX
@@ -1154,19 +1093,19 @@ SetStartingGarbage:
 	BCC @07_d86d
 	LDX #$06
 @07_d86d:
-	STX $00a3
+	STX za3
 	LDY #$04
 	JSR Sub_07_d916
 	LDA #$2c
-	STA $00a4
+	STA za4
 	JSR Sub_07_d8de
 	LDA #$12
-	STA $00a5
+	STA za5
 @07_d87f:
 	LDA #$14
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
-	LDA $00a5
+	LDA za5
 	LSR A
 	SEC
 	SBC #$09
@@ -1175,34 +1114,34 @@ SetStartingGarbage:
 	ADC #SFX_ROW_1
 	JSR StoreMusicID
 	LDA #$00
-	STA $00a4
+	STA za4
 	LDA zPlayerMode
 	ASL A
 	ASL A
 	CLC
 	ADC #$04
-	STA $00a6
-	LDA $00a5
+	STA za6
+	LDA za5
 	STA $0445
 	STA $04ea
 @07_d8a9:
-	LDA $00a4
+	LDA za4
 	STA $0444
 	STA $04e9
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	STA $0446
 	JSR Sub_00_a8d8
-	INC $00a4
-	CMP $00a6
+	INC za4
+	CMP za6
 	BNE @07_d8a9
 	JSR Sub_07_e449
 	JSR Sub_00_b601
 	JSR Sub_07_efd1
-	CMP $00a5
-	CMP $00a5
-	LDA $00a5
+	CMP za5
+	CMP za5
+	LDA za5
 	CMP $0487
 	BCS @07_d87f
 	CMP $048b
@@ -1211,71 +1150,71 @@ SetStartingGarbage:
 
 Sub_07_d8de:
 	LDA #$04
-	STA $00a7
+	STA za7
 @07_d8e2:
 	LDA #$00
-	STA $00a8
-	LDA $00a3
-	STA $00a5
-	LDA $00a4
-	STA $00a6
+	STA za8
+	LDA za3
+	STA za5
+	LDA za4
+	STA za6
 @07_d8ee:
 	JSR Sub_00_80cb
 	LDA $0255
 	AND #$03
 	CLC
 	ADC #$01
-	CMP $00a8
+	CMP za8
 	BEQ @07_d8ee
-	STA $00a8
-	LDX $00a6
+	STA za8
+	LDX za6
 	STA $048f, X
-	CMP $00a6
-	CMP $00a5
+	CMP za6
+	CMP za5
 	BNE @07_d8ee
-	LDA $00a4
+	LDA za4
 	CLC
 	ADC #$09
-	STA $00a4
-	CMP $00a7
+	STA za4
+	CMP za7
 	BNE @07_d8e2
 	RTS
 
 Sub_07_d916:
 	LDA #$04
-	STA $00a4
+	STA za4
 	LDA #$0a
 	SEC
-	SBC $00a3
+	SBC za3
 	ASL A
 @07_d920:
 	STA $0487, Y
 	INY
-	CMP $00a4
+	CMP za4
 	BNE @07_d920
 	RTS
 
 Sub_07_d929:
-	STA $00a3
-	STA $00a4
+	STA za3
+	STA za4
 @07_d92d:
-	LDA ($0083), Y
+	LDA (zPointer83), Y
 	CLC
 	ADC #$01
-	STA ($0083), Y
+	STA (zPointer83), Y
 	CMP #$0a
 	BNE @07_d94b
 	LDA #$00
-	STA ($0083), Y
+	STA (zPointer83), Y
 	INY
-	CMP $00a3
+	CMP za3
 	BNE @07_d92d
 	DEY
 	LDA #$09
 @07_d944:
-	STA ($0083), Y
+	STA (zPointer83), Y
 	DEY
-	CMP $00a4
+	CMP za4
 	BNE @07_d944
 @07_d94b:
 	RTS
@@ -1288,16 +1227,16 @@ Sub_07_d94c:
 	STA $04e9
 	LDA #$04
 	STA $04ea
-	STA $00a4
+	STA za4
 	JSR Sub_00_a8ad
 	LDA #$08
-	STA $00a3
+	STA za3
 @07_d96a:
 	LDY #$00
 	LDA #$06
-	CMP ($00c7), Y
+	CMP (zPointerC7), Y
 	BNE @07_d9bd
-	LDA $00a4
+	LDA za4
 	STA $0529, X
 	LDA $0451
 	STA $0552, X
@@ -1317,31 +1256,31 @@ Sub_07_d94c:
 	ADC $044f
 	TAY
 	LDA #$34
-	STA $0083
+	STA zPointer83
 	LDA #$05
-	STA $0084
+	STA zPointer83 + 1
 	LDA #$03
 	JSR Sub_07_d929
 	LDY #$00
 @07_d9af:
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	PHA
 	LDA #$00
-	STA ($00c7), Y
+	STA (zPointerC7), Y
 	INY
 	PLA
 	CMP #$06
 	BNE @07_d9af
 	RTS
 @07_d9bd:
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	BEQ @07_d9c4
 	INC $053a, X
 @07_d9c4:
-	INC $00a4
-	INC $00a4
+	INC za4
+	INC za4
 	INY
-	CMP $00a3
+	CMP za3
 	BNE @07_d96a
 	LDA #$00
 	STA $053a, X
@@ -1573,13 +1512,13 @@ Sub_07_dba5:
 	STA $0269
 	STA $026a
 	LDX #$00
-	STX $00a3
+	STX za3
 	LDY #$07
 @07_dbc5:
-	LDA $00a3
+	LDA za3
 	STA $027c, X
 	INX
-	INC $00a3
+	INC za3
 	DEY
 	BNE @07_dbc5
 	LDA #$48
@@ -1659,9 +1598,9 @@ Sub_07_dc21:
 	LDA #$40
 	AND $024b
 	BEQ @07_dc86
-	LDA $007d
+	LDA z7d
 	BEQ Sub_07_dcc1
-	CMP $007d
+	CMP z7d
 	LDX #$00
 	JSR Sub_07_e0ee
 	JMP Sub_07_dcc1
@@ -1669,10 +1608,10 @@ Sub_07_dc21:
 	LDA #$80
 	AND $024b
 	BEQ @07_dc9d
-	LDA $007d
+	LDA z7d
 	CMP #$04
 	BEQ Sub_07_dcc1
-	INC $007d
+	INC z7d
 	LDX #$00
 	JSR Sub_07_e0ee
 	JMP Sub_07_dcc1
@@ -1695,7 +1634,7 @@ Sub_07_dc21:
 
 Sub_07_dcc1:
 	LDA #$60
-	LDX $007d
+	LDX z7d
 	BEQ @07_dccd
 @07_dcc7:
 	CLC
@@ -1713,9 +1652,9 @@ JMP_07_dcd1:
 	LDA #$40
 	AND $024c
 	BEQ @07_dceb
-	LDA $007f
+	LDA z7f
 	BEQ Sub_07_dd26
-	CMP $007f
+	CMP z7f
 	LDX #$02
 	JSR Sub_07_e0ee
 	JMP Sub_07_dd26
@@ -1723,10 +1662,10 @@ JMP_07_dcd1:
 	LDA #$80
 	AND $024c
 	BEQ @07_dd02
-	LDA $007f
+	LDA z7f
 	CMP #$04
 	BEQ Sub_07_dd26
-	INC $007f
+	INC z7f
 	LDX #$02
 	JSR Sub_07_e0ee
 	JMP Sub_07_dd26
@@ -1749,7 +1688,7 @@ JMP_07_dcd1:
 
 Sub_07_dd26:
 	LDA #$60
-	LDX $007f
+	LDX z7f
 	BEQ @07_dd32
 @07_dd2c:
 	CLC
@@ -1768,10 +1707,10 @@ Sub_07_dd36:
 	LDA #$40
 	AND $024b
 	BEQ @07_dd57
-	LDA $007e
+	LDA z7e
 	BEQ @07_dd57
 	LDA #$00
-	STA $007e
+	STA z7e
 	LDX #$01
 	JSR Sub_07_e0ee
 	JMP Sub_07_dd92
@@ -1779,10 +1718,10 @@ Sub_07_dd36:
 	LDA #$80
 	AND $024b
 	BEQ @07_dd6e
-	LDA $007e
+	LDA z7e
 	BNE @07_dd6e
 	LDA #$01
-	STA $007e
+	STA z7e
 	LDX #$01
 	JSR Sub_07_e0ee
 	JMP Sub_07_dd92
@@ -1804,7 +1743,7 @@ Sub_07_dd36:
 	STA $027d
 
 Sub_07_dd92:
-	LDA $007e
+	LDA z7e
 	BNE @07_dd9c
 	LDA #$64
 	STA $0295
@@ -1820,10 +1759,10 @@ Sub_07_dda2:
 	LDA #$40
 	AND $024c
 	BEQ @07_ddbe
-	LDA $0080
+	LDA z80
 	BEQ @07_ddbe
 	LDA #$00
-	STA $0080
+	STA z80
 	LDX #$03
 	JSR Sub_07_e0ee
 	JMP Sub_07_ddf9
@@ -1831,10 +1770,10 @@ Sub_07_dda2:
 	LDA #$80
 	AND $024c
 	BEQ @07_ddd5
-	LDA $0080
+	LDA z80
 	BNE @07_ddd5
 	LDA #$01
-	STA $0080
+	STA z80
 	LDX #$03
 	JSR Sub_07_e0ee
 	JMP Sub_07_ddf9
@@ -1856,14 +1795,14 @@ Sub_07_dda2:
 	STA $027f
 
 Sub_07_ddf9:
-	LDA $0080
+	LDA z80
 	BNE @07_de03
 	LDA #$64
-	STA $0297
+	STA i297
 	RTS
 @07_de03:
 	LDA #$a0
-	STA $0297
+	STA i297
 	RTS
 
 Sub_07_de09:
@@ -1873,13 +1812,13 @@ Sub_07_de09:
 	LDA $024b
 	RTS
 @07_de14:
-	LDA $007d
+	LDA z7d
 	STA $02df
-	LDA $007e
+	LDA z7e
 	STA $0521
-	LDA $007f
+	LDA z7f
 	STA $02e0
-	LDA $0080
+	LDA z80
 	STA $0522
 	INC $0248
 	RTS
@@ -1930,10 +1869,10 @@ JMP_07_de70:
 	LDA #$40
 	AND $024b
 	BEQ @07_de91
-	LDA $0079
+	LDA z79
 	BEQ @07_de91
 	LDA #$00
-	STA $0079
+	STA z79
 	LDX #$00
 	JSR Sub_07_e112
 	JMP Sub_07_decc
@@ -1941,10 +1880,10 @@ JMP_07_de70:
 	LDA #$80
 	AND $024b
 	BEQ @07_dea8
-	LDA $0079
+	LDA z79
 	BNE @07_dea8
 	LDA #$01
-	STA $0079
+	STA z79
 	LDX #$00
 	JSR Sub_07_e112
 	JMP Sub_07_decc
@@ -1966,7 +1905,7 @@ JMP_07_de70:
 	STA $027c
 
 Sub_07_decc:
-	LDA $0079
+	LDA z79
 	BNE @07_ded6
 	LDA #$68
 	STA $0294
@@ -1985,9 +1924,9 @@ JMP_07_dedc:
 	LDA #$40
 	AND $024b
 	BEQ @07_defb
-	LDA $007a
+	LDA z7a
 	BEQ Sub_07_df5d
-	CMP $007a
+	CMP z7a
 	LDX #$01
 	JSR Sub_07_e112
 	JMP Sub_07_df5d
@@ -1995,10 +1934,10 @@ JMP_07_dedc:
 	LDA #$80
 	AND $024b
 	BEQ @07_df12
-	LDA $007a
+	LDA z7a
 	CMP #$04
 	BEQ Sub_07_df5d
-	INC $007a
+	INC z7a
 	LDX #$01
 	JSR Sub_07_e112
 	JMP Sub_07_df5d
@@ -2038,7 +1977,7 @@ JMP_07_dedc:
 
 Sub_07_df5d:
 	LDA #$60
-	LDX $007a
+	LDX z7a
 	BEQ @07_df69
 @07_df63:
 	CLC
@@ -2058,10 +1997,10 @@ JMP_07_df6d:
 	LDA #$40
 	AND $024b
 	BEQ @07_df8e
-	LDA $007b
+	LDA z7b
 	BEQ @07_df8e
 	LDA #$00
-	STA $007b
+	STA z7b
 	LDX #$02
 	JSR Sub_07_e112
 	JMP Sub_07_dff0
@@ -2069,10 +2008,10 @@ JMP_07_df6d:
 	LDA #$80
 	AND $024b
 	BEQ @07_dfa5
-	LDA $007b
+	LDA z7b
 	BNE @07_dfa5
 	LDA #$01
-	STA $007b
+	STA z7b
 	LDX #$02
 	JSR Sub_07_e112
 	JMP Sub_07_dff0
@@ -2111,7 +2050,7 @@ JMP_07_df6d:
 	STA $027e
 
 Sub_07_dff0:
-	LDA $007b
+	LDA z7b
 	BNE @07_dffa
 	LDA #$64
 	STA $0296
@@ -2178,7 +2117,7 @@ Sub_07_e063:
 	DEX
 	BNE @07_e06c
 @07_e072:
-	STA $0297
+	STA i297
 	RTS
 
 GetMainBGM:
@@ -2228,13 +2167,13 @@ Sub_07_e0ae:
 	LDA $024b
 	RTS
 @07_e0b9:
-	LDA $0079
+	LDA z79
 	STA $0520
-	LDX $007a
+	LDX z7a
 	STX $02df
 	INX
 	STX $02c4
-	LDA $007b
+	LDA z7b
 	STA $0521
 	LDA zBGMCursor
 	STA $0522
@@ -2282,7 +2221,7 @@ Sub_07_e112:
 	RTS
 PRG_NMI:
 	PHA
-	LDA $00c6
+	LDA zNMIActivity
 	BEQ @07_e129
 	PLA
 	RTI
@@ -2297,16 +2236,16 @@ PRG_NMI:
 	PHY
 	JSR WriteChr2
 	JSR WriteChr1
-	LDA $00b1
+	LDA zb1
 	AND #$7f
 	BEQ @07_e152
 	JSR Sub_07_e1ee
-	INC $00b2
+	INC zb2
 	BNE @07_e157
-	INC $00b3
+	INC zb3
 	JMP @07_e157
 @07_e152:
-	STA $00b1
+	STA zb1
 	JSR Sub_07_e18c
 @07_e157:
 	JSR SwitchToAudio
@@ -2366,9 +2305,9 @@ Sub_07_e18c:
 	STA PPUADDR
 	STA PPUADDR
 	LDA PPUSTATUS
-	LDA $00b4
+	LDA zPPUScrollX
 	STA PPUSCROLL
-	LDA $00b5
+	LDA zPPUScrollY
 	STA PPUSCROLL
 	LDA zPPUControl
 	STA PPUCTRL
@@ -2380,9 +2319,9 @@ DUMMY_IRQ:
 	RTI
 
 Sub_07_e1ee:
-	CMP $00b1
+	CMP zb1
 	LDA zPPUControl
-	AND #OBJ_RES | BG_TABLE | OBJ_TABLE | VRAM_INC | NT_BASE_MASK
+	AND #$ff ^ (NMI | MS_SELECT)
 	STA PPUCTRL
 	LDA #0 ; hide everything, no color skews
 	STA PPUMASK
@@ -2413,9 +2352,9 @@ Sub_07_e1ee:
 	STA PPUADDR
 	STA PPUADDR
 	LDA PPUSTATUS
-	LDA $00b4
+	LDA zPPUScrollX
 	STA PPUSCROLL
-	LDA $00b5
+	LDA zPPUScrollY
 	STA PPUSCROLL
 	LDA zPPUControl
 	STA PPUCTRL
@@ -2440,7 +2379,7 @@ EndTheGame:
 	JSR Sub_07_e41c
 @07_e27c:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA iChannelID
 	CMP #$54
@@ -2451,7 +2390,7 @@ EndTheGame:
 	JMP @07_e29c
 @07_e295:
 	LDA #$78
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 @07_e29c:
 	LDA $0122
@@ -2470,7 +2409,7 @@ EndTheGame:
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
 	LDA $044f
-	STA $00ac
+	STA zac
 	EOR #$01
 	TAX
 	INC $0548, X
@@ -2483,13 +2422,13 @@ EndTheGame:
 	JSR StoreMusicID
 @07_e2dd:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA iChannelID
 	CMP #$6c
 	BEQ @07_e2dd
 	JSR Sub_00_acd9
-	LDA $00ac
+	LDA zac
 	STA $044f
 	JSR Sub_00_86f3
 	LDA $044f
@@ -2505,7 +2444,7 @@ EndTheGame:
 	JSR StoreMusicID
 @07_e31f:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA iChannelID
 	CMP #$62
@@ -2534,12 +2473,12 @@ StageIsClear:
 	LDA #MUSIC_STAGE_CLEAR
 	JSR StoreMusicID
 	LDA #$0a
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_00_89a5
 @07_e35a:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA iChannelID
 	CMP #MUSIC_STAGE_CLEAR
@@ -2548,7 +2487,7 @@ StageIsClear:
 	STA $0450
 	JSR Sub_07_e41c
 	LDA #$78
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR FieldScene
 	JSR Sub_00_add3
@@ -2571,14 +2510,14 @@ StageIsClear:
 	LDA #MUSIC_GAME_POINT
 	JSR StoreMusicID
 	LDA #$0a
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_cdf0
 	LDA #$03
 	STA $027a
 @07_e3b9:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA iChannelID
 	CMP #$62
@@ -2594,14 +2533,14 @@ StageIsClear:
 	JSR StoreMusicID
 	JSR Sub_07_e449
 	LDA #$0a
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_cdf0
 	LDA #$03
 	STA $027a
 @07_e3ef:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA iChannelID
 	CMP #$6c
@@ -2622,7 +2561,7 @@ StageIsClear:
 
 Sub_07_e41c:
 	LDA #$01
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
@@ -2648,7 +2587,7 @@ Sub_07_e449:
 	BIT PPUSTATUS
 	BVC @07_e457
 @07_e44e:
-	LDA $00b1
+	LDA zb1
 	BNE @07_e44e
 @07_e452:
 	BIT PPUSTATUS
@@ -2657,7 +2596,7 @@ Sub_07_e449:
 	BIT PPUSTATUS
 	BVC @07_e457
 	LDA #$01
-	STA $00c6
+	STA zNMIActivity
 	NOP
 	NOP
 	NOP
@@ -3537,7 +3476,7 @@ Sub_07_e449:
 	STA PPUADDR
 	LDX $02cd
 @07_edc6:
-	LDA ($0083), Y
+	LDA (zPointer83), Y
 	STA PPUDATA
 	INY
 	DEX
@@ -3578,7 +3517,7 @@ Sub_07_e449:
 	STA PPUADDR
 	STA PPUADDR
 	LDA #$00
-	STA $00c6
+	STA zNMIActivity
 	RTS
 
 Sub_07_ee2c:
@@ -3883,17 +3822,17 @@ Sub_07_f10d:
 
 Sub_07_f13b:
 	LDA #$75
-	STA $00c7
+	STA zPointerC7
 	LDA #$04
-	STA $00c8
+	STA zPointerC7 + 1
 	LDA $044f
 	ASL A
 	ASL A
 	CLC
-	ADC $00c7
-	STA $00c7
+	ADC zPointerC7
+	STA zPointerC7
 	BCC @07_f151
-	INC $00c8
+	INC zPointerC7 + 1
 @07_f151:
 	LDA #$05
 	STA $0450
@@ -3901,21 +3840,21 @@ Sub_07_f13b:
 	JSR Sub_00_80cb
 	LDA #$03
 	AND $0255
-	STA $00a4
+	STA za4
 	JSR Sub_00_80cb
 	LDA #$03
 	AND $0255
-	STA $00a5
-	LDY $00a4
-	LDA ($00c7), Y
-	STA $00a3
-	LDY $00a5
-	LDA ($00c7), Y
-	LDY $00a4
-	STA ($00c7), Y
-	LDA $00a3
-	LDY $00a5
-	STA ($00c7), Y
+	STA za5
+	LDY za4
+	LDA (zPointerC7), Y
+	STA za3
+	LDY za5
+	LDA (zPointerC7), Y
+	LDY za4
+	STA (zPointerC7), Y
+	LDA za3
+	LDY za5
+	STA (zPointerC7), Y
 	DEC $0450
 	BNE @07_f156
 	RTS
@@ -4062,9 +4001,9 @@ Sub_07_f272:
 	STA $04fb, Y
 @07_f289:
 	LDA $04fb, Y
-	STA $00c2
+	STA zc2
 	LDA Data_07_f2de, Y
-	STA $00c1
+	STA zc1
 	JSR Sub_07_d097
 	LDA $044f
 	TAY
@@ -4074,9 +4013,9 @@ Sub_07_f272:
 @07_f2a1:
 	LDX #$00
 @07_f2a3:
-	LDA $00c5
+	LDA zc5
 	STA $0447, X
-	LDA $00c4
+	LDA zc4
 	STA $0448, X
 	LDA $04fb, Y
 	CMP #$08
@@ -4114,7 +4053,7 @@ Sub_07_f2e0:
 	BEQ @07_f321
 	LDA $0512, X
 	BNE @07_f321
-	LDA $00b2
+	LDA zb2
 	AND #$01
 	CMP $044f
 	BNE @07_f321
@@ -4310,7 +4249,7 @@ Sub_07_f47b:
 	INC $04e9
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	STA $0518
 	BEQ @07_f4b9
 	LDA #$00
@@ -4332,7 +4271,7 @@ Sub_07_f47b:
 	STA $04e9
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	BEQ @07_f4dd
 	STA $0446
 	BEQ @07_f4dc
@@ -4349,7 +4288,7 @@ Sub_07_f47b:
 	STA $04e9
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	STA $0518
 	BEQ @07_f4dd
 	LDA #$00
@@ -4372,22 +4311,22 @@ Sub_07_f517:
 	STA $04e9
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
+	LDA (zPointerC7), Y
 	STA $04e1
 	INC $04e9
 	JSR Sub_00_a8ad
 	LDY #$00
-	LDA ($00c7), Y
-	STA $00a3
+	LDA (zPointerC7), Y
+	STA za3
 	LDA $04e1
-	STA ($00c7), Y
-	LDA $00a3
+	STA (zPointerC7), Y
+	LDA za3
 	STA $04e1
 	DEC $04e9
 	JSR Sub_00_a8ad
 	LDY #$00
 	LDA $04e1
-	STA ($00c7), Y
+	STA (zPointerC7), Y
 	RTS
 
 Sub_07_f554:
@@ -4593,7 +4532,7 @@ InitSound:
 	JSR SwitchToMain
 	LDA #0
 	STA $0636
-	STA $06b9
+	STA i6b9
 	STA iMusicID1
 	STA iMusicID2
 	RTS
@@ -4682,9 +4621,9 @@ TitleScreen:
 	STA $0260
 	JSR Sub_07_f7e2
 	LDA #<Data_01_b106
-	STA $00b7
+	STA zPointerB7
 	LDA #>Data_01_b106
-	STA $00b8
+	STA zPointerB7 + 1
 	JSR SwitchToAudio
 	JSR Sub_07_cf7f
 	LDA #$21
@@ -4712,9 +4651,9 @@ Sub_07_f7e2:
 	LDA #$00
 	JSR Sub_07_d124
 	LDA #<Data_07_f913
-	STA $0083
+	STA zPointer83
 	LDA #>Data_07_f913
-	STA $0084
+	STA zPointer83 + 1
 	JSR Sub_00_adc3
 	LDX #$02
 	LDA #$04
@@ -4740,16 +4679,16 @@ Sub_07_f7e2:
 	LDA #NMI | BG_TABLE
 	STA iPPUControl
 	LDA #$f8
-	STA $00b5
+	STA zPPUScrollY
 	LDA #$08
-	STA $00b4
+	STA zPPUScrollX
 	RTS
 
 JPT_07_f831:
 	LDA $0616
 	BEQ @07_f842
 	LDA #$42
-	STA $00b1
+	STA zb1
 	JSR Sub_00_806a
 	LDA #$00
 	STA $0616
@@ -4761,7 +4700,7 @@ JPT_07_f831:
 	LDA zPlayerMode
 	ORA #$80
 	STA $0122
-	LDA $0082
+	LDA z82
 	CMP #$02
 	BEQ @07_f870
 	STA $0520

@@ -124,20 +124,30 @@ MMC1_RomBank = $e000
 
 header_byte_length = 3
 channel_mask = %00000011
-num_channels = $8
+num_channels = 8
 sfx_boundary = (HeaderBoundary_SFX - MusicHeaders) / 3
 music_boundary = (HeaderBoundary_Music - MusicHeaders) / 3
 drum_boundary = (HeaderBoundary_Drums - MusicHeaders) / 3
 
+Ramp_Mask     = %00001111
 Volume_Ramp_F = %00010000
 Volume_Loop_F = %00100000
 Cycle_Mask    = %11000000
+
+PITCH_HI_MASK = %00000111
+PITCH_ID_MASK = %11110000
 
 SQ1_F = %00000001
 SQ2_F = %00000010
 TRI_F = %00000100
 NOISE_F = %00001000
 DPCM_F = %00010000
+PSG_MASK = %00001111
+
+R_PARAM_ENV = 0
+R_PARAM_SWEEP = 1
+R_PARAM_LO = 2
+R_PARAM_HI = 3
 
 pitch_sweep_cmd = $10
 sfx_pitch_inc_switch_cmd = $11
@@ -153,9 +163,17 @@ tempo_cmd = $ed
 new_song_cmd = $ee
 channel_mute_cmd = $ef
 channel_volume_cmd = $f0
+sound_filler_cmd = $f8
 sound_call_cmd = $fd
 sound_loop_cmd = $fe
 sound_ret_cmd = $ff
+
+env_loop_cmd = $fe
+env_ret_cmd = $ff
+
+NUM_OCTAVES = 8
+
+VOL_OFFSET_MASK = %00001111
 
 SOUND_READING_MODE    = %00000001
 SOUND_SUBROUTINE      = %00000010
@@ -166,7 +184,16 @@ SOUND_PITCH_SLIDE     = %00100000
 SOUND_PITCH_SLIDE_DIR = %01000000
 SOUND_PITCH_SWAP      = %10000000
 
+; music_d0
+NOTE_LENGTH_MASK      = %00001111
+NOTE_ID_MASK          = %00001111
 NOTE_BLOCK_INSTRUMENT = %10000000
+NOTE_TAIL_MASK        = %00001111
+NOTE_FADE_SPEED_MASK  = %11110000
+
+; vibrato
+VIBRATO_SPEED_MASK = %00001111
+VIBRATO_DEPTH_MASK = %11110000
 
 CHAN_0 = $0
 CHAN_1 = $1
@@ -180,15 +207,20 @@ CHAN_8 = $8
 
 C_ = 0
 C# = 1
+Db = 1
 D_ = 2
 D# = 3
+Eb = 3
 E_ = 4
 F_ = 5
 F# = 6
+Gb = 6
 G_ = 7
 G# = 8
+Ab = 8
 A_ = 9
 A# = 10
+Bb = 10
 B_ = 11
 NOTE_REST = 12
 
