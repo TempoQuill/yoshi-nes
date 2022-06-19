@@ -1245,7 +1245,7 @@ Sub_07_d94c:
 	JSR Sub_00_a8ad
 	LDA #$08
 	STA za3
-@07_d96a:
+@07_d968:
 	LDY #$00
 	LDA #$06
 	CMP (zPointerC7), Y
@@ -1253,7 +1253,7 @@ Sub_07_d94c:
 	LDA za4
 	STA $0529, X
 	LDA $0451
-	STA $0552, X
+	STA $0525, X
 	LDY $0451
 	LDA $0452, Y
 	STA $0527, X
@@ -1295,7 +1295,7 @@ Sub_07_d94c:
 	INC za4
 	INY
 	CMP za3
-	BNE @07_d96a
+	BNE @07_d968
 	LDA #$00
 	STA $053a, X
 Branch_07_d9d2:
@@ -1340,7 +1340,7 @@ Sub_07_d9f6:
 	CLC
 	ADC $053a, X
 	STA $053c, X
-	LDA $0552, X
+	LDA $0525, X
 	TAX
 	JSR Sub_00_ba9b
 	JSR Sub_07_d9d3
@@ -1379,7 +1379,7 @@ Sub_07_d9f6:
 	JSR StoreMusicID
 @07_da76:
 	LDX $044f
-	LDA $0552, X
+	LDA $0525, X
 	STA $0444
 	LDA $0527, X
 	STA $0445
@@ -1411,7 +1411,7 @@ Sub_07_d9f6:
 	LDX $044f
 	INC $0523, X
 	LDA #$00
-	LDA $0552, X
+	LDA $0525, X
 	TAY
 	LDA $0529, X
 	CLC
@@ -1419,7 +1419,7 @@ Sub_07_d9f6:
 	STA $0487, Y
 	LDA $0529, X
 	STA $0445
-	LDA $0552, X
+	LDA $0525, X
 	STA $0444
 	LDA #$00
 	STA $0446

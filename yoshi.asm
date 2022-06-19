@@ -22,19 +22,19 @@
 .include "src/bank-1.asm"
 .include "src/tail-0.asm"
 
-.base $8000
+.base $c000
 .include "src/tail-1.asm"
 
-.base $8000
+.base $c000
 .include "src/tail-1.asm"
 
-.base $8000
+.base $c000
 .include "src/tail-1.asm"
 
-.base $8000
+.base $c000
 .include "src/tail-1.asm"
 
-.base $8000
+.base $c000
 .include "src/tail-1.asm"
 
 .base $c000

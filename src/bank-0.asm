@@ -379,7 +379,7 @@ JMP_00_846b:
 @00_84a4:
 	JSR Sub_00_84af
 	JSR Sub_00_84af
-	CMP za3
+	DEC za3
 	BNE @00_8472
 	RTS
 
@@ -939,7 +939,7 @@ Sub_00_89b4:
 	STA $0567
 	LDA #$00
 	STA $044f
-	STA $0552
+	STA $0525
 	LDA #$04
 	STA iCrunchCounter
 	LDA #$12
@@ -982,7 +982,7 @@ Sub_00_89b4:
 	ASL A
 	TAX
 	LDA $0550
-	CMP Data_00_8fb1, X
+	CMP Data_00_8fb8, X
 	BCS @00_8b17
 	LDA #$08
 	JSR Sub_00_8c7f
@@ -1006,7 +1006,7 @@ Sub_00_89b4:
 	JMP @00_8bfe
 @00_8b17:
 	INX
-	CMP Data_00_8fb1, X
+	CMP Data_00_8fb8, X
 	BCS @00_8b4b
 	LDA #$08
 	JSR Sub_00_8c7f
@@ -1028,7 +1028,7 @@ Sub_00_89b4:
 	JMP @00_8bfe
 @00_8b4b:
 	INX
-	CMP Data_00_8fb1, X
+	CMP Data_00_8fb8, X
 	BCS @00_8b7a
 	LDA #$08
 	JSR Sub_00_8c7f
@@ -1048,7 +1048,7 @@ Sub_00_89b4:
 	JMP @00_8bfe
 @00_8b7a:
 	INX
-	CMP Data_00_8fb1, X
+	CMP Data_00_8fb8, X
 	BCS @00_8ba4
 	LDA #$08
 	JSR Sub_00_8c7f
@@ -1070,9 +1070,9 @@ Sub_00_89b4:
 	LDA #$0b
 	STA $05ab
 	LDX iStageNum
-	LDA Data_00_8fb1, X
+	LDA Data_00_8fb8, X
 	STA $05b4
-	LDA $0552
+	LDA $0525
 	BNE @00_8bd0
 	LDA #$01
 	STA $05aa
@@ -1110,7 +1110,7 @@ Sub_00_89b4:
 	LDA $0530
 	AND #$03
 	BEQ @00_8bfe
-	INC $0552
+	INC $0525
 	DEC iCrunchCounter
 	BEQ @00_8c1a
 	JMP @00_8a8a
@@ -1182,9 +1182,9 @@ Sub_00_8c7f:
 	STA za4
 	LDA #$c3
 	CLC
-	ADC $0552
-	ADC $0552
-	ADC $0552
+	ADC $0525
+	ADC $0525
+	ADC $0525
 	STA za5
 	LDA #$02
 	STA za6
@@ -1207,9 +1207,9 @@ Sub_00_8cb0:
 	STA za4
 	LDA #$83
 	CLC
-	ADC $0552
-	ADC $0552
-	ADC $0552
+	ADC $0525
+	ADC $0525
+	ADC $0525
 	STA za5
 	LDA #$02
 	STA za6
@@ -1219,16 +1219,16 @@ Sub_00_8cb0:
 
 Sub_00_8cda:
 	STA za6
-	LDX $0552
+	LDX $0525
 	LDA #$03
 	STA $0264, X
 	LDA #$b0
 	STA $02ac, X
 	LDA #$05
 	CLC
-	ADC $0552
-	ADC $0552
-	ADC $0552
+	ADC $0525
+	ADC $0525
+	ADC $0525
 	ASL A
 	ASL A
 	ASL A
@@ -1249,9 +1249,9 @@ Sub_00_8cda:
 	STA za4
 	LDA #$83
 	CLC
-	ADC $0552
-	ADC $0552
-	ADC $0552
+	ADC $0525
+	ADC $0525
+	ADC $0525
 	STA za5
 	LDA #$02
 	STA za6
@@ -1262,16 +1262,16 @@ Sub_00_8cda:
 
 Sub_00_8d33:
 	STA za6
-	LDX $0552
+	LDX $0525
 	LDA #<Data_00_a003
 	STA $0264, X
 	LDA #>Data_00_a003
 	STA $02ac, X
 	LDA #$05
 	CLC
-	ADC $0552
-	ADC $0552
-	ADC $0552
+	ADC $0525
+	ADC $0525
+	ADC $0525
 	ASL A
 	ASL A
 	ASL A
@@ -1292,9 +1292,9 @@ Sub_00_8d33:
 	STA za4
 	LDA #$83
 	CLC
-	ADC $0552
-	ADC $0552
-	ADC $0552
+	ADC $0525
+	ADC $0525
+	ADC $0525
 	STA za5
 	LDA #$02
 	STA za6
@@ -1307,7 +1307,7 @@ Sub_00_8d8c:
 	PHA
 	LDA #$08
 	STA $0268
-	LDA $0552
+	LDA $0525
 	STA $0444
 	JSR Sub_00_ac39
 	LDA $051a
@@ -1389,12 +1389,13 @@ Data_00_8f1b:
 Data_00_8f90:
 	.db $00, $90, $91, $00, $90, $91, $00, $90, $91, $00, $90, $91, $00
 	.db $00, $a0, $a1, $00, $a0, $a1, $00, $a0, $a1, $00, $a0, $a1, $00
-	.db $00, $01, $02, $03, $04, $05, $06
+	.db $00, $01, $02, $03, $04, $05, $06, $02, $00, $00, $00, $00, $00
+	.db $02
 
-Data_00_8fb1:
-	.db $02, $00, $00, $00, $00, $00, $02, $01, $02, $03, $04, $01, $03
-	.db $05, $08, $01, $03, $06, $0a, $01, $04, $08, $0c, $02, $05, $0a
-	.db $0e, $03, $06, $0a, $0f, $04, $08, $0d, $12
+Data_00_8fb8:
+	.db $01, $02, $03, $04, $01, $03, $05, $08, $01, $03, $06, $0a, $01
+	.db $04, $08, $0c, $02, $05, $0a, $0e, $03, $06, $0a, $0f, $04, $08
+	.db $0d, $12
 
 Sub_00_8fd4:
 	LDA #$00
@@ -1514,7 +1515,7 @@ Sub_00_90ce:
 	STA $0542, X
 	LDA #$0f
 	STA $053e, X
-	LDA $0552, X
+	LDA $0525, X
 	STA $0444
 	LDA $0527, X
 	STA $0445
@@ -1624,7 +1625,7 @@ Sub_00_91c9:
 	LDX $044f
 	LDA #$00
 	STA $052e, X
-	LDA $0552, X
+	LDA $0525, X
 	STA $0444
 	LDA $0527, X
 	STA $0445
