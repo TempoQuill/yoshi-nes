@@ -18,12 +18,12 @@ UpdateSound:
 	LDA $068d, X
 	BEQ @01_9ea5
 	LDA iMusicTracks
-	AND #$0f
+	AND #1 << CHAN_3 | 1 << CHAN_2 | 1 << CHAN_1 | 1 << CHAN_0
 	BEQ @next_chan
 	BNE @01_9ea5
 @01_9e9e:
 	LDA iMusicTracks
-	AND #$0f
+	AND #1 << CHAN_3 | 1 << CHAN_2 | 1 << CHAN_1 | 1 << CHAN_0
 	BEQ @01_9eb3
 @01_9ea5:
 	JSR TurnOffEnvelopes
@@ -727,7 +727,7 @@ Channel_Mute:
 	LDA Channel_Masks, X
 	ORA iMusicTracks
 	STA iMusicTracks
-	LDA #$01
+	LDA #1
 	STA iChannelNoteLength, X
 	JMP IncrementMusicAddress
 @quit:
@@ -1257,10 +1257,10 @@ PlayAudio:
 	STA TRI_LINEAR
 	RTS
 @01_a6c9: ; never used
-	LDA #$01
+	LDA #1
 	BNE @01_a6cf
 @01_a6cd: ; never used
-	LDA #$00
+	LDA #0
 @01_a6cf:
 	STA i6b9
 @01_a6d2:
@@ -1450,7 +1450,7 @@ ApplyPitchSlide:
 	LDA iChannelTargetRawPitch + 3, X
 	SBC iChannelPitch, X
 	BPL @01_a836
-	LDA #$00
+	LDA #0
 @01_a836:
 	STA iChannelLittlePitch + 3, X
 	LDA iChannelFlags, X
@@ -1465,7 +1465,7 @@ ApplyPitchSlide:
 	LDA iChannelPitch, X
 	SBC iChannelTargetRawPitch + 3, X
 	BPL @01_a858
-	LDA #$00
+	LDA #0
 @01_a858:
 	STA iChannelLittlePitch + 3, X
 @01_a85b:
