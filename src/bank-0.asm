@@ -1757,7 +1757,7 @@ Sub_00_92a4:
 	SBC zc7
 	STA $0294, X
 @00_92cc:
-	STA $02ac, X
+	LDA $02ac, X
 	CLC
 	ADC zc9
 	STA $02ac, X
