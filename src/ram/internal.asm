@@ -228,7 +228,6 @@ i105:
 	.dsb 13
 i11d:
 	.dsb 3
-i220:
 	.dsb $2
 iDisableMusic:
 	.dsb 1
@@ -247,7 +246,9 @@ i127:
 iStackTop:
 	.dsb 1
 i200:
-	.dsb $21
+	.dsb $20
+i220:
+	.dsb 1
 i221:
 	.dsb 1
 i222:
