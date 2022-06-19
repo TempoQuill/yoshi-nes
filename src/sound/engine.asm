@@ -163,7 +163,7 @@ UpdateChannel:
 	JSR ChannelCheckProceedure
 	BCS @01_9f7c ; leave if active
 	; else, update the respective register
-	LDA #$80
+	LDA #Linear_Flag
 	JMP UpdateEnv
 @01_9f7c:
 	RTS
@@ -1267,9 +1267,9 @@ PlayAudio:
 	PHX
 	PHY
 	LDX #header_byte_length
-	LDA $00fa
+	LDA zMusicStartingHeaderPointer
 	STA zMusicHeaderPointer
-	LDA $00fb
+	LDA zMusicStartingHeaderPointer + 1
 	STA zMusicHeaderPointer + 1
 @01_a6e0:
 	LDA zMusicHeaderID
@@ -1281,7 +1281,7 @@ PlayAudio:
 @01_a6eb:
 	DEX
 	BNE @01_a6e0
-	LDY #$00
+	LDY #0
 	STY zMusicHeaderOffset
 	LDA (zMusicHeaderPointer), Y
 	ROL A
@@ -1316,7 +1316,7 @@ PlayAudio:
 @01_a723:
 	LDY zMusicHeaderOffset
 	LDA (zMusicHeaderPointer), Y
-	AND #$0f
+	AND #PSG_MASK
 	STA zChannelIndex
 	TAX
 	CMP #CHAN_8
@@ -1358,7 +1358,7 @@ PlayAudio:
 @01_a776:
 	STA iChannelFlags, X
 	LDA zChannelIndex
-	AND #$03
+	AND #channel_mask
 	ASL A
 	ASL A
 	TAY
