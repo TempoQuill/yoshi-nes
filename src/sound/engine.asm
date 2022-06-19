@@ -15,7 +15,7 @@ UpdateSound:
 	AND ChannelMasks, X
 	BEQ @01_9eb3
 	BCS @01_9ea8
-	LDA $068d, X
+	LDA iChannelTracks, X
 	BEQ @01_9ea5
 	LDA iMusicTracks
 	AND #1 << CHAN_3 | 1 << CHAN_2 | 1 << CHAN_1 | 1 << CHAN_0
@@ -92,18 +92,18 @@ UpdateChannel:
 	; no
 	; noise or SFX?
 	CPX #CHAN_3
-	BCS @01_9f5f ; check for hill if so
+	BCS @could_be_hill
 	; no
-	; is (X)$068d a non-zero
-	LDA $068d, X
-	BNE @01_9f5f ; check for hill if so
+	; is (X)iChannelTracks a non-zero
+	LDA iChannelTracks, X
+	BNE @could_be_hill
 	; no
-	; is (X)$06f7-0 active?
-	LDA $06f7, X
+	; is SOUND_VIBRATO_7 active?
+	LDA iChannelVibratoFlags, X
 	ROL A
-	BCC @01_9f5f ; check for hill if not
+	BCC @could_be_hill
 	; yes
-	; is bit 1 active?
+	; is SOUND_VIBRATO_DIR active?
 	ROL A
 	BCC @01_9f3c ; skip ahead if not
 	; yes
@@ -119,25 +119,25 @@ UpdateChannel:
 	; reset the counter
 	LDA #0
 	STA iChannelVibratoCounter, X
-	; set bits 7 and 0 for (X)$06f7
-	LDA #%10000001
-	STA $06f7, X
+	; set SOUND_VIBRATO_7 and SOUND_VIBRATO_0 for (X)iChannelVibratoFlags
+	LDA #SOUND_VIBRATO_7 | SOUND_VIBRATO_0
+	STA iChannelVibratoFlags, X
 @01_9f3c:
-	; is (X)$06f7-2 active?
-	LDA $06f7, X
-	AND #%00000100
+	; is SOUND_VIBRATO_2 active?
+	LDA iChannelVibratoFlags, X
+	AND #SOUND_VIBRATO_2
 	BEQ @01_9f48 ; don't mess with it if not
-	; else, only bit 7 should be active at this point
-	LDA #%10000000
-	STA $06f7, X
+	; else, only SOUND_VIBRATO_7 should be active at this point
+	LDA #SOUND_VIBRATO_7
+	STA iChannelVibratoFlags, X
 @01_9f48:
 	; put the channel offset in Y
 	LDA zChannelOffset
 	AND #PSG_MASK
 	TAY
-	; is (X)$06f7-1 active?
-	LDA $06f7, X
-	AND #%00000010
+	; is SOUND_VIBRATO_DIR active?
+	LDA iChannelVibratoFlags, X
+	AND #SOUND_VIBRATO_DIR
 	BEQ @01_9f8e ; only use counter for speed then
 	; else, does the counter match the speed?
 	LDA iChannelVibratoSpeed, X
@@ -145,7 +145,7 @@ UpdateChannel:
 	BEQ @01_9f7d ; change pitch if a match appears
 	; else, increment the counter
 	INC iChannelVibratoCounter, X
-@01_9f5f:
+@could_be_hill:
 	; hill channel?
 	CPX #CHAN_6
 	BEQ @01_9f6a
@@ -159,7 +159,7 @@ UpdateChannel:
 	LDA iChannelNoteLength, X
 	CMP iChannelNoteInFrames, X
 	BNE @01_9f7c
-	; yes, so check if (X)$068d is active
+	; yes, so check if (X)iChannelTracks is active
 	JSR ChannelCheckProceedure
 	BCS @01_9f7c ; leave if active
 	; else, update the respective register
@@ -201,7 +201,7 @@ UpdateChannel:
 	; reset the counter
 	LDA #0
 	STA iChannelVibratoCounter, X
-	INC $06f7, X
+	INC iChannelVibratoFlags, X
 @01_9fb8:
 	; check the volume ramp
 	LDA iChannelVolumeRamp, X
@@ -398,7 +398,7 @@ ParseByte:
 @01_a0fc:
 	CPX #CHAN_5
 	BNE @01_a10d
-	LDA i68a
+	LDA iChannelID + 1
 	BEQ @01_a10d
 	LDA i6b9
 	BNE @01_a10d
@@ -657,7 +657,7 @@ Vibrato:
 	LDA (zMusicAddress), Y
 	BNE @non_zero
 	LDA #0
-	STA $06f7, X
+	STA iChannelVibratoFlags, X
 	JMP ParseNextByte
 @non_zero:
 	STA iChannelVibratoDelay, X
@@ -670,8 +670,8 @@ Vibrato:
 	STA iChannelVibratoDepth, X
 	LDA #0
 	STA iChannelVibratoCounter, X
-	LDA #%11000001
-	STA $06f7, X
+	LDA #SOUND_VIBRATO_7 | SOUND_VIBRATO_6 | SOUND_VIBRATO_0
+	STA iChannelVibratoFlags, X
 	JMP ParseNextByte
 
 Dummy:
@@ -882,11 +882,14 @@ GetNoteLength:
 @get_pitch:
 	CPX #CHAN_3
 	BCS @env_ext
-	LDA $06f7, X
+	; is SOUND_VIBRATO_7 active?
+	LDA iChannelVibratoFlags, X
 	ROL A
 	BCC @env_ext
-	LDA #%11000001
-	STA $06f7, X
+	; yes
+	; set bits 7, 6, and 0
+	LDA #SOUND_VIBRATO_7 | SOUND_VIBRATO_6 | SOUND_VIBRATO_0
+	STA iChannelVibratoFlags, X
 	LDA #0
 	STA iChannelVibratoCounter, X
 @env_ext:
@@ -1126,7 +1129,7 @@ DrumCheckProceedure:
 	PHA
 	CPX #CHAN_3
 	BNE CheckProClearCarry
-	LDA $068f
+	LDA iChannelTracks + 2
 	BEQ CheckProClearCarry
 	BNE CheckProSetCarry
 
@@ -1135,9 +1138,9 @@ ChannelCheckProceedure:
 	PHA
 	CPX #CHAN_0
 	BNE @01_a5f4
-	; nope
-	; is $068d zero?
-	LDA $068d
+	; okay
+	; is iChannelTracks zero?
+	LDA iChannelTracks
 	BEQ CheckProClearCarry
 	BNE CheckProSetCarry
 @01_a5f4:
@@ -1145,8 +1148,8 @@ ChannelCheckProceedure:
 	CPX #CHAN_2
 	BCS @01_a5ff
 	; then we're on Pulse 1
-	; is $068e zero?
-	LDA $068d, X
+	; is iChannelTracks + 1 zero?
+	LDA iChannelTracks, X
 	BEQ CheckProClearCarry
 	BNE CheckProSetCarry
 @01_a5ff:
@@ -1154,8 +1157,8 @@ ChannelCheckProceedure:
 	CPX #CHAN_2
 	BNE CheckProClearCarry
 	; then we're on hill
-	; is $068f zero?
-	LDA $068f
+	; is iChannelTracks + 2 zero?
+	LDA iChannelTracks + 2
 	BEQ CheckProClearCarry
 CheckProSetCarry:
 	SEC
@@ -1228,27 +1231,27 @@ PlayAudio:
 	BCS @not_music
 	LDA #0
 	STA iChannelID
-	STA i68a
-	STA i68b
-	STA i68c
-	STA $06f7
-	STA $06f8
-	STA $06f9
+	STA iChannelID + 1
+	STA iChannelID + 2
+	STA iChannelID + 3
+	STA iChannelVibratoFlags
+	STA iChannelVibratoFlags + 1
+	STA iChannelVibratoFlags + 2
 @not_music:
 	CMP #music_boundary + 1
 	BCC @01_a6d2
 	LDA #0
 	STA iChannelID
-	STA i68a
-	STA i68b
-	STA i68c
-	STA $068d
-	STA $068e
-	STA $068f
-	STA $0690
-	STA $06f7
-	STA $06f8
-	STA $06f9
+	STA iChannelID + 1
+	STA iChannelID + 2
+	STA iChannelID + 3
+	STA iChannelTracks
+	STA iChannelTracks + 1
+	STA iChannelTracks + 2
+	STA iChannelTracks + 3
+	STA iChannelVibratoFlags
+	STA iChannelVibratoFlags + 1
+	STA iChannelVibratoFlags + 2
 	LDA #Volume_Loop_F | Volume_Ramp_F
 	STA SQ1_ENV
 	STA SQ2_ENV
@@ -1364,12 +1367,12 @@ PlayAudio:
 	TAY
 	CPX #CHAN_0
 	BNE @01_a789
-	LDA $068d
+	LDA iChannelTracks
 	BNE @01_a7a6
 @01_a789:
 	CPX #CHAN_2
 	BCS @01_a792
-	LDA $068d, X
+	LDA iChannelTracks, X
 	BNE @01_a7a6
 @01_a792:
 	LDA #0

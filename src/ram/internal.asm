@@ -317,14 +317,8 @@ iChannelVolumeRamp:
 iChannelNoteLength:
 	.dsb 8
 iChannelID:
-	.dsb 1
-i68a:
-	.dsb 1
-i68b:
-	.dsb 1
-i68c:
-	.dsb 1
-
+	.dsb 4
+iChannelTracks:
 	.dsb 4
 iChannelAddress: ; 691
 	.dsb $10
@@ -356,7 +350,9 @@ iChannelVibratoDepth:
 iChannelVibratoSpeed:
 	.dsb 3
 iChannelVibratoCounter:
-	.dsb 6
+	.dsb 3
+iChannelVibratoFlags:
+	.dsb 3
 iMusicTempo:
 	.dsb 2
 iSFXTempo:
