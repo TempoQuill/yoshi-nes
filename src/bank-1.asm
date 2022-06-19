@@ -18,8 +18,8 @@
 
 .include "src/sound/engine.asm"
 
-.include "src/data/oam.asm"
-.include "src/data/palettes.asm"
+.include "src/data/gfx/oam.asm"
+.include "src/data/gfx/palettes.asm"
 
 Data_01_b106:
 	.db $20, $25, $15, $da, $da, $da, $da, $da, $da, $da, $da, $da, $da

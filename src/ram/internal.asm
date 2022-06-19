@@ -9,7 +9,17 @@ z03: ; never written to, except for the boot sequence (clear)
 	.dsb $2a
 z34: ; never written to, except for the boot sequence (clear)
 	.dsb 1
-	.dsb $40
+	.dsb $2b
+z60:
+	.dsb 1
+	.dsb 1
+z62:
+	.dsb 1
+	.dsb 1
+z64:
+	.dsb 1
+	.dsb 1
+	.dsb $f
 zMMC1Ctrl: ; 75
 	.dsb 1
 zMMC1Chr: ; 76
@@ -68,6 +78,7 @@ z95: ; completely unused, never read
 	.dsb 1
 	.dsb $d
 za3:
+zResolutionInMetatiles:
 	.dsb 1
 za4:
 	.dsb 1
@@ -197,17 +208,73 @@ zMusicTempoCalcBuffer: ; e9
 	.dsb 1
 	.dsb $e
 zf8:
-	.dsb 4
+	.dsb 2
+zMusicStartingHeaderPointer:
+	.dsb 2
 zInstrumentPointer:
 	.dsb 2
-	.dsb 2
+zfe:
+	.dsb 1
+zff:
+	.dsb 1
 ; $100
-	.dsb $ff
+i100:
+iPaletteTable:
+	.dsb 5
+i105:
+	.dsb 11
+	.dsb 13
+i11d:
+	.dsb 3
+	.dsb $2
+iDisableMusic:
+	.dsb 1
+i123:
+	.dsb 1
+i124:
+	.dsb 1
+i125:
+	.dsb 1
+i126:
+	.dsb 1
+i127:
+	.dsb 1
+; stack
+	.dsb $d8
 iStackTop:
 	.dsb 1
-	.dsb $46
-iPPUControl:
-	.dsb $51
+i200:
+	.dsb $21
+i221:
+	.dsb 1
+i222:
+	.dsb 1
+	.dsb $1
+i224:
+	.dsb 1
+i225:
+	.dsb 1
+iPals:
+	.dsb $20
+iPPUControl: ; 246
+	.dsb 1
+iPPUMask:
+	.dsb 1
+i248:
+	.dsb 1
+iJoyCurrent:
+	.dsb 2
+iJoyHeld:
+	.dsb 2
+iJoy24d:
+	.dsb 2
+iJoyXOR:
+	.dsb 2
+iJoyPressed:
+	.dsb 2
+iJoyBackup:
+	.dsb 2
+	.dsb $42
 i297: ; unused, written to but never read
 	.dsb $69
 	.dsb $100
@@ -216,7 +283,8 @@ i297: ; unused, written to but never read
 iCrunchCounter: ; 54e
 	.dsb 3
 iStageNum: ; 551
-	.dsb $af
+	.dsb 1
+	.dsb $ae
 	.dsb $21
 iChannelTargetRawPitch:
 	.dsb $12
