@@ -1070,7 +1070,7 @@ Sub_00_89b4:
 	LDA #$0b
 	STA $05ab
 	LDX iStageNum
-	LDA Data_00_8fb8, X
+	LDA Data_00_8fb1, X
 	STA $05b4
 	LDA $0525
 	BNE @00_8bd0
@@ -1138,7 +1138,7 @@ Sub_00_8c39:
 	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_00_920f
-	CMP za3
+	DEC za3
 	BNE @00_8c3d
 	RTS
 
@@ -1156,7 +1156,7 @@ Sub_00_8c4c:
 	STA $0550
 @00_8c65:
 	INC $054f
-	CMP za3
+	DEC za3
 	BNE @00_8c4e
 	RTS
 
@@ -1322,7 +1322,7 @@ Sub_00_8d8c:
 	JSR Sub_00_806a
 	JSR Sub_00_920f
 	DEC $02b0
-	CMP za3
+	DEC za3
 	BNE @00_8da8
 	LDA #<Data_00_8dd6
 	STA zPointer83
@@ -1389,8 +1389,10 @@ Data_00_8f1b:
 Data_00_8f90:
 	.db $00, $90, $91, $00, $90, $91, $00, $90, $91, $00, $90, $91, $00
 	.db $00, $a0, $a1, $00, $a0, $a1, $00, $a0, $a1, $00, $a0, $a1, $00
-	.db $00, $01, $02, $03, $04, $05, $06, $02, $00, $00, $00, $00, $00
-	.db $02
+	.db $00, $01, $02, $03, $04, $05, $06
+
+Data_00_8fb1:
+	.db $02, $00, $00, $00, $00, $00, $02
 
 Data_00_8fb8:
 	.db $01, $02, $03, $04, $01, $03, $05, $08, $01, $03, $06, $0a, $01
@@ -1651,7 +1653,7 @@ Sub_00_91c9:
 	STA $02ac, X
 	INX
 	INC zc7
-	CMP zc9
+	DEC zc9
 	BNE @00_91f1
 Branch_00_920e:
 	RTS
@@ -2256,7 +2258,7 @@ Sub_00_97e7:
 	BNE @00_9800
 	INY
 	INX
-	CMP za3
+	DEC za3
 	BNE @00_97f3
 @00_9800:
 	RTS
@@ -2708,7 +2710,7 @@ LayoutFieldNametable:
 	DEY
 	BNE @00_9d0b
 	INX
-	CMP zResolutionInMetatiles
+	DEC zResolutionInMetatiles
 	BNE @00_9d09
 	RTS
 
@@ -3474,7 +3476,7 @@ Sub_00_a7bc:
 	SBC #$20
 	STA z89
 	BCS @00_a7d7
-	CMP z8a
+	DEC z8a
 @00_a7d7:
 	RTS
 
@@ -3849,13 +3851,13 @@ Data_00_aa8c:
 	.db $6b, $6f, $73, $77, $7b, $7f
 
 Sub_00_aa92:
-	CMP z89
+	DEC z89
 	BNE @00_aa98
-	CMP z8a
+	DEC z8a
 @00_aa98:
-	CMP z8f
+	DEC z8f
 	BNE @00_aa9e
-	CMP z90
+	DEC z90
 @00_aa9e:
 	RTS
 
@@ -3972,26 +3974,26 @@ Sub_00_ab29:
 	RTS
 
 Sub_00_ab72:
-	CMP z89
+	DEC z89
 	BNE @00_ab78
-	CMP z8a
+	DEC z8a
 @00_ab78:
-	CMP z8f
+	DEC z8f
 	BNE @00_ab7e
-	CMP z90
+	DEC z90
 @00_ab7e:
 	LDA z89
 	SEC
 	SBC $0514
 	BCS @00_ab88
-	CMP z8a
+	DEC z8a
 @00_ab88:
 	STA z89
 	LDA z8f
 	SEC
 	SBC $0514
 	BCS @00_ab94
-	CMP z90
+	DEC z90
 @00_ab94:
 	STA z8f
 	RTS
@@ -4058,13 +4060,13 @@ Sub_00_abe0:
 	RTS
 
 Sub_00_ac14:
-	CMP z89
+	DEC z89
 	BNE @00_ac1a
-	CMP z8a
+	DEC z8a
 @00_ac1a:
-	CMP z8f
+	DEC z8f
 	BNE @00_ac20
-	CMP z90
+	DEC z90
 @00_ac20:
 	LDA z89
 	CLC

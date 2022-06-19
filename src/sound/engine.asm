@@ -912,9 +912,9 @@ GetNoteLength:
 	INC zMusicTempNoteLength + 1
 @no_carry:
 	; if we match zMusicTempNoteLength, we exit the loop
-	CMP zMusicTempNoteLength
+	DEC zMusicTempNoteLength
 	BNE @loop
-	; we're safe to store A now (kinda redundant)
+	; we're safe to store A now
 	STA zMusicTempNoteLength
 	LDA #4
 	STA zByteCount
@@ -922,7 +922,7 @@ GetNoteLength:
 	; divide word by 2
 	LSR zMusicTempNoteLength + 1
 	ROR zMusicTempNoteLength
-	CMP zByteCount
+	DEC zByteCount
 	BNE @01_a452 ; never branches
 	LDA zMusicTempNoteLength
 @main_param:
@@ -1389,7 +1389,7 @@ PlayAudio:
 @01_a7a6:
 	LDA zMusicHeaderID
 	STA iChannelID, X
-	CMP zChannelTotal
+	DEC zChannelTotal
 	BMI @quit
 	LDY zMusicHeaderOffset
 	YAD 3

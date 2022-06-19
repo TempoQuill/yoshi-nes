@@ -182,7 +182,7 @@ Sub_07_cdb4:
 	STA iVirtualOAM, X
 	INX
 	BEQ @07_cde7
-	CMP zNumOAMTiles
+	DEC zNumOAMTiles
 	BNE @07_cdb7
 @07_cde7:
 	STX $0261
@@ -421,7 +421,7 @@ Branch_07_cfe1:
 	LDA zPPUMask
 	AND #%00011000 ; are we showing background and sprites?
 	BEQ Branch_07_cfde
-	CMP zbc
+	DEC zbc
 	BNE Branch_07_cfde
 	STX zbc
 	ROR A
@@ -445,7 +445,7 @@ Branch_07_cfe1:
 	LDA zPPUMask
 	AND #%00011000 ; are we showing background and sprites?
 	BEQ Branch_07_d02a
-	CMP zbc
+	DEC zbc
 	BEQ Branch_07_d04f
 Branch_07_d02a:
 	LDX PPUSTATUS
@@ -1148,13 +1148,13 @@ SetStartingGarbage:
 	STA $0446
 	JSR Sub_00_a8d8
 	INC za4
-	CMP za6
+	DEC za6
 	BNE @07_d8a9
 	JSR Sub_07_e449
 	JSR Sub_00_b601
 	JSR Sub_07_efd1
-	CMP za5
-	CMP za5
+	DEC za5
+	DEC za5
 	LDA za5
 	CMP $0487
 	BCS @07_d87f
@@ -1183,14 +1183,14 @@ Sub_07_d8de:
 	STA za8
 	LDX za6
 	STA $048f, X
-	CMP za6
-	CMP za5
+	DEC za6
+	DEC za5
 	BNE @07_d8ee
 	LDA za4
 	CLC
 	ADC #$09
 	STA za4
-	CMP za7
+	DEC za7
 	BNE @07_d8e2
 	RTS
 
@@ -1204,7 +1204,7 @@ Sub_07_d916:
 @07_d920:
 	STA $0487, Y
 	INY
-	CMP za4
+	DEC za4
 	BNE @07_d920
 	RTS
 
@@ -1221,14 +1221,14 @@ Sub_07_d929:
 	LDA #$00
 	STA (zPointer83), Y
 	INY
-	CMP za3
+	DEC za3
 	BNE @07_d92d
 	DEY
 	LDA #$09
 @07_d944:
 	STA (zPointer83), Y
 	DEY
-	CMP za4
+	DEC za4
 	BNE @07_d944
 @07_d94b:
 	RTS
@@ -1294,7 +1294,7 @@ Sub_07_d94c:
 	INC za4
 	INC za4
 	INY
-	CMP za3
+	DEC za3
 	BNE @07_d968
 	LDA #$00
 	STA $053a, X
@@ -1614,7 +1614,7 @@ Sub_07_dc21:
 	BEQ @07_dc86
 	LDA z7d
 	BEQ Sub_07_dcc1
-	CMP z7d
+	DEC z7d
 	LDX #$00
 	JSR Sub_07_e0ee
 	JMP Sub_07_dcc1
@@ -1668,7 +1668,7 @@ JMP_07_dcd1:
 	BEQ @07_dceb
 	LDA z7f
 	BEQ Sub_07_dd26
-	CMP z7f
+	DEC z7f
 	LDX #$02
 	JSR Sub_07_e0ee
 	JMP Sub_07_dd26
@@ -1940,7 +1940,7 @@ JMP_07_dedc:
 	BEQ @07_defb
 	LDA z7a
 	BEQ Sub_07_df5d
-	CMP z7a
+	DEC z7a
 	LDX #$01
 	JSR Sub_07_e112
 	JMP Sub_07_df5d
@@ -2085,7 +2085,7 @@ JMP_07_e000:
 	BEQ @07_e022
 	LDA zBGMCursor
 	BEQ Sub_07_e063
-	CMP zBGMCursor
+	DEC zBGMCursor
 	JSR Sub_07_e099
 	LDA #$05
 	STA $0267
@@ -2333,7 +2333,7 @@ DUMMY_IRQ:
 	RTI
 
 Sub_07_e1ee:
-	CMP zb1
+	DEC zb1
 	LDA zPPUControl
 	AND #$ff ^ (NMI | MS_SELECT)
 	STA PPUCTRL
