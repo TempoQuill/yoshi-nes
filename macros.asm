@@ -40,11 +40,11 @@ MACRO note pitch, length
 ENDM
 
 MACRO drum_note id, length
-	.db B_ << 4 | length, id
+	.db B_ << 4 | length - 1, id
 ENDM
 
 MACRO rest length
-	.db 12 << 4 | length
+	.db 12 << 4 | length - 1
 ENDM
 
 MACRO note_type length, cycle, instrument, fade_length, fade_delay
