@@ -30,7 +30,7 @@ DisablePicture:
 	BEQ @00_805d
 	LDY #$03
 @00_8033:
-	LDX #$1f
+	LDX #pal_size * num_pals - 1
 @00_8035:
 	LDA iPals, X
 	SEC
@@ -86,7 +86,7 @@ DisableNMI:
 	BEQ @00_8095
 	LDA zPPUControl
 	STA iPPUControl
-	AND #$ff ^ (NMI | MS_SELECT)
+	AND #-1 ^ (NMI | MS_SELECT)
 	STA zPPUControl
 @00_8095:
 	LDA zPPUControl
@@ -2300,8 +2300,8 @@ Sub_00_98a8:
 	BEQ @00_990f
 	LDA #$00
 	STA $0260
-	LDA #$f0
-	STA $0636
+	LDA #1 << CHAN_7 | 1 << CHAN_6 | 1 << CHAN_5 | 1 << CHAN_4
+	STA iMusicTracks
 	LDA #SFX_PAUSE
 	JSR StoreMusicID
 	LDA zPPUScrollX
@@ -2335,8 +2335,8 @@ Sub_00_98a8:
 @00_9905:
 	LDA #$01
 	STA $0260
-	LDA #$00
-	STA $0636
+	LDA #0
+	STA iMusicTracks
 @00_990f:
 	RTS
 

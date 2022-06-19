@@ -11,18 +11,18 @@ UpdateSound:
 	BEQ @music_chan
 	BCS @01_9e9e
 @music_chan:
-	LDA $0636
+	LDA iMusicTracks
 	AND ChannelMasks, X
 	BEQ @01_9eb3
 	BCS @01_9ea8
 	LDA $068d, X
 	BEQ @01_9ea5
-	LDA $0636
+	LDA iMusicTracks
 	AND #$0f
 	BEQ @next_chan
 	BNE @01_9ea5
 @01_9e9e:
-	LDA $0636
+	LDA iMusicTracks
 	AND #$0f
 	BEQ @01_9eb3
 @01_9ea5:
@@ -725,8 +725,8 @@ Channel_Mute:
 	AND #$f0
 	BNE @quit
 	LDA Channel_Masks, X
-	ORA $0636
-	STA $0636
+	ORA iMusicTracks
+	STA iMusicTracks
 	LDA #$01
 	STA iChannelNoteLength, X
 	JMP IncrementMusicAddress
@@ -1206,7 +1206,7 @@ ApplyChannel:
 	STA SQ1_LO, Y
 	LDA iChannelPitch, X
 	STA SQ1_HI, Y
-	LDA $0636
+	LDA iMusicTracks
 	AND ChannelMasks, X
 	BNE @01_a669
 	LDA iChannelID, X

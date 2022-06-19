@@ -94,7 +94,7 @@ Sub_07_cd38:
 	LDA $0263
 	BEQ @07_cd53
 	LDA zPPUScrollX
-	EOR #$ff
+	EOR #-1
 	SEC
 @07_cd53:
 	ADC $0294, X
@@ -110,18 +110,18 @@ Sub_07_cd38:
 	AND #2
 	BNE @07_cd72
 	LDA zPPUScrollY
-	EOR #$ff
+	EOR #-1
 	SEC
 	BCS @07_cd79
 @07_cd72:
 	LDA zPPUScrollY
 	ADC #$10
-	EOR #$ff
+	EOR #-1
 	SEC
 @07_cd79:
 	ADC $02ac, X
 	CLC
-	ADC #$ff
+	ADC #-1
 	STA ze3
 	LDA $027c, X
 	ASL A
@@ -4545,7 +4545,7 @@ InitSound:
 	JSR PlayAudio
 	JSR SwitchToMain
 	LDA #0
-	STA $0636
+	STA iMusicTracks
 	STA i6b9
 	STA iMusicID1
 	STA iMusicID2
@@ -4653,8 +4653,8 @@ TitleScreen:
 	JSR SwitchToMain
 	LDA #MUSIC_TITLE
 	JSR StoreMusicID
-	LDA #$00
-	STA $0636
+	LDA #0
+	STA iMusicTracks
 	STA iDisableMusic
 	JSR CopyPPUControl
 	JSR Sub_00_8061

@@ -296,6 +296,7 @@ iChannelPitchSlideTail:
 	.dsb 1
 iAlternatePitch:
 	.dsb 1
+iMusicTracks:
 	.dsb 1
 i637:
 	.dsb 1
