@@ -1852,7 +1852,7 @@ Sub_07_de2c:
 	LDX $02f6
 	LDA $0264, X
 	CMP #$ff
-	BNE @07_de59
+	BNE @07_de54
 	LDA #$05
 	STA $0264, X
 	BNE @07_de59
@@ -3097,7 +3097,7 @@ Sub_07_e449:
 	LDA $0405
 	STA PPUDATA
 @07_e9bd:
-	LDA $0406
+	LDA $0604
 	BEQ @07_ea07
 	STA PPUADDR
 	LDA $0407
