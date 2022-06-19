@@ -705,9 +705,9 @@ Tempo:
 	LDA (zMusicAddress), Y
 	STA iSFXTempo + 1
 	LDA #0
-	STA iSfxTempoOffset
-	STA iSfxTempoOffset + 1
-	STA iSfxTempoOffset + 2
+	STA iSFXTempoOffset
+	STA iSFXTempoOffset + 1
+	STA iSFXTempoOffset + 2
 	JMP ParseNextByte
 
 New_Song:

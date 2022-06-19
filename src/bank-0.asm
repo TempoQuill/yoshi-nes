@@ -4662,7 +4662,7 @@ Sub_00_b0fd:
 	LDA #$10
 	STA $02ac, X
 	LDA $0521
-	BNE @00_b031
+	BNE @00_b131
 	LDA #$b2
 	STA zPointerB7
 	LDA #$b4
