@@ -86,7 +86,7 @@ DisableNMI:
 	BEQ @00_8095
 	LDA zPPUControl
 	STA iPPUControl
-	AND #-1 ^ (NMI | MS_SELECT)
+	AND #$ff ^ (NMI | MS_SELECT)
 	STA zPPUControl
 @00_8095:
 	LDA zPPUControl

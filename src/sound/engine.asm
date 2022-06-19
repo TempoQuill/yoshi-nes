@@ -325,7 +325,7 @@ ParseByte:
 	; yes
 	; then let RAM know we're leaving
 	LDA iChannelFlags, X
-	AND #-1 ^ SOUND_SUBROUTINE
+	AND #$ff ^ SOUND_SUBROUTINE
 	STA iChannelFlags, X
 	LDA iChannelBackupAddress, X
 	STA iChannelAddress, X
@@ -573,7 +573,7 @@ SearchCommand_Tier1:
 @use_ins:
 	; clear SOUND_INSTRUMENT
 	LDA iChannelFlags, X
-	AND #-1 ^ SOUND_INSTRUMENT
+	AND #$ff ^ SOUND_INSTRUMENT
 @extension:
 	STA iChannelFlags, X
 	; yz - post instrument extension
@@ -973,10 +973,10 @@ GetNoteLength:
 @zipper_env:
 	ORA iChannelTimbre, X
 	JSR ChannelCheckProceedure
-	BCS @get_pitch
+	BCS @get_raw_pitch
 @update:
 	JSR UpdateEnv
-@get_pitch:
+@get_raw_pitch:
 	LDA (zMusicAddress), Y
 	HTL A
 	ASL A
@@ -1435,7 +1435,7 @@ ApplyPitchSlide:
 @01_a800:
 	STA iChannelPitchSlideTail
 	LDA iChannelFlags, X
-	AND #-1 ^ (SOUND_PITCH_SWAP | SOUND_PITCH_SLIDE_DIR)
+	AND #$ff ^ (SOUND_PITCH_SWAP | SOUND_PITCH_SLIDE_DIR)
 	STA iChannelFlags, X
 	JSR SwapPitch
 	LDA iChannelPitch, X
@@ -1593,7 +1593,7 @@ HandlePitchSlide:
 
 ClearPitchSlide:
 	LDA iChannelFlags, X
-	AND #-1 ^ (SOUND_PITCH_SWAP | SOUND_PITCH_SLIDE_DIR | SOUND_PITCH_SLIDE)
+	AND #$ff ^ (SOUND_PITCH_SWAP | SOUND_PITCH_SLIDE_DIR | SOUND_PITCH_SLIDE)
 	STA iChannelFlags, X
 	JSR SwapPitch
 
