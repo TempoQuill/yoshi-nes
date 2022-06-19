@@ -240,7 +240,7 @@ i126:
 i127:
 	.dsb 1
 ; stack
-	.dsb $d8
+	.dsb $d7
 iStackTop:
 	.dsb 1
 i200:
