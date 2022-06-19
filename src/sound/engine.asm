@@ -226,9 +226,9 @@ UpdateChannel:
 	DEC iChannelInsVolume, X
 	JMP @measure_volume ; fade it out
 @01_9fda:
-	; use i6b1 as a word offset
+	; use iChannelInsParam as a word offset
 	; params are only 7-bit, so the highest bit is occupied by a power flag
-	LDA i6b1, X
+	LDA iChannelInsParam, X
 	ASL A
 	TAY
 	LDA (zInstrumentPointer), Y
@@ -1450,7 +1450,7 @@ ApplyPitchSlide:
 @01_a822:
 	LDA iChannelTargetRawPitch, X
 	SEC
-	SBC $0442, X
+	SBC $0660, X
 	STA iChannelLittlePitch, X
 	LDA iChannelTargetRawPitch + 3, X
 	SBC iChannelPitch, X

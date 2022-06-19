@@ -42,7 +42,7 @@ Music_VSResults_Ch2_Mainloop:
 	note E_, 1
 	rest 3
 	channel_volume 12
-	note_type 12, 3, 13, 1, 4
+	note_type 12, 0, 13, 1, 4
 	sound_call Music_VSResults_Ch2_Sub1
 	sound_loop 0, Music_VSResults_Ch2_Mainloop
 

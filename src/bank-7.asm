@@ -327,7 +327,7 @@ Sub_07_cecf:
 	STA zPPUScrollY
 	STA i222
 	LDA #$10
-	STA PPUSTATUS
+	STA i220
 	JSR InitNametable
 	LDA #$0f
 	LDX #$1f
@@ -344,7 +344,7 @@ Sub_07_cecf:
 .include "src/home/mapper.asm"
 
 Sub_07_cf7f:
-	LDA PPUSTATUS
+	LDA i220
 	BNE @07_cf85
 	RTS
 @07_cf85:
@@ -853,7 +853,7 @@ Ptrs_07_d302:
 	.dw PTD_07_d43c, PTD_07_d49b
 
 MACRO ram_dual locale
-	.dw locale, locale + 1
+	.db >locale, <locale, >locale, <locale + 1
 ENDM
 
 Ptrs_07_d30e:
@@ -1245,8 +1245,8 @@ Sub_07_d94c:
 	JSR Sub_00_a8ad
 	LDA #$08
 	STA za3
-@07_d968:
 	LDY #$00
+@07_d96a:
 	LDA #$06
 	CMP (zPointerC7), Y
 	BNE @07_d9bd
@@ -1260,7 +1260,7 @@ Sub_07_d94c:
 	STA $060a, X
 	LDA #$01
 	STA $0523, X
-	STA $062b, X
+	STA $052b, X
 	LDA #$00
 	STA iCrunchCounter, X
 	INC $0532, X
@@ -1295,7 +1295,7 @@ Sub_07_d94c:
 	INC za4
 	INY
 	DEC za3
-	BNE @07_d968
+	BNE @07_d96a
 	LDA #$00
 	STA $053a, X
 Branch_07_d9d2:
@@ -1355,10 +1355,10 @@ Sub_07_d9f6:
 @07_da42:
 	RTS
 @07_da43:
-	DEC $062b, X
+	DEC $052b, X
 	BNE Branch_07_d9d2
 	LDA #$07
-	STA $062b, X
+	STA $052b, X
 	LDA $0527, X
 	CLC
 	ADC #$01

@@ -228,6 +228,7 @@ i105:
 	.dsb 13
 i11d:
 	.dsb 3
+i220:
 	.dsb $2
 iDisableMusic:
 	.dsb 1
@@ -309,7 +310,8 @@ iChannelBackupAddress:
 iChannelLoopCounter:
 	.dsb 8
 iChannelPitch:
-	.dsb $10
+	.dsb 8
+	.dsb 8
 iChannelNoteTypeMainParam: ; 668
 	.dsb 8
 iChannelTimbre: ; 670
@@ -328,7 +330,7 @@ iChannelFlags: ; 6a1
 	.dsb 8
 iChannelOctave:
 	.dsb 8
-i6b1:
+iChannelInsParam:
 	.dsb 8
 i6b9:
 	.dsb 1
@@ -340,7 +342,6 @@ iChannelNoteInFrames:
 	.dsb 8
 iChannelFadeCounter: ; 6cb
 	.dsb 6
-iChannelInsParam:
 	.dsb 2
 iChannelInsVolume:
 iChannelInsID:
