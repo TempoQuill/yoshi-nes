@@ -1,6 +1,6 @@
 ; music
 MACRO sound_header total channel, address
-	.db total << 6 | channel - 1, <address, >address
+	.db total - 1 << 6 | channel - 1, <address, >address
 ENDM
 
 MACRO sound_subheader channel, address
