@@ -1446,13 +1446,13 @@ ApplyPitchSlide:
 	LDA iChannelTargetRawPitch, X
 	SEC
 	SBC $0442, X
-	STA $061b, X
+	STA iChannelLittlePitch, X
 	LDA iChannelTargetRawPitch + 3, X
 	SBC iChannelPitch, X
 	BPL @01_a836
 	LDA #$00
 @01_a836:
-	STA $061e, X
+	STA iChannelLittlePitch + 3, X
 	LDA iChannelFlags, X
 	ORA #SOUND_PITCH_SLIDE_DIR
 	STA iChannelFlags, X
@@ -1461,23 +1461,23 @@ ApplyPitchSlide:
 	LDA iChannelPitch + 8, X
 	SEC
 	SBC iChannelTargetRawPitch, X
-	STA $061b, X
+	STA iChannelLittlePitch, X
 	LDA iChannelPitch, X
 	SBC iChannelTargetRawPitch + 3, X
 	BPL @01_a858
 	LDA #$00
 @01_a858:
-	STA $061e, X
+	STA iChannelLittlePitch + 3, X
 @01_a85b:
 	LDY #0
-	LDA $061b, X
+	LDA iChannelLittlePitch, X
 @01_a860:
 	INY
 	SEC
 	SBC iChannelPitchSlideTail
 	BCS @01_a860
 	PHA
-	DEC $061e, X
+	DEC iChannelLittlePitch + 3, X
 	BMI @01_a871
 	PLA
 	JMP @01_a860
@@ -1491,9 +1491,9 @@ ApplyPitchSlide:
 	STA $062a, X
 	STA $0630, X
 	LDA iChannelPitch, X
-	STA $061e, X
+	STA iChannelLittlePitch + 3, X
 	LDA iChannelPitch + 8, X
-	STA $061b, X
+	STA iChannelLittlePitch, X
 	LDA iChannelNoteLength, X
 	STA $062d, X
 	JSR SwapPitch
@@ -1509,37 +1509,37 @@ HandlePitchSlide:
 	ADC $0630, X
 	CMP $062d, X
 	BCC @01_a8b8
-	INC $061b, X
+	INC iChannelLittlePitch, X
 	BNE @01_a8b5
-	INC $061e, X
+	INC iChannelLittlePitch + 3, X
 @01_a8b5:
 	LDA $062a, X
 @01_a8b8:
 	STA $0630, X
-	LDA $061b, X
+	LDA iChannelLittlePitch, X
 	CLC
 	ADC $0627, X
 	BCC @01_a8c7
-	INC $061e, X
+	INC iChannelLittlePitch + 3, X
 @01_a8c7:
-	STA $061b, X
+	STA iChannelLittlePitch, X
 	LDA iChannelFlags, X
 	AND #SOUND_PITCH_SWAP
 	BNE @01_a8e1
-	LDA $061e, X
+	LDA iChannelLittlePitch + 3, X
 	CMP iChannelTargetRawPitch + 3, X
 	BCC @01_a8f8
 	LDA iChannelFlags, X
 	ORA #SOUND_PITCH_SWAP
 	STA iChannelFlags, X
 @01_a8e1:
-	LDA $061b, X
+	LDA iChannelLittlePitch, X
 	CMP iChannelTargetRawPitch, X
 	BCC @01_a8f8
 	LDA iChannelTargetRawPitch + 3, X
-	STA $061e, X
+	STA iChannelLittlePitch + 3, X
 	LDA iChannelTargetRawPitch, X
-	STA $061b, X
+	STA iChannelLittlePitch, X
 	JMP ClearPitchSlide
 @01_a8f8:
 	JMP UpdatePitch
@@ -1549,38 +1549,38 @@ HandlePitchSlide:
 	ADC $0630, X
 	CMP $062d, X
 	BCC @01_a915
-	LDA $061b, X
+	LDA iChannelLittlePitch, X
 	BNE @01_a90f
-	DEC $061e, X
+	DEC iChannelLittlePitch + 3, X
 @01_a90f:
-	DEC $061b, X
+	DEC iChannelLittlePitch, X
 	LDA $062a, X
 @01_a915:
 	STA $0630, X
-	LDA $061b, X
+	LDA iChannelLittlePitch, X
 	SEC
 	SBC $0627, X
 	BCS @01_a924
-	DEC $061e, X
+	DEC iChannelLittlePitch + 3, X
 @01_a924:
-	STA $061b, X
+	STA iChannelLittlePitch, X
 	LDA iChannelFlags, X
 	AND #SOUND_PITCH_SWAP
 	BNE @01_a93e
 	LDA iChannelTargetRawPitch + 3, X
-	CMP $061e, X
+	CMP iChannelLittlePitch + 3, X
 	BCC @01_a955
 	LDA iChannelFlags, X
 	ORA #SOUND_PITCH_SWAP
 	STA iChannelFlags, X
 @01_a93e:
 	LDA iChannelTargetRawPitch, X
-	CMP $061b, X
+	CMP iChannelLittlePitch, X
 	BCC @01_a955
 	LDA iChannelTargetRawPitch + 3, X
-	STA $061e, X
+	STA iChannelLittlePitch + 3, X
 	LDA iChannelTargetRawPitch, X
-	STA $061b, X
+	STA iChannelLittlePitch, X
 	JMP ClearPitchSlide
 @01_a955:
 	JMP UpdatePitch
@@ -1594,10 +1594,10 @@ ClearPitchSlide:
 
 
 UpdatePitch:
-	LDA $061b, X
+	LDA iChannelLittlePitch, X
 	STA iChannelPitch + 8, X
 	JSR UpdateLow
-	LDA $061e, X
+	LDA iChannelLittlePitch + 3, X
 	CMP iChannelPitch, X
 	BEQ @01_a97a
 	STA iChannelPitch, X

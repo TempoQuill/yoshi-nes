@@ -285,7 +285,9 @@ iCrunchCounter: ; 54e
 iStageNum: ; 551
 	.dsb 1
 	.dsb $ae
-	.dsb $21
+	.dsb $1b
+iChannelLittlePitch:
+	.dsb 6
 iChannelTargetRawPitch:
 	.dsb $12
 iChannelTargetPitch:
