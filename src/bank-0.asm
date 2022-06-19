@@ -2285,12 +2285,9 @@ Data_00_9898:
 	.db $28, $00, $20, $1e, $00
 
 Data_00_989d:
-	.db $29, $ce, $04, $10, $01, $15, $13
+	.db $29, $ce, $04, $10, $01, $15, $13, $05, $ff
 
 Sub_00_98a6:
-	ORA zff
-
-Sub_00_98a8:
 	LDA $0512
 	ORA $0513
 	ORA $051e
@@ -2699,7 +2696,7 @@ Sub_00_9c02:
 .include "src/data/movie/field-bg.asm"
 
 LayoutFieldNametable:
-	LDA #res_vertical / 16
+	LDA #res_vertical / 8
 	STA zResolutionInMetatiles
 	LDX #$00
 @00_9d09:
@@ -4219,7 +4216,7 @@ Sub_00_acd9:
 	BEQ @00_ad57
 	LDA #<Data_00_adab
 	STA zPointerC7
-	LDA #<Data_00_adab
+	LDA #>Data_00_adab
 	STA zPointerC7 + 1
 	JSR Sub_00_acb9
 	JMP @00_ad62
@@ -5135,7 +5132,7 @@ HandleInGameInput:
 	BNE @00_b7b9
 	LDA iJoyCurrent, X
 	AND #BTN_DOWN
-	BNE @00_b7b9
+	BNE @00_b7ba
 @00_b765:
 	RTS
 @00_b766:
@@ -5177,10 +5174,10 @@ HandleInGameInput:
 	RTS
 @00_b7b9:
 	RTS
-; unreferenced
+@00_b7ba:
 	LDX $044f
 	LDA $0523, X
-	ORA $0523, X
+	ORA $050e, X
 	BNE @00_b765
 	LDA $044f
 	BNE @00_b7e5
@@ -5386,11 +5383,11 @@ CollisionLogic:
 	CMP #$05
 	BNE @00_b998
 	LDY $044f
-	LDA $0487, Y
+	LDA $0523, Y
 	BNE @00_b968
 	JSR Sub_07_d94c
 	LDY $044f
-	LDA $0487, Y
+	LDA $0523, Y
 	BEQ @00_b969
 @00_b968:
 	RTS
@@ -5456,7 +5453,7 @@ Sub_00_b9d4:
 
 
 JMP_00_b9f4:
-	INC $0487, X
+	INC $0452, X
 	JSR Sub_00_b9fb
 Branch_00_b9fa:
 	RTS

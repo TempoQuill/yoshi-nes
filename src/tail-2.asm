@@ -1,11 +1,11 @@
 
-.pad RESET_0, $ff
+.pad RESET_1, $ff
 ; reset
 	SEI
-	INC RESET_0 + 1
+	INC RESET_1 + 1
 	JMP StartGame
 	.db "          YOSHI"
-	.db $00, $00, $ab, $53, $32, $04, $01, $04, $01, $c6
+	.db $33, $ea, $ab, $53, $32, $04, $01, $04, $01, $c6
 	; NES vector table
 	.dw PRG_NMI
 	.dw RESET_1

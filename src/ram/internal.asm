@@ -6,7 +6,9 @@ z02:
 	.dsb 1
 z03: ; never written to, except for the boot sequence (clear)
 	.dsb 7
-	.dsb $2a
+	.dsb $9
+z13:
+	.dsb $21
 z34: ; never written to, except for the boot sequence (clear)
 	.dsb 1
 	.dsb $2b

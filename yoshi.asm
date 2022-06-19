@@ -39,6 +39,6 @@
 
 .base $c000
 .include "src/bank-7.asm"
-.include "src/tail-1.asm"
+.include "src/tail-2.asm"
 
 .include "src/chr.asm"
