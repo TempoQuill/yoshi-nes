@@ -330,9 +330,9 @@ i6b9:
 iMusicID1:
 	.dsb 1
 iChannelEnvExtension: ; 6bb
-	.dsb $8
+	.dsb 8
 iChannelNoteInFrames:
-	.dsb $8
+	.dsb 8
 iChannelFadeCounter: ; 6cb
 	.dsb 6
 iChannelInsParam:
@@ -340,9 +340,12 @@ iChannelInsParam:
 iChannelInsVolume:
 iChannelInsID:
 	.dsb 8
-iChannelVolumeOffset:
+iChannelVolumeOffset: ; 6db
 	.dsb 8
-	.dsb 8
+iMusicTempoOffset:
+	.dsb 4
+iSFXTempoOffset:
+	.dsb 4
 iChannelVibratoDelay:
 	.dsb 3
 iChannelVibratoDepth:

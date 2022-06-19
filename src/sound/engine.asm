@@ -28,11 +28,13 @@ UpdateSound:
 @01_9ea5:
 	JSR TurnOffEnvelopes
 @01_9ea8:
+	; turn on $06be
 	LDA $06be
 	ORA ChannelMasks, X
 	STA $06be
 	BNE @next_chan
 @01_9eb3:
+	; is (X)$06be on?
 	LDA $06be
 	AND ChannelMasks, X
 	BEQ @01_9ed0
@@ -508,13 +510,13 @@ ParseNote:
 
 SearchCommand_Tier1:
 	; are we looking for commands at this point.
-	; first order of business,did we encounter $d0?
+	; first order of business, did we encounter $d0?
 	LDA (zMusicAddress), Y
 	AND #%11110000
 	CMP #note_type_cmd
 	BEQ @note_type
 	JMP SearchCommand_Tier2 ; jump and look for other commands
-	; from here, we're piece together $d0's parameters
+	; from here, we piece together $d0's parameters
 	; for ch0-1: [Du][vv][wx][yz]
 	; for ch2: [Du][vv]
 	; for ch3: [Du]
@@ -691,10 +693,10 @@ Tempo:
 	LDA (zMusicAddress), Y
 	STA iMusicTempo + 1
 	LDA #0
-	STA $06e3
-	STA $06e4
-	STA $06e5
-	STA $06e6
+	STA iMusicTempoOffset
+	STA iMusicTempoOffset + 1
+	STA iMusicTempoOffset + 2
+	STA iMusicTempoOffset + 3
 	JMP ParseNextByte
 @sfx:
 	LDA (zMusicAddress), Y
@@ -703,9 +705,9 @@ Tempo:
 	LDA (zMusicAddress), Y
 	STA iSFXTempo + 1
 	LDA #0
-	STA $06e7
-	STA $06e8
-	STA $06e9
+	STA iSfxTempoOffset
+	STA iSfxTempoOffset + 1
+	STA iSfxTempoOffset + 2
 	JMP ParseNextByte
 
 New_Song:
@@ -844,8 +846,8 @@ GetNoteLength:
 	BCC @01_a3e8
 	LDA zCurrentTempo + 1
 	CLC
-	ADC $06e3, X
-	STA $06e3, X
+	ADC iMusicTempoOffset, X
+	STA iMusicTempoOffset, X
 	LDA zCurrentTempo
 	ADC zMusicTempoCalcBuffer
 	STA zMusicTempoCalcBuffer
