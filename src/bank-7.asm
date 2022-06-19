@@ -228,11 +228,11 @@ StartGame:
 	STA SND_CHN
 	LDA #CHR_MODE | PRG_L16 | 2MIRROR_H
 	STA zMMC1Ctrl
-	LDA #0
+	LDA #CHR_Title
 	STA zMMC1Chr
-	LDA #0
+	LDA #CHR_Title
 	STA zMMC1Chr + 1
-	LDA #0
+	LDA #PRG_Main
 	STA zMMC1Prg
 	JSR WriteToMapper
 	LDA z00
@@ -258,7 +258,7 @@ StartGame:
 @07_ce63:
 	LDA #$00
 	STA $0616
-	LDA $0122
+	LDA iDisableMusic
 	BEQ @07_ce71
 	AND #$01
 	STA zPlayerMode
@@ -273,8 +273,8 @@ StartGame:
 	LDY $0616
 	LDX #$00
 @07_ce7f:
-	STA $0100, X
-	STA $0200, X
+	STA i100, X
+	STA i200, X
 	STA $0300, X
 	STA $0400, X
 	STA $0500, X
@@ -294,11 +294,11 @@ StartGame:
 	JSR Sub_07_cecf
 	LDA #$00
 	STA zPPUScrollX
-	LDA #0 ; hide everything, no color skews
+	LDA #%00000000 ; hide everything, no color skews
 	STA PPUMASK
-	LDA #$1e ; show everything, no color skews
+	LDA #%00011110 ; show everything, no color skews
 	STA zPPUMask
-	STA $0247
+	STA iPPUMask
 	; $2000 NT, h inc, obj 0, bg 1, 8x8 obj, read, NMI
 	LDA #NMI | BG_TABLE
 	STA iPPUControl
@@ -308,13 +308,13 @@ StartGame:
 	JMP JMP_00_a37c
 
 Sub_07_cecf:
-	LDA #$00
+	LDA #CHR_Title
 	STA zMMC1Chr
 	STA zMMC1Chr + 1
-	STA $0248
+	STA i248
 	STA $0260
 	LDA #$ff
-	STA $0200
+	STA i200
 	LDA #$00
 	STA zPointerB7
 	LDA #$02
@@ -325,14 +325,14 @@ Sub_07_cecf:
 	STA zb9
 	STA zPPUScrollX
 	STA zPPUScrollY
-	STA $0222
+	STA i222
 	LDA #$10
 	STA PPUSTATUS
 	JSR InitNametable
 	LDA #$0f
 	LDX #$1f
 @07_cf03:
-	STA $0226, X
+	STA iPals, X
 	DEX
 	BPL @07_cf03
 	JSR HideSprites
@@ -372,7 +372,7 @@ JMP_07_cf8a:
 	ASL A
 	BMI @07_cfb1
 	LDA #$00
-	; desynced, BIT $4a9
+	; desynced, BIT $04a9
 	.db $2c
 @07_cfb1:
 	LDA #VRAM_INC ; vertical
@@ -392,14 +392,15 @@ JMP_07_cf8a:
 	PHY
 	LDA (zPointerB7), Y
 	TAY
-	LDA $0221, Y
+	LDA i221, Y
 	CMP #$ff
-	BNE @07_cfd6
+	BNE @07_cfd6 ; useless
 @07_cfd6:
 	STA zc0
 	PLY
 	PLP
 	JMP Branch_07_cfe0
+
 Branch_07_cfde:
 	BCS Branch_07_cfe1
 Branch_07_cfe0:
@@ -418,7 +419,7 @@ Branch_07_cfe1:
 	DEX
 	BMI @07_d01d
 	LDA zPPUMask
-	AND #$18 ; are we showing background and sprites?
+	AND #%00011000 ; are we showing background and sprites?
 	BEQ Branch_07_cfde
 	CMP zbc
 	BNE Branch_07_cfde
@@ -442,13 +443,13 @@ Branch_07_cfe1:
 @07_d01d:
 	JSR Sub_07_d050
 	LDA zPPUMask
-	AND #$18 ; are we showing background and sprites?
+	AND #%00011000 ; are we showing background and sprites?
 	BEQ Branch_07_d02a
 	CMP zbc
 	BEQ Branch_07_d04f
 Branch_07_d02a:
 	LDX PPUSTATUS
-	LDY #$00
+	LDY #0
 	STY zbd
 	STY zPPUDataCounter
 	STY zbf
@@ -464,7 +465,7 @@ Branch_07_d02a:
 	LDA #$02
 	STA zPointerB7 + 1
 	LDA #$ff
-	STA $0200
+	STA i200
 Branch_07_d04f:
 	RTS
 
@@ -480,23 +481,23 @@ Sub_07_d050:
 
 Sub_07_d05d:
 	LDX zb9
-	STA $0200, X
+	STA i200, X
 	INC zb9
 	RTS
 
 Sub_07_d065:
 	LDA #$ff
 	LDX zb9
-	STA $0200, X
+	STA i200, X
 	RTS
 ; unreferenced
 	JSR Sub_07_d097
 	LDX zb9
 	LDA zc5
-	STA $0200, X
+	STA i200, X
 	INX
 	LDA zc4
-	STA $0200, X
+	STA i200, X
 	INX
 	STX zb9
 	RTS
@@ -505,10 +506,10 @@ Sub_07_d065:
 	LDX zb9
 	LDA zc5
 	ORA #$40
-	STA $0200, X
+	STA i200, X
 	INX
 	LDA zc4
-	STA $0200, X
+	STA i200, X
 	INX
 	STX zb9
 	RTS
@@ -533,62 +534,62 @@ Sub_07_d097:
 	LDA #$ff
 	LDX #$07
 @07_d0b8:
-	STA $0200, X
+	STA i200, X
 	DEX
 	BPL @07_d0b8
 	RTS
 
 Sub_07_d0bf:
-	LDA $0224
+	LDA i224
 	BNE @07_d0c5
 	RTS
 @07_d0c5:
 	LDA zPPUControl
-	AND #$ff ^ VRAM_INC
+	AND #-1 ^ VRAM_INC
 	STA PPUCTRL
-	LDA #$3f
+	LDA #>PPU_PALETTES
 	STA PPUADDR
-	LDA #$00
+	LDA #<PPU_PALETTES
 	STA PPUADDR
-	LDX #$00
-	LDY #$1f
+	LDX #0
+	LDY #num_pals * pal_size - 1
 @07_d0da:
-	LDA $0226, X
+	LDA iPals, X
 	STA PPUDATA
 	INX
 	DEY
 	BPL @07_d0da
-	LDA $0224
+	LDA i224
 	AND #$f0
-	STA $0224
+	STA i224
 	LDA zPPUControl
 	STA PPUCTRL
 	RTS
 
 Sub_07_d0f2:
-	LDA $0224
+	LDA i224
 	BEQ @07_d123
-	DEC $0225
+	DEC i225
 	BNE @07_d123
 	LDA #$02
-	STA $0225
-	LDA $0224
+	STA i225
+	LDA i224
 	SEC
 	SBC #$10
-	STA $0224
+	STA i224
 	LDX #$1f
 @07_d10c:
-	LDA $0100, X
+	LDA iPaletteTable, X
 	SEC
-	SBC $0224
+	SBC i224
 	BPL @07_d11a
-	LDA $0100, X
-	AND #$0f
+	LDA iPaletteTable, X
+	AND #(num_pals * pal_size / 2) - 1
 @07_d11a:
-	STA $0226, X
+	STA iPals, X
 	DEX
 	BPL @07_d10c
-	INC $0224
+	INC i224
 @07_d123:
 	RTS
 
@@ -597,38 +598,38 @@ Sub_07_d124:
 	ASL A
 	TAX
 	JSR SwitchToAudio
-	LDY #$00
+	LDY #0
 @07_d12f:
 	LDA Pal_01_b006, X
-	STA $0100, Y
+	STA iPaletteTable, Y
 	LDA #$0f
-	STA $0226, Y
+	STA iPals, Y
 	INX
 	INY
-	CPY #$20
+	CPY #num_pals * pal_size
 	BNE @07_d12f
 	JSR SwitchToMain
 	LDA #$40
-	STA $0224
+	STA i224
 	LDA #$02
-	STA $0225
+	STA i225
 	RTS
 ; unreferenced
 	LTH A
 	ASL A
 	TAX
 	JSR SwitchToAudio
-	LDY #$00
+	LDY #0
 @07_d159:
 	LDA Pal_01_b006, X
-	STA $0226, Y
+	STA iPals, Y
 	INX
 	INY
 	CPY #$20
 	BNE @07_d159
 	JSR SwitchToMain
 	LDA #$01
-	STA $0224
+	STA i224
 	RTS
 
 Sub_07_d16e:
@@ -636,60 +637,60 @@ Sub_07_d16e:
 	BEQ @07_d174
 	RTS
 @07_d174:
-	JSR Sub_07_d2d8
-	LDA $0251
-	STA $0253
-	LDA $0252
-	STA $0254
-	JSR Sub_07_d2d8
-	LDA $0251
-	CMP $0253
+	JSR UpdateJoypads
+	LDA iJoyPressed
+	STA iJoyBackup
+	LDA iJoyPressed + 1
+	STA iJoyBackup + 1
+	JSR UpdateJoypads
+	LDA iJoyPressed
+	CMP iJoyBackup
 	BNE Branch_07_d202
-	LDA $0252
-	CMP $0254
+	LDA iJoyPressed + 1
+	CMP iJoyBackup + 1
 	BNE Branch_07_d202
-	LDA $0122
+	LDA iDisableMusic
 	BEQ @07_d19e
 	JSR Sub_07_d203
 @07_d19e:
-	LDA $0249
-	STA $024f
-	LDA $024a
-	STA $0250
-	LDA $0251
-	STA $0249
-	LDA $0252
-	STA $024a
-	LDX #$01
+	LDA iJoyCurrent
+	STA iJoyXOR
+	LDA iJoyCurrent + 1
+	STA iJoyXOR + 1
+	LDA iJoyPressed
+	STA iJoyCurrent
+	LDA iJoyPressed + 1
+	STA iJoyCurrent + 1
+	LDX #1
 @07_d1b8:
-	LDA $0249, X
-	AND #$c0
-	CMP #$c0
+	LDA iJoyCurrent, X
+	AND #BTN_RIGHT | BTN_LEFT
+	CMP #BTN_RIGHT | BTN_LEFT
 	BNE @07_d1c7
-	EOR $0249, X
-	STA $0249, X
+	EOR iJoyCurrent, X
+	STA iJoyCurrent, X
 @07_d1c7:
-	LDA $0249, X
-	AND #$30
-	CMP #$30
+	LDA iJoyCurrent, X
+	AND #BTN_DOWN | BTN_UP
+	CMP #BTN_DOWN | BTN_UP
 	BNE @07_d1d6
-	EOR $0249, X
-	STA $0249, X
+	EOR iJoyCurrent, X
+	STA iJoyCurrent, X
 @07_d1d6:
-	LDA $0249, X
-	EOR $024f, X
-	STA $024d, X
-	AND $0249, X
-	STA $024b, X
-	LDA $0249, X
-	EOR #$ff
-	AND $024d, X
-	STA $024d, X
+	LDA iJoyCurrent, X
+	EOR iJoyXOR, X
+	STA iJoy24d, X
+	AND iJoyCurrent, X
+	STA iJoyHeld, X
+	LDA iJoyCurrent, X
+	EOR #-1
+	AND iJoy24d, X
+	STA iJoy24d, X
 	DEX
 	BPL @07_d1b8
-	LDA $0249
-	AND #$0f
-	CMP #$0f
+	LDA iJoyCurrent
+	AND #BTN_START | BTN_SELECT | BTN_B | BTN_A
+	CMP #BTN_START | BTN_SELECT | BTN_B | BTN_A
 	BNE Branch_07_d202
 	JSR DisablePicture
 	JMP StartGame
@@ -697,11 +698,11 @@ Branch_07_d202:
 	RTS
 
 Sub_07_d203:
-	LDA $0248
+	LDA i248
 	CMP #$05
 	BNE Branch_07_d202
-	LDA $0251
-	AND #$08
+	LDA iJoyPressed
+	AND #BTN_START
 	BEQ Branch_07_d222
 
 
@@ -720,8 +721,8 @@ Branch_07_d222:
 	ASL A
 	ASL A
 	TAX
-	LDA $0123
-	BNE @07_d281
+	LDA i123
+	BNE @07_d281 ; never branches
 	LDA Ptrs_07_d302, X
 	STA zPointer83
 	LDA Ptrs_07_d302 + 1, X
@@ -730,50 +731,50 @@ Branch_07_d222:
 	STA zPointer85
 	LDA Ptrs_07_d302 + 3, X
 	STA zPointer85 + 1
-	LDY $0124
-	INC $0126
-	LDA $0126
+	LDY i124
+	INC i126
+	LDA i126
 	INY
 	CMP (zPointer83), Y
 	BNE @07_d258
 	LDA #$00
-	STA $0126
+	STA i126
 	INY
-	STY $0124
+	STY i124
 	INY
 @07_d258:
 	DEY
 	LDA (zPointer83), Y
-	STA $0251
-	AND #$08
+	STA iJoyPressed
+	AND #BTN_START
 	BNE JMP_07_d211
-	LDY $0125
-	INC $0127
-	LDA $0127
+	LDY i125
+	INC i127
+	LDA i127
 	INY
 	CMP (zPointer85), Y
 	BNE @07_d27a
 	LDA #$00
-	STA $0127
+	STA i127
 	INY
-	STY $0125
+	STY i125
 	INY
 @07_d27a:
 	DEY
 	LDA (zPointer85), Y
-	STA $0252
+	STA iJoyPressed + 1
 	RTS
 @07_d281:
-	LDA Data_07_d30e, X
+	LDA Ptrs_07_d30e, X
 	STA zPointer83
-	LDA Data_07_d30e + 1, X
+	LDA Ptrs_07_d30e + 1, X
 	STA zPointer83 + 1
-	LDA Data_07_d30e + 2, X
+	LDA Ptrs_07_d30e + 2, X
 	STA zPointer85
-	LDA Data_07_d30e + 3, X
+	LDA Ptrs_07_d30e + 3, X
 	STA zPointer85 + 1
-	LDY $0124
-	LDA $0251
+	LDY i124
+	LDA iJoyPressed
 	CMP (zPointer83), Y
 	BNE @07_d2aa
 	INY
@@ -785,14 +786,14 @@ Branch_07_d222:
 	DEY
 @07_d2aa:
 	YAD 2
-	STY $0124
+	STY i124
 	STA (zPointer83), Y
 	LDA #$01
 	INY
 	STA (zPointer83), Y
 @07_d2b6:
-	LDY $0125
-	LDA $0252
+	LDY i125
+	LDA iJoyPressed + 1
 	CMP (zPointer85), Y
 	BNE @07_d2cb
 	INY
@@ -804,7 +805,7 @@ Branch_07_d222:
 	DEY
 @07_d2cb:
 	YAD 2
-	STY $0125
+	STY i125
 	STA (zPointer85), Y
 	LDA #$01
 	INY
@@ -812,29 +813,36 @@ Branch_07_d222:
 @07_d2d7:
 	RTS
 
-Sub_07_d2d8:
-	LDX #$01
+UpdateJoypads:
+	; strobe JOY1
+	LDX #1
 	STX JOY1
-	LDA #$00
+	LDA #0
 	STA JOY1
-	LDY #$08
+	; repeat loop for every button
+	LDY #num_inputs
 @07_d2e4:
-	LDX #$01
+	; start with player 2
+	LDX #1
 @07_d2e6:
 	LDA JOY1, X
-	AND #$03
-	CMP #$01
-	ROR $0251, X
+	AND #3
+	CMP #1
+	; record the input
+	ROR iJoyPressed, X
+	; now do player 1
 	DEX
 	BPL @07_d2e6
+	; next button
 	DEY
 	BNE @07_d2e4
 	RTS
-; unreferenced
-	LDA #$00
-	LDX #$07
+
+InitJoyPads: ; unreferenced
+	LDA #0
+	LDX #iJoyPressed - iJoyCurrent - 1
 @07_d2fb:
-	STA $0249, X
+	STA iJoyCurrent, X
 	DEX
 	BPL @07_d2fb
 	RTS
@@ -844,8 +852,14 @@ Ptrs_07_d302:
 	.dw PTD_07_d3a4, PTD_07_d3a4
 	.dw PTD_07_d43c, PTD_07_d49b
 
-Data_07_d30e:
-	.db $00, $60, $00, $61, $00, $62, $00, $63, $00, $64, $00, $65
+MACRO ram_dual locale
+	.dw locale, locale + 1
+ENDM
+
+Ptrs_07_d30e:
+	ram_dual z60
+	ram_dual z62
+	ram_dual z64
 PTD_07_d31a:
 	.db $00, $90, $20, $0e, $00, $2a, $80, $04, $00, $05, $01, $09, $00
 	.db $07, $40, $06, $00, $12, $01, $08, $00, $71, $40, $07, $00, $04
@@ -1288,7 +1302,7 @@ Branch_07_d9d2:
 	RTS
 
 Sub_07_d9d3:
-	LDA $0248
+	LDA i248
 	CMP #$05
 	BNE Branch_07_d9d2
 	LDA zPlayerMode
@@ -1596,7 +1610,7 @@ Sub_07_dc21:
 	JSR Sub_07_de09
 	BEQ Sub_07_dcc1
 	LDA #$40
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_dc86
 	LDA z7d
 	BEQ Sub_07_dcc1
@@ -1606,7 +1620,7 @@ Sub_07_dc21:
 	JMP Sub_07_dcc1
 @07_dc86:
 	LDA #$80
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_dc9d
 	LDA z7d
 	CMP #$04
@@ -1617,7 +1631,7 @@ Sub_07_dc21:
 	JMP Sub_07_dcc1
 @07_dc9d:
 	LDA #$20
-	AND $024b
+	AND iJoyHeld
 	BEQ Sub_07_dcc1
 	LDA #$01
 	STA $0545
@@ -1650,7 +1664,7 @@ JMP_07_dcd1:
 	LDA #$09
 	STA $027e
 	LDA #$40
-	AND $024c
+	AND iJoyHeld + 1
 	BEQ @07_dceb
 	LDA z7f
 	BEQ Sub_07_dd26
@@ -1660,7 +1674,7 @@ JMP_07_dcd1:
 	JMP Sub_07_dd26
 @07_dceb:
 	LDA #$80
-	AND $024c
+	AND iJoyHeld + 1
 	BEQ @07_dd02
 	LDA z7f
 	CMP #$04
@@ -1671,7 +1685,7 @@ JMP_07_dcd1:
 	JMP Sub_07_dd26
 @07_dd02:
 	LDA #$20
-	AND $024c
+	AND iJoyHeld + 1
 	BEQ Sub_07_dd26
 	LDA #$01
 	STA $0546
@@ -1705,7 +1719,7 @@ Sub_07_dd36:
 	JSR Sub_07_de09
 	BEQ Sub_07_dd92
 	LDA #$40
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_dd57
 	LDA z7e
 	BEQ @07_dd57
@@ -1716,7 +1730,7 @@ Sub_07_dd36:
 	JMP Sub_07_dd92
 @07_dd57:
 	LDA #$80
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_dd6e
 	LDA z7e
 	BNE @07_dd6e
@@ -1727,7 +1741,7 @@ Sub_07_dd36:
 	JMP Sub_07_dd92
 @07_dd6e:
 	LDA #$10
-	AND $024b
+	AND iJoyHeld
 	BEQ Sub_07_dd92
 	LDA #$00
 	STA $0545
@@ -1757,7 +1771,7 @@ Sub_07_dda2:
 	LDA #$0a
 	STA $027f
 	LDA #$40
-	AND $024c
+	AND iJoyHeld + 1
 	BEQ @07_ddbe
 	LDA z80
 	BEQ @07_ddbe
@@ -1768,7 +1782,7 @@ Sub_07_dda2:
 	JMP Sub_07_ddf9
 @07_ddbe:
 	LDA #$80
-	AND $024c
+	AND iJoyHeld + 1
 	BEQ @07_ddd5
 	LDA z80
 	BNE @07_ddd5
@@ -1779,7 +1793,7 @@ Sub_07_dda2:
 	JMP Sub_07_ddf9
 @07_ddd5:
 	LDA #$10
-	AND $024c
+	AND iJoyHeld + 1
 	BEQ Sub_07_ddf9
 	LDA #$00
 	STA $0546
@@ -1806,10 +1820,10 @@ Sub_07_ddf9:
 	RTS
 
 Sub_07_de09:
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BNE @07_de14
-	LDA $024b
+	LDA iJoyHeld
 	RTS
 @07_de14:
 	LDA z7d
@@ -1820,7 +1834,7 @@ Sub_07_de09:
 	STA $02e0
 	LDA z80
 	STA $0522
-	INC $0248
+	INC i248
 	RTS
 
 Sub_07_de2c:
@@ -1867,7 +1881,7 @@ JMP_07_de70:
 	JSR Sub_07_e0ae
 	BEQ Sub_07_decc
 	LDA #$40
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_de91
 	LDA z79
 	BEQ @07_de91
@@ -1878,7 +1892,7 @@ JMP_07_de70:
 	JMP Sub_07_decc
 @07_de91:
 	LDA #$80
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_dea8
 	LDA z79
 	BNE @07_dea8
@@ -1889,7 +1903,7 @@ JMP_07_de70:
 	JMP Sub_07_decc
 @07_dea8:
 	LDA #$20
-	AND $024b
+	AND iJoyHeld
 	BEQ Sub_07_decc
 	LDA #$01
 	STA $02f6
@@ -1922,7 +1936,7 @@ JMP_07_dedc:
 	JSR Sub_07_e0ae
 	BEQ Sub_07_df5d
 	LDA #$40
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_defb
 	LDA z7a
 	BEQ Sub_07_df5d
@@ -1932,7 +1946,7 @@ JMP_07_dedc:
 	JMP Sub_07_df5d
 @07_defb:
 	LDA #$80
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_df12
 	LDA z7a
 	CMP #$04
@@ -1943,7 +1957,7 @@ JMP_07_dedc:
 	JMP Sub_07_df5d
 @07_df12:
 	LDA #$20
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_df39
 	LDA #$02
 	STA $02f6
@@ -1960,7 +1974,7 @@ JMP_07_dedc:
 	JMP Sub_07_df5d
 @07_df39:
 	LDA #$10
-	AND $024b
+	AND iJoyHeld
 	BEQ Sub_07_df5d
 	LDA #$00
 	STA $02f6
@@ -1995,7 +2009,7 @@ JMP_07_df6d:
 	JSR Sub_07_e0ae
 	BEQ Sub_07_dff0
 	LDA #$40
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_df8e
 	LDA z7b
 	BEQ @07_df8e
@@ -2006,7 +2020,7 @@ JMP_07_df6d:
 	JMP Sub_07_dff0
 @07_df8e:
 	LDA #$80
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_dfa5
 	LDA z7b
 	BNE @07_dfa5
@@ -2017,7 +2031,7 @@ JMP_07_df6d:
 	JMP Sub_07_dff0
 @07_dfa5:
 	LDA #$20
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_dfcc
 	LDA #$03
 	STA $02f6
@@ -2034,7 +2048,7 @@ JMP_07_df6d:
 	JMP Sub_07_dff0
 @07_dfcc:
 	LDA #$10
-	AND $024b
+	AND iJoyHeld
 	BEQ Sub_07_dff0
 	LDA #$01
 	STA $02f6
@@ -2067,7 +2081,7 @@ JMP_07_e000:
 	JSR Sub_07_e0ae
 	BEQ Sub_07_e063
 	LDA #$40
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_e022
 	LDA zBGMCursor
 	BEQ Sub_07_e063
@@ -2078,7 +2092,7 @@ JMP_07_e000:
 	JMP Sub_07_e063
 @07_e022:
 	LDA #$80
-	AND $024b
+	AND iJoyHeld
 	BEQ @07_e03c
 	LDA zBGMCursor
 	CMP #$03
@@ -2090,7 +2104,7 @@ JMP_07_e000:
 	JMP Sub_07_e063
 @07_e03c:
 	LDA #$10
-	AND $024b
+	AND iJoyHeld
 	BEQ Sub_07_e063
 	LDA #$02
 	STA $02f6
@@ -2121,7 +2135,7 @@ Sub_07_e063:
 	RTS
 
 GetMainBGM:
-	LDA $0122
+	LDA iDisableMusic
 	BNE BGM_Quit
 	LDX $0522
 	LDA Main_BGM, X
@@ -2161,10 +2175,10 @@ Sub_07_e099:
 	RTS
 
 Sub_07_e0ae:
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BNE @07_e0b9
-	LDA $024b
+	LDA iJoyHeld
 	RTS
 @07_e0b9:
 	LDA z79
@@ -2177,7 +2191,7 @@ Sub_07_e0ae:
 	STA $0521
 	LDA zBGMCursor
 	STA $0522
-	INC $0248
+	INC i248
 	RTS
 
 Sub_07_e0d5:
@@ -2226,12 +2240,12 @@ PRG_NMI:
 	PLA
 	RTI
 @07_e129:
-	LDA $0222
+	LDA i222
 	BEQ @07_e131
 	JMP @07_e185
 @07_e131:
 	LDA #$ff
-	STA $0222
+	STA i222
 	PHX
 	PHY
 	JSR WriteChr2
@@ -2267,7 +2281,7 @@ PRG_NMI:
 	PLY
 	PLX
 	LDA #$00
-	STA $0222
+	STA i222
 @07_e185:
 	LDA PPUSTATUS
 	BMI @07_e185
@@ -2393,7 +2407,7 @@ EndTheGame:
 	STA zb1
 	JSR Sub_00_806a
 @07_e29c:
-	LDA $0122
+	LDA iDisableMusic
 	BNE @07_e2aa
 	JSR Sub_00_9358
 	JSR DisablePicture
@@ -4425,12 +4439,12 @@ Sub_07_f600:
 @07_f620:
 	LDX $04fd, Y
 	LDA $0487, X
-	STA $0105, Y
+	STA i105, Y
 	INX
 	LDA $0487, X
 	CMP $0501, Y
 	BCS @07_f635
-	STA $0105, Y
+	STA i105, Y
 @07_f635:
 	LDA $0501, Y
 	CMP #$14
@@ -4514,18 +4528,18 @@ InitSound:
 	LDA #<MusicHeaders
 	SEC
 	SBC #header_byte_length
-	STA $00fa
+	STA zMusicStartingHeaderPointer
 	LDA #>MusicHeaders
 	SBC #0
-	STA $00fb
+	STA zMusicStartingHeaderPointer + 1
 	LDA #<Instruments
 	STA zInstrumentPointer
 	LDA #>Instruments
 	STA zInstrumentPointer + 1
 	LDA #$00
-	STA $00fe
+	STA zfe
 	LDA #$c8
-	STA $00ff
+	STA zff
 	JSR SwitchToAudio
 	LDA #NO_MUSIC
 	JSR PlayAudio
@@ -4559,10 +4573,10 @@ StoreMusicID:
 Sub_07_f71d:
 	LDA zPlayerMode
 	BNE @07_f74f
-	LDA $0248
+	LDA i248
 	CMP #$05
 	BEQ @07_f732
-	LDA $0248
+	LDA i248
 	CMP #$03
 	BNE @07_f74f
 	JMP Sub_07_db39
@@ -4611,9 +4625,9 @@ TitleScreen:
 	JSR DisablePicture
 	JSR DisableNMI
 	JSR Sub_00_9881
-	LDA #$00
+	LDA #CHR_Title
 	STA zMMC1Chr
-	LDA #$00
+	LDA #CHR_Title
 	STA zMMC1Chr + 1
 	JSR InitNametable
 	JSR Sub_07_cdeb
@@ -4641,10 +4655,10 @@ TitleScreen:
 	JSR StoreMusicID
 	LDA #$00
 	STA $0636
-	STA $0122
+	STA iDisableMusic
 	JSR CopyPPUControl
 	JSR Sub_00_8061
-	INC $0248
+	INC i248
 	RTS
 
 Sub_07_f7e2:
@@ -4699,7 +4713,7 @@ JPT_07_f831:
 	BEQ @07_f897
 	LDA zPlayerMode
 	ORA #$80
-	STA $0122
+	STA iDisableMusic
 	LDA z82
 	CMP #$02
 	BEQ @07_f870
@@ -4728,7 +4742,7 @@ JPT_07_f831:
 	STA $025b
 	STA $025c
 	LDA #$04
-	STA $0248
+	STA i248
 	BNE @07_f912
 @07_f897:
 	DEC iCrunchCounter
@@ -4753,21 +4767,21 @@ JPT_07_f831:
 	STA $027c
 	LDA #$48
 	STA $0294
-	LDA $024b
+	LDA iJoyHeld
 	AND #$10
 	BEQ @07_f8d6
 	LDA #$00
 	STA zPlayerMode
 	BEQ @07_f8f8
 @07_f8d6:
-	LDA $024b
+	LDA iJoyHeld
 	AND #$20
 	BEQ @07_f8e3
 	LDA #$01
 	STA zPlayerMode
 	BNE @07_f8f8
 @07_f8e3:
-	LDA $024b
+	LDA iJoyHeld
 	AND #$04
 	BEQ @07_f8f8
 	LDA zPlayerMode
@@ -4788,10 +4802,10 @@ JPT_07_f831:
 	LDA #$d0
 	STA $02ac
 @07_f908:
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BEQ @07_f912
-	INC $0248
+	INC i248
 @07_f912:
 	RTS
 

@@ -17,6 +17,22 @@ NT_ATTRIBUTE_1 = $27c0
 NT_ATTRIBUTE_2 = $2bc0
 NT_ATTRIBUTE_3 = $2fc0
 
+FIELD_MUSHROOM   = $00
+FIELD_FIREFLOWER = $01
+FIELD_PIRANHA    = $02
+FIELD_KOOPA      = $03
+FIELD_STARMAN    = $04
+FIELD_BERRY      = $05
+FIELD_STRAWBERRY = $06
+FIELD_MELON      = $07
+FIELD_PEACH      = $08
+FIELD_GRAPES     = $09
+FIELD_PINEAPPLE  = $0a
+FIELD_CHERRY     = $0b
+FIELD_KEY        = $0c
+FIELD_COIN       = $0d
+FIELD_P_SWITCH   = $0e
+
 ; enum PPUControl (bitfield) (width 1 byte)
 ; 0: $2000 1: $2400 2: $2800 3: $2c00
 NT_BASE_MASK = $3
@@ -58,6 +74,12 @@ OAMDATA = $2004   ; current byte
 PPUSCROLL = $2005 ; scroll position
 PPUADDR = $2006   ; ppu location
 PPUDATA = $2007   ; current byte
+
+PPU_PALETTES = $3f00
+num_pals = 8
+pal_size = 4
+res_horizontal = 256
+res_vertical = 240
 
 ;
 ; APU registers and joypad registers
@@ -105,6 +127,18 @@ SND_CHN = $4015   ; master APU register: each bit is the corresponding channel p
 JOY1 = $4016
 JOY2 = $4017
 
+; inputs
+BTN_A      = %00000001
+BTN_B      = %00000010
+BTN_SELECT = %00000100
+BTN_START  = %00001000
+BTN_UP     = %00010000
+BTN_DOWN   = %00100000
+BTN_LEFT   = %01000000
+BTN_RIGHT  = %10000000
+
+num_inputs = 8
+
 ; mapper stuff
 4MIRROR_L = $0
 4MIRROR_H = $1
@@ -115,6 +149,20 @@ PRG_M0D = $4
 PRG_U16 = $8
 PRG_L16 = $c
 CHR_MODE = $10
+
+PRG_Main = 0
+PRG_Audio = 1
+PRG_Home = 7
+
+CHR_Title      = $00
+CHR_VS_Results = $01
+CHR_VS_BG      = $02
+CHR_VS_OBJ     = $03
+CHR_Field_BG   = $04
+CHR_Field_OBJ  = $05
+CHR_1P         = $06
+CHR_Records    = $07
+Num_CHRs = 8
 
 MMC1 = 1
 MMC1_Control = $8000
@@ -133,6 +181,9 @@ Ramp_Mask     = %00001111
 Volume_Ramp_F = %00010000
 Volume_Loop_F = %00100000
 Cycle_Mask    = %11000000
+
+Linear_Mask = %01111111
+Linear_Flag = %10000000
 
 PITCH_HI_MASK = %00000111
 PITCH_ID_MASK = %11110000

@@ -32,24 +32,24 @@ DisablePicture:
 @00_8033:
 	LDX #$1f
 @00_8035:
-	LDA $0226, X
+	LDA iPals, X
 	SEC
 	SBC #$10
 	BPL @00_803f
 	LDA #$0f
 @00_803f:
-	STA $0226, X
+	STA iPals, X
 	DEX
 	BPL @00_8035
 	LDA #$01
-	STA $0224
+	STA i224
 	LDA #$01
 	STA zb1
 	JSR Sub_00_806a
 	DEY
 	BNE @00_8033
 	LDA zPPUMask
-	STA $0247
+	STA iPPUMask
 	AND #$e1 ; hide everything
 	STA zPPUMask
 @00_805d:
@@ -57,7 +57,7 @@ DisablePicture:
 	RTS
 
 Sub_00_8061:
-	LDA $0247
+	LDA iPPUMask
 	STA zPPUMask
 	JSR Sub_00_806a
 	RTS
@@ -181,7 +181,7 @@ Sub_00_8148:
 	LDA #$03
 	STA $027a
 	JSR Sub_00_8581
-	LDA #$01
+	LDA #CHR_VS_Results
 	STA zMMC1Chr
 	STA zMMC1Chr + 1
 	LDA $0548
@@ -259,11 +259,11 @@ Sub_00_8148:
 	JSR JMP_00_846b
 @00_81fd:
 	JSR Sub_07_d16e
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BEQ @00_81fd
 	LDA #$00
-	STA $0248
+	STA i248
 	RTS
 
 Data_00_820d:
@@ -663,7 +663,7 @@ Sub_00_8840:
 	RTS
 
 Sub_00_8864:
-	LDA $0248
+	LDA i248
 	CMP #$05
 	BNE Branch_00_8882
 	LDA #$22
@@ -680,7 +680,7 @@ Branch_00_8882:
 	RTS
 
 Sub_00_8883:
-	LDA $0248
+	LDA i248
 	CMP #$05
 	BNE Branch_00_8882
 	LDA #$20
@@ -863,7 +863,7 @@ Sub_00_89b4:
 	STA za6
 	LDA #$0a
 	JSR JMP_00_846b
-	LDA #$06
+	LDA #CHR_1P
 	STA zMMC1Chr
 	LDA #<Data_00_8f90
 	STA zPointer83
@@ -1121,13 +1121,13 @@ Sub_00_89b4:
 	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BEQ @00_8c1d
 	LDA #$00
 	STA $0567
 	LDA #$04
-	STA $0248
+	STA i248
 	RTS
 
 Sub_00_8c39:
@@ -1149,7 +1149,7 @@ Sub_00_8c4c:
 	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
-	LDA $024b
+	LDA iJoyHeld
 	AND #$03
 	BEQ @00_8c65
 	LDA $054f
@@ -1804,7 +1804,7 @@ Sub_00_9358:
 	LDA #$00
 	STA $0263
 	STA zPPUScrollX
-	LDA #$07
+	LDA #CHR_Records
 	STA zMMC1Chr
 	LDA #<Data_00_9672
 	STA zPointer83
@@ -2143,19 +2143,19 @@ Sub_00_9358:
 	STA $0264
 @00_9652:
 	JSR Sub_07_d16e
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BNE @00_966c
 	JMP @00_962d
 @00_965f:
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BEQ @00_965f
 @00_966c:
 	LDA #$04
-	STA $0248
+	STA i248
 	RTS
 
 Data_00_9672:
@@ -2285,7 +2285,7 @@ Data_00_989d:
 	.db $29, $ce, $04, $10, $01, $15, $13
 
 Sub_00_98a6:
-	ORA $00ff
+	ORA zff
 
 Sub_00_98a8:
 	LDA $0512
@@ -2295,7 +2295,7 @@ Sub_00_98a8:
 	ORA $050c
 	ORA $050d
 	BNE @00_990f
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BEQ @00_990f
 	LDA #$00
@@ -2320,7 +2320,7 @@ Sub_00_98a8:
 	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
-	LDA $024b
+	LDA iJoyHeld
 	AND #$08
 	BEQ @00_98e4
 	LDA za3
@@ -2366,20 +2366,20 @@ FieldScene:
 	STA zMMC1Ctrl
 	JSR WriteMapperControl
 	JSR Sub_00_9dae
-	LDA #$04
+	LDA #CHR_Field_BG
 	STA zMMC1Chr
-	LDA #$05
+	LDA #CHR_Field_OBJ
 	STA zMMC1Chr + 1
-	LDA #$20
+	LDA #NAMETABLE_0
 	STA PPUADDR
-	LDA #$00
+	LDA #0
 	STA PPUADDR
-	JSR Sub_00_9d03
-	LDA #$24
+	JSR LayoutFieldNametable
+	LDA #NAMETABLE_1
 	STA PPUADDR
-	LDA #$00
+	LDA #0
 	STA PPUADDR
-	JSR Sub_00_9d03
+	JSR LayoutFieldNametable
 	LDA $02df
 	CMP #$1c
 	BCC @00_9977
@@ -2404,12 +2404,12 @@ FieldScene:
 	TAX
 	LDA Data_00_9e17, X
 	INX
-	STA $011d
+	STA i11d
 	LDA Data_00_9e17, X
 	INX
-	STA $011e
+	STA i11d + 1
 	LDA Data_00_9e17, X
-	STA $011f
+	STA i11d + 2
 	JSR CopyPPUControl
 	JSR Sub_00_8061
 	LDA #$00
@@ -2439,16 +2439,16 @@ FieldScene:
 @00_99f0:
 	LDA $054f
 	BNE @00_9a03
-	LDA #<Data_00_9c17
+	LDA #<YoshiWalkingFarviewGFX
 	STA zPointer83
-	LDA #>Data_00_9c17
+	LDA #>YoshiWalkingFarviewGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bcc
 	JMP @00_9a0e
 @00_9a03:
-	LDA #<Data_00_9c23
+	LDA #<YoshiStandingFarviewGFX
 	STA zPointer83
-	LDA #>Data_00_9c23
+	LDA #>YoshiStandingFarviewGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bcc
 @00_9a0e:
@@ -2456,9 +2456,9 @@ FieldScene:
 	BNE @00_99d7
 	LDA #$00
 	STA $0552
-	LDA #<Data_00_9c2f
+	LDA #<EmptyFarviewGFX
 	STA zPointer83
-	LDA #>Data_00_9c2f
+	LDA #>EmptyFarviewGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bcc
 	LDA #$28
@@ -2488,16 +2488,16 @@ FieldScene:
 @00_9a5b:
 	LDA $054f
 	BNE @00_9a6e
-	LDA #<Data_00_9c3b
+	LDA #<YoshiStandingGFX
 	STA zPointer83
-	LDA #>Data_00_9c3b
+	LDA #>YoshiStandingGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	JMP @00_9a79
 @00_9a6e:
-	LDA #<Data_00_9c65
+	LDA #<YoshiWalkingGFX
 	STA zPointer83
-	LDA #>Data_00_9c65
+	LDA #>YoshiWalkingGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bde
 @00_9a79:
@@ -2505,26 +2505,26 @@ FieldScene:
 	BNE @00_9a42
 	LDA #$00
 	STA $0552
-	LDA #<Data_00_9c3b
+	LDA #<YoshiStandingGFX
 	STA zPointer83
-	LDA #>Data_00_9c3b
+	LDA #>YoshiStandingGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bde
-	JSR Sub_00_9e44
+	JSR DoFieldText
 	LDA #$1e
 	STA zb1
 	JSR Sub_00_806a
-	LDA #<Data_00_9c8f
+	LDA #<YoshiWindingUpGFX
 	STA zPointer83
-	LDA #>Data_00_9c8f
+	LDA #>YoshiWindingUpGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #$0a
 	STA zb1
 	JSR Sub_00_806a
-	LDA #<Data_00_9cb9
+	LDA #<YoshiEatingGFX
 	STA zPointer83
-	LDA #>Data_00_9cb9
+	LDA #>YoshiEatingGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #SFX_COLLECT_BONUS
@@ -2532,9 +2532,9 @@ FieldScene:
 	LDA #$05
 	STA zb1
 	JSR Sub_00_806a
-	LDA #<Data_00_9c0b
+	LDA #<YoshiTongueGFX
 	STA zPointer83
-	LDA #>Data_00_9c0b
+	LDA #>YoshiTongueGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bf0
 	LDA #$07
@@ -2569,9 +2569,9 @@ FieldScene:
 	BNE @00_9afc
 	LDA #$ff
 	STA $0265
-	LDA #<Data_00_9c11
+	LDA #<YoshiNoTongueGFX
 	STA zPointer83
-	LDA #>Data_00_9c11
+	LDA #>YoshiNoTongueGFX
 	STA zPointer83 + 1
 	LDA #<Data_00_9322
 	STA za4
@@ -2581,9 +2581,9 @@ FieldScene:
 	STA za6
 	LDA #$01
 	JSR JMP_00_846b
-	LDA #<Data_00_9cb9
+	LDA #<YoshiEatingGFX
 	STA zPointer83
-	LDA #>Data_00_9cb9
+	LDA #>YoshiEatingGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #$05
@@ -2591,17 +2591,17 @@ FieldScene:
 	JSR Sub_00_806a
 	LDA #$ff
 	STA $0264
-	LDA #<Data_00_9c8f
+	LDA #<YoshiWindingUpGFX
 	STA zPointer83
-	LDA #>Data_00_9c8f
+	LDA #>YoshiWindingUpGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #$0a
 	STA zb1
 	JSR Sub_00_806a
-	LDA #<Data_00_9c3b
+	LDA #<YoshiStandingGFX
 	STA zPointer83
-	LDA #>Data_00_9c3b
+	LDA #>YoshiStandingGFX
 	STA zPointer83 + 1
 	JSR Sub_00_9bde
 	LDA #$08
@@ -2629,7 +2629,7 @@ FieldScene:
 	LDX iStageNum
 	LDA FieldSprites, X
 	JSR Sub_00_8939
-	JSR Sub_00_9e44
+	JSR DoFieldText
 	LDA #MUSIC_CURRENT_SCORE
 	JSR StoreMusicID
 @00_9bab:
@@ -2643,7 +2643,7 @@ FieldScene:
 	STA zMMC1Ctrl
 	JSR WriteMapperControl
 	LDA #$04
-	STA $0248
+	STA i248
 	RTS
 
 Data_00_9bc6:
@@ -2693,58 +2693,25 @@ Sub_00_9c02:
 	BNE @00_9c04
 	RTS
 
-Data_00_9c0b:
-	.db $2c, $2d, $2d, $7b, $7c, $ea
-Data_00_9c11:
-	.db $ef, $ef, $ef, $ea, $ea, $ea
-Data_00_9c17:
-	.db $8c, $8d, $8e, $9c, $9d, $9e, $ac, $ad, $ae, $6f, $6f, $6f
-Data_00_9c23:
-	.db $cc, $cd, $ce, $dc, $dd, $de, $ec, $ed, $ee, $6f, $6f, $6f
-Data_00_9c2f:
-	.db $eb, $eb, $eb, $4f, $4f, $4f, $5f, $5f, $5f, $6f, $6f, $6f
-Data_00_9c3b:
-	.db $80, $81, $82, $83, $84, $85, $af, $90, $91, $92, $93, $94, $95
-	.db $ea, $a0, $a1, $a2, $a3, $a4, $a5, $cf, $b0, $b1, $b2, $b3, $b4
-	.db $b5, $df, $c0, $c1, $c2, $c3, $c4, $c5, $ef, $d0, $d1, $d2, $d3
-	.db $d4, $d5, $ea
-Data_00_9c65:
-	.db $86, $87, $88, $89, $8a, $8b, $af, $96, $97, $98, $99, $9a, $9b
-	.db $ea, $a6, $a7, $a8, $a9, $aa, $ab, $cf, $b6, $b7, $b8, $b9, $ba
-	.db $bb, $df, $c6, $c7, $c8, $c9, $ca, $cb, $ef, $d6, $d7, $d8, $d9
-	.db $da, $db, $ea
-Data_00_9c8f:
-	.db $20, $21, $22, $23, $24, $25, $af, $30, $31, $32, $33, $34, $35
-	.db $ea, $40, $41, $42, $43, $44, $45, $cf, $50, $51, $52, $53, $54
-	.db $55, $df, $60, $61, $62, $63, $64, $65, $ef, $70, $71, $72, $73
-	.db $74, $75, $ea
-Data_00_9cb9:
-	.db $26, $27, $28, $29, $2a, $2b, $2b, $36, $37, $38, $39, $3a, $3b
-	.db $3b, $46, $47, $48, $49, $4a, $4b, $4c, $56, $57, $58, $59, $5a
-	.db $5b, $5c, $66, $67, $68, $69, $6a, $6b, $6c, $76, $77, $78, $79
-	.db $7a, $7b, $7c
-Data_00_9ce3:
-	.db $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0a, $0b, $0c
-	.db $0d, $0e, $0f, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
-	.db $1a, $1b, $1c, $1d, $1e, $1f
+.include "src/data/movie/field-bg.asm"
 
-Sub_00_9d03:
-	LDA #$1e
-	STA za3
+LayoutFieldNametable:
+	LDA #res_vertical / 16
+	STA zResolutionInMetatiles
 	LDX #$00
 @00_9d09:
 	LDY #$20
 @00_9d0b:
-	LDA Data_00_9d1a, X
+	LDA FieldBackgroundNametable, X
 	STA PPUDATA
 	DEY
 	BNE @00_9d0b
 	INX
-	CMP za3
+	CMP zResolutionInMetatiles
 	BNE @00_9d09
 	RTS
 
-Data_00_9d1a:
+FieldBackgroundNametable:
 	.db $eb, $eb, $eb, $eb, $eb, $eb, $eb, $eb, $eb, $eb, $4f, $5f, $6f
 	.db $7f, $8f, $9f, $af, $ea, $cf, $df, $ef, $ea, $ea, $ea, $ea, $ea
 	.db $ea, $ea, $3c, $3c
@@ -2755,15 +2722,17 @@ Data_00_9d38:
 	.db $00, $00, $08, $00, $00, $00, $09, $00, $00, $01, $00, $00, $00
 	.db $01, $02, $00, $00, $01, $05, $00, $00
 
-FieldSprites:
-	.db $00, $01, $02, $03, $04, $05, $05, $06, $06, $07, $07, $08, $08
-	.db $09, $09, $0a, $0a, $0a, $0b, $0b, $0b, $0c, $0c, $0c, $0d, $0d
-	.db $0d, $0e
-Data_00_9d90:
-	.db $f0, $f1, $f2, $f3, $f4, $eb, $eb, $eb, $eb, $eb
-Data_00_9d9a:
-	.db $4e, $5e, $6e, $7e, $ea, $e0, $e1, $e2, $e3, $e4, $e5, $e6, $e7
-	.db $e8, $e9, $ea, $ea, $ea, $ea, $ea
+.include "src/data/movie/field-sprites.asm"
+
+FieldScore:
+	.db $f0, $f1, $f2, $f3, $f4 ; SCORE
+	.db $eb, $eb, $eb, $eb, $eb ; @@@@@
+
+FieldStats:
+	.db $4e, $5e, $6e, $7e, $ea ; TIME@
+	.db $e0, $e1, $e2, $e3, $e4 ; LEVEL
+	.db $e5, $e6, $e7, $e8, $e9 ; SPEED
+	.db $ea, $ea, $ea, $ea, $ea ; @@@@@
 
 Sub_00_9dae:
 	LDA #$05
@@ -2796,10 +2765,10 @@ Data_00_9e17:
 	.db $20, $23, $0f, $20, $27, $0f, $00, $16, $0f, $20, $27, $0f, $20
 	.db $26, $0f, $20, $16, $0f, $20
 
-Sub_00_9e44:
-	LDA #<Data_00_9ce3
+DoFieldText:
+	LDA #<CongratsGFX
 	STA zPointer83
-	LDA #>Data_00_9ce3
+	LDA #>CongratsGFX
 	STA zPointer83 + 1
 	LDA #$20
 	STA za4
@@ -2809,9 +2778,9 @@ Sub_00_9e44:
 	STA za6
 	LDA #$01
 	JSR JMP_00_846b
-	LDA #<Data_00_9d90
+	LDA #<FieldScore
 	STA zPointer83
-	LDA #>Data_00_9d90
+	LDA #>FieldScore
 	STA zPointer83 + 1
 	LDA #$21
 	STA za4
@@ -2821,9 +2790,9 @@ Sub_00_9e44:
 	STA za6
 	LDA #$01
 	JSR JMP_00_846b
-	LDA #<Data_00_9d9a
+	LDA #<FieldStats
 	STA zPointer83
-	LDA #>Data_00_9d9a
+	LDA #>FieldStats
 	STA zPointer83 + 1
 	LDA #$22
 	STA za4
@@ -2955,7 +2924,7 @@ Sub_00_9e44:
 	JSR JMP_00_846b
 	RTS
 
-HandleMenus
+HandleMenus:
 	LDA zPlayerMode
 	BNE @2_player
 	JSR DoMainMenu
@@ -2963,15 +2932,15 @@ HandleMenus
 @2_player:
 	JSR DoVSMenu
 @done:
-	INC $0248
+	INC i248
 	RTS
 
 DoMainMenu:
 	JSR DisablePicture
 	JSR DisableNMI
-	LDA #$07
+	LDA #CHR_Records
 	STA zMMC1Chr
-	LDA #$05
+	LDA #CHR_Field_OBJ
 	STA zMMC1Chr + 1
 	JSR Sub_00_a206
 	JSR Sub_00_9fbd
@@ -3013,9 +2982,9 @@ Data_00_a003:
 DoVSMenu:
 	JSR DisablePicture
 	JSR DisableNMI
-	LDA #$07
+	LDA #CHR_Records
 	STA zMMC1Chr
-	LDA #$05
+	LDA #CHR_Field_OBJ
 	STA zMMC1Chr + 1
 	JSR Sub_00_a0ae
 	JSR Sub_00_a049
@@ -3176,7 +3145,7 @@ Data_00_a377:
 
 JMP_00_a37c:
 	LDA #$00
-	STA $0248
+	STA i248
 @00_a381:
 	LDA #$01
 	STA zb1
@@ -3184,7 +3153,7 @@ JMP_00_a37c:
 	LDA zb1
 	BNE @00_a385
 	JSR Sub_07_d16e
-	LDA $0248
+	LDA i248
 	ASL A
 	TAX
 	LDA Ptrs_00_a3a1, X
@@ -3201,9 +3170,9 @@ Ptrs_00_a3a1:
 	.dw JPT_07_dc10
 	.dw JPT_00_ae16
 	.dw JPT_00_b57c
-	.dw JPT_00_a3af
+	.dw Dummy_00_a3af
 
-JPT_00_a3af:
+Dummy_00_a3af:
 	RTS
 
 Sub_00_a3b0:
@@ -4311,7 +4280,7 @@ Sub_00_add3:
 	STA zb1
 	JSR Sub_00_806a
 	JSR Sub_07_d16e
-	LDA $024b
+	LDA iJoyHeld
 	AND #$0f
 	BEQ Sub_00_add3
 	RTS
@@ -4350,7 +4319,7 @@ JPT_00_ae16:
 	STA $0511
 	JSR Sub_00_afb0
 	JSR Sub_00_b04f
-	INC $0248
+	INC i248
 Branch_00_ae27:
 	RTS
 
@@ -4413,7 +4382,7 @@ Sub_00_ae28:
 	JSR Sub_00_806a
 	JSR Sub_07_e449
 	JSR Sub_07_efd1
-	LDA $0122
+	LDA iDisableMusic
 	BNE @00_aec8
 	LDA #MUSIC_VS_MATCH
 	JSR StoreMusicID
@@ -4536,9 +4505,9 @@ Sub_00_afb0:
 	JSR HideSprites
 	JSR Sub_07_cdeb
 	JSR InitSound
-	LDA #$02
+	LDA #CHR_VS_BG
 	STA zMMC1Chr
-	LDA #$05
+	LDA #CHR_Field_OBJ
 	STA zMMC1Chr + 1
 	JSR Sub_00_9881
 	LDA #$de
@@ -5003,8 +4972,8 @@ Sub_00_b61c:
 	BEQ Branch_00_b5d1
 	LDA zPlayerMode
 	BEQ @00_b634
-	LDA $0249
-	CMP #$08
+	LDA iJoyCurrent
+	CMP #BTN_START
 	BNE Branch_00_b5d1
 	JSR Sub_00_8fd4
 @00_b634:
@@ -5038,8 +5007,8 @@ Sub_00_b660:
 	BEQ @00_b68b
 	LDA zPlayerMode
 	BEQ @00_b678
-	LDA $0249
-	CMP #$08
+	LDA iJoyCurrent
+	CMP #BTN_START
 	BNE @00_b68b
 	JSR Sub_00_8fd4
 @00_b678:
@@ -5140,29 +5109,29 @@ Sub_00_b6fa:
 
 HandleInGameInput:
 	LDX $044f
-	LDA $024b, X
+	LDA iJoyHeld, X
 	AND #$40
 	BEQ @00_b739
 	JSR @00_b78f
 @00_b739:
 	LDX $044f
-	LDA $024b, X
+	LDA iJoyHeld, X
 	AND #$80
 	BEQ @00_b746
 	JSR @00_b7a3
 @00_b746:
 	LDX $044f
-	LDA $024b, X
+	LDA iJoyHeld, X
 	AND #$01
 	BNE @00_b766
-	LDA $024b, X
+	LDA iJoyHeld, X
 	AND #$02
 	BNE @00_b766
-	LDA $024b, X
+	LDA iJoyHeld, X
 	AND #$10
 	BNE @00_b7b9
-	LDA $0249, X
-	AND #$20
+	LDA iJoyCurrent, X
+	AND #BTN_DOWN
 	BNE @00_b7b9
 @00_b765:
 	RTS

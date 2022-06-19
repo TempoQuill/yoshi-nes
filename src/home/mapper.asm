@@ -49,7 +49,7 @@ WriteChr2:
 	RTS
 
 SwitchToAudio:
-	LDA #$01
+	LDA #PRG_Audio
 	BNE PrgSwitch
 
 SwitchToMain:
