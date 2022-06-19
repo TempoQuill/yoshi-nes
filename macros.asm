@@ -60,7 +60,7 @@ MACRO drum_speed length
 ENDM
 
 MACRO octave oct
-	.db octave_cmd << 4 | 8 - oct
+	.db octave_cmd | 8 - oct
 ENDM
 
 MACRO pitch_inc_switch
