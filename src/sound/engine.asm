@@ -651,8 +651,8 @@ Frame_Swap:
 Vibrato:
 ; Parameters [EA][xx][yz]
 ;	x - length, (command ends if 0)
-;	y - speed (in frame pairs)
-;	z - depth
+;	y - depth
+;	z - speed (in frame pairs)
 	INY
 	LDA (zMusicAddress), Y
 	BNE @non_zero
