@@ -1,7 +1,7 @@
 Music_Starman_Ch2:
 	channel_volume 12
 	vibrato 9, 1, 3
-	note_type 12, 3, 6, 1, 4
+	note_type 12, 0, 6, 1, 4
 	octave 3
 	note A_, 1
 	note B_, 1
@@ -32,7 +32,7 @@ Music_Starman_Ch2_Menu:
 	channel_volume 12
 	pitch_inc_switch
 	vibrato 9, 1, 3
-	note_type 12, 3, 6, 1, 4
+	note_type 12, 0, 6, 1, 4
 
 Music_Starman_Ch2_Mainloop:
 	octave 3
@@ -252,7 +252,7 @@ Music_Starman_Ch2_Mainloop:
 	note G#, 16
 	octave 2
 	note B_, 16
-	note_type 12, 3, 6, 1, 4
+	note_type 12, 0, 6, 1, 4
 	rest 16
 	rest 16
 	rest 16
