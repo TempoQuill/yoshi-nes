@@ -226,9 +226,9 @@ UpdateChannel:
 	DEC iChannelInsVolume, X
 	JMP @measure_volume ; fade it out
 @01_9fda:
-	; use the instrument parameter as a word offset
+	; use i6b1 as a word offset
 	; params are only 7-bit, so the highest bit is occupied by a power flag
-	LDA iChannelInsParam, X
+	LDA i6b1, X
 	ASL A
 	TAY
 	LDA (zInstrumentPointer), Y

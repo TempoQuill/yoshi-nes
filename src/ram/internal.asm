@@ -327,8 +327,11 @@ iChannelAddress: ; 691
 iChannelFlags: ; 6a1
 	.dsb 8
 iChannelOctave:
-	.dsb $11
+	.dsb 8
+i6b1:
+	.dsb 8
 i6b9:
+	.dsb 1
 iMusicID1:
 	.dsb 1
 iChannelEnvExtension: ; 6bb

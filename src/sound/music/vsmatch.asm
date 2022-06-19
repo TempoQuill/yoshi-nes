@@ -205,7 +205,7 @@ Music_VSMatch_Ch1:
 	note C_, 1
 	note C_, 1
 	note C_, 4
-	note_type 8, 1, 1, 2, 6
+	note_type 8, 2, 1, 2, 6
 	rest 2
 	note C_, 2
 	note D_, 2
@@ -354,7 +354,7 @@ Music_VSMatch_Ch1_Mainloop:
 	note A#, 4
 	octave 5
 	note D_, 4
-	note_type 8, 1, 1, 2, 6
+	note_type 8, 2, 1, 2, 6
 	note C_, 2
 	octave 4
 	note A#, 2
