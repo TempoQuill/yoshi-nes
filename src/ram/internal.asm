@@ -222,9 +222,7 @@ zff:
 ; $100
 i100:
 iPaletteTable:
-	.dsb 5
-i105:
-	.dsb 11
+	.dsb 16
 	.dsb 13
 i11d:
 	.dsb 3
@@ -283,7 +281,9 @@ i297: ; unused, written to but never read
 	.dsb $69
 	.dsb $100
 	.dsb $100
-	.dsb $4e
+	.dsb 1
+i501:
+	.dsb $4d
 iCrunchCounter: ; 54e
 	.dsb 3
 iStageNum: ; 551
