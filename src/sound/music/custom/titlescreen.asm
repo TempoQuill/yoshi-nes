@@ -336,8 +336,8 @@ Music_TitleScreen_Ch1_sub3:
 	sound_ret
 
 
-Music_TitleScreen_Ch3::
-	note_type 12, 0, 21
+Music_TitleScreen_Ch3:
+	hill_type 12, 0, 21
 	octave 3
 	note G_, 2
 	note D_, 2
@@ -348,7 +348,7 @@ Music_TitleScreen_Ch3::
 	note G_, 4
 	note G_, 4
 	note G_, 4
-	note_type 8, 0, 21
+	hill_type 8, 0, 21
 	note F_, 2
 	note F_, 2
 	note F_, 2
@@ -357,7 +357,7 @@ Music_TitleScreen_Ch3::
 	note A_, 2
 
 Music_TitleScreen_Ch3_mainloop:
-	note_type 12, 0, 89
+	hill_type 12, 0, 89
 	sound_call Music_TitleScreen_Ch3_sub1
 	sound_call Music_TitleScreen_Ch3_sub2
 
@@ -402,7 +402,7 @@ Music_TitleScreen_Ch3_loop1:
 	pitch_slide 1, 4, D_
 	note D_, 4
 	rest 2
-	note_type 8, 0, 89
+	hill_type 8, 0, 89
 	octave 4
 	note C_, 4
 	note C_, 4
@@ -416,7 +416,7 @@ Music_TitleScreen_Ch3_loop1:
 	pitch_slide 1, 4, D_
 	note D_, 4
 	rest 6
-	note_type 8, 0, 89
+	hill_type 8, 0, 89
 	octave 4
 	note C_, 4
 	note C_, 4
@@ -461,7 +461,7 @@ Music_TitleScreen_Ch3_sub4:
 	sound_ret
 
 Music_TitleScreen_Ch3_sub5:
-	note_type 12, 1, 4
+	hill_type 12, 1, 4
 	octave 4
 	note D_, 1
 	rest 5

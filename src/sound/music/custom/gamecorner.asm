@@ -349,7 +349,7 @@ Music_GameCorner_Ch1_mainloop:
 
 
 Music_GameCorner_Ch3::
-	note_type 12, 0, 17
+	hill_type 12, 0, 17
 	octave 5
 	note C#, 6
 	octave 4

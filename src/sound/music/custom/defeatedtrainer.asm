@@ -168,19 +168,19 @@ Music_DefeatedTrainer_Ch1_mainloop:
 
 
 Music_DefeatedTrainer_Ch3:
-	note_type 4, 0, 24
+	hill_type 4, 0, 24
 	octave 5
 	note D_, 2
-	note_type 4, 0, 24
+	hill_type 4, 0, 24
 	note D_, 2
 	note D_, 2
 	octave 4
 	note B_, 2
 	note A_, 2
 	note G_, 2
-	note_type 4, 0, 68
+	hill_type 4, 0, 68
 	note A_, 12
-	note_type 4, 0, 33
+	hill_type 4, 0, 33
 
 Music_DefeatedTrainer_Ch3_mainloop:
 	note F#, 6

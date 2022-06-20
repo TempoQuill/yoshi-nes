@@ -44,12 +44,12 @@ Music_EvolutionDitty_Ch1:
 
 
 Music_EvolutionDitty_Ch3:
-	note_type 5, 0, 87
+	hill_type 5, 0, 87
 	octave 5
 	note F_, 4
 	note D#, 4
 	note C_, 8
-	note_type 5, 0, 17
+	hill_type 5, 0, 17
 	note D#, 1
 	rest 1
 	note D#, 1
@@ -62,6 +62,6 @@ Music_EvolutionDitty_Ch3:
 	rest 1
 	note G_, 1
 	rest 1
-	note_type 5, 0, 96
+	hill_type 5, 0, 96
 	note A_, 8
 	sound_ret

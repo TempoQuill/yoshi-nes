@@ -28,12 +28,12 @@ Music_Item_Ch1:
 
 
 Music_Item_Ch3:
-	note_type 4, 0, 17
+	hill_type 4, 0, 17
 	octave 4
 	note B_, 2
 	note B_, 2
 	note B_, 2
-	note_type 12, 0, 63
+	hill_type 12, 0, 63
 	octave 4
 	note B_, 4
 	sound_ret

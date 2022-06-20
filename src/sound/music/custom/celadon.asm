@@ -241,7 +241,7 @@ Music_Celadon_Ch1_mainloop:
 
 
 Music_Celadon_Ch3:
-	note_type 12, 0, 21
+	hill_type 12, 0, 21
 	rest 8
 	octave 5
 	note D_, 1
@@ -255,7 +255,7 @@ Music_Celadon_Ch3:
 
 Music_Celadon_Ch3_Menu:
 Music_Celadon_Ch3_mainloop:
-	note_type 12, 0, 49
+	hill_type 12, 0, 49
 	octave 4
 	note D_, 2
 	note B_, 2

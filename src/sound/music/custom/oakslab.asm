@@ -144,7 +144,7 @@ Music_OaksLab_Ch1_mainloop:
 
 
 Music_OaksLab_Ch3:
-	note_type 12, 0, 17
+	hill_type 12, 0, 17
 	rest 2
 	octave 4
 	note G#, 2

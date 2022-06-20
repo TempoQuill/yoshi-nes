@@ -33,7 +33,7 @@ Music_PkmnHealed_Ch1:
 
 
 Music_PkmnHealed_Ch3:
-	note_type 12, 1, 1
+	hill_type 12, 1, 1
 	octave 4
 	note E_, 2
 	rest 2

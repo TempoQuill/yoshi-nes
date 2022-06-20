@@ -29,7 +29,7 @@ Music_CurrentScore_Ch1:
 	sound_ret
 
 Music_CurrentScore_Ch3:
-	note_type 6, 0, 17
+	hill_type 6, 0, 17
 	octave 4
 	note B_, 2
 	note B_, 1
