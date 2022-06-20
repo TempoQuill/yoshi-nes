@@ -110,17 +110,17 @@ Drum_Hihat_Ch8:
 
 IFDEF POKEMON_RED_MUSIC_SOUNDFONT
 Drum_CymbalRev_Ch8:
-	perc_type 7, 1, 1, 1
+	perc_type 8, 1, 1, 1
 	noise_note 8, 0, 0, 13
-	perc_type 6, 1, 1, 1
+	perc_type 7, 1, 1, 1
 	noise_note 8, 0, 0, 12
-	perc_type 5, 1, 1, 1
+	perc_type 6, 1, 1, 1
 	noise_note 8, 0, 0, 11
-	perc_type 4, 1, 1, 1
+	perc_type 5, 1, 1, 1
 	noise_note 8, 0, 0, 10
-	perc_type 3, 1, 1, 1
+	perc_type 4, 1, 1, 1
 	noise_note 8, 0, 0, 9
-	perc_type 2, 0, 0, 2
+	perc_type 3, 0, 0, 2
 	noise_note 8, 0, 0, 8
 	sound_ret
 
