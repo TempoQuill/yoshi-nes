@@ -10,6 +10,7 @@ Music_Celadon_Ch2_Menu:
 Music_Celadon_Ch2_mainloop:
 	channel_volume 13
 	note_type 12, 2, 12, 1, 6
+	octave 3
 	note G_, 4
 	note B_, 4
 	note G_, 2
