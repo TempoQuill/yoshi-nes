@@ -246,6 +246,7 @@ Music_TitleScreen_Ch1_mainloop:
 	note_type 12, 0, 5, 7, 3
 	note G_, 6
 	note A#, 2
+	vibrato 16, 2, 3
 	note_type 12, 0, 5, 7, 1
 	note G_, 16
 	note A_, 8
