@@ -23,16 +23,16 @@ Drum_SHonkLow_Ch9:
 	dpcm_entry 13, $c6c0, $14
 ELSE
 .incbin "src/raw-data/dpcm-area-red.bin"
-Drum_SSnare1_Ch8:
+Drum_SSnare1_Ch9:
 	dpcm_entry 14, $c000, $1c
 
-Drum_SSnare2_Ch8:
+Drum_SSnare2_Ch9:
 	dpcm_entry 14, $c1c0, $1c
 
-Drum_SSnare3_Ch8:
+Drum_SSnare3_Ch9:
 	dpcm_entry 14, $c380, $1c
 
-Drum_SSnare4_Ch8:
+Drum_SSnare4_Ch9:
 	dpcm_entry 14, $c540, $1c
 
 ENDIF
