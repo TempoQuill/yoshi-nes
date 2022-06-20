@@ -1,6 +1,6 @@
 Music_Item_Ch2:
 	channel_volume 11
-	vibrato 6, 1, 6
+	vibrato 6, 2, 3
 	toggle_perfect_pitch
 	note_type 4, 2, 13, 1, 6
 	octave 3
@@ -16,7 +16,7 @@ Music_Item_Ch2:
 Music_Item_Ch1:
 	tempo 256
 	channel_volume 13
-	vibrato 8, 1, 7
+	vibrato 8, 2, 3
 	note_type 4, 2, 1, 1, 5
 	octave 4
 	note E_, 2

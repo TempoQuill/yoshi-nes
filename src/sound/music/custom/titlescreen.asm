@@ -1,6 +1,6 @@
 Music_TitleScreen_Ch2:
 	channel_volume 12
-	vibrato 9, 1, 4
+	vibrato 9, 3, 2
 	note_type 12, 3, 3, 4, 4
 	octave 2
 	note E_, 1
@@ -21,7 +21,6 @@ Music_TitleScreen_Ch2:
 	rest 3
 	note G_, 1
 	rest 3
-	vibrato 9, 1, 4
 	note_type 8, 3, 3, 1, 5
 	note A_, 2
 	note A_, 2
@@ -161,7 +160,7 @@ Music_TitleScreen_Ch2_sub3:
 Music_TitleScreen_Ch1:
 	tempo 144
 	channel_volume 13
-	vibrato 16, 2, 6
+	vibrato 16, 4, 3
 	note_type 12, 1, 3, 4, 2
 	octave 2
 	note G_, 1
@@ -190,7 +189,7 @@ Music_TitleScreen_Ch1:
 	note F#, 2
 
 Music_TitleScreen_Ch1_mainloop:
-	vibrato 16, 2, 6
+	vibrato 16, 4, 3
 	sound_call Music_TitleScreen_Ch1_sub1
 	octave 2
 	note A_, 4

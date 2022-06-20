@@ -25,7 +25,7 @@ Music_EvolutionDitty_Ch2:
 Music_EvolutionDitty_Ch1:
 	tempo 256
 	channel_volume 14
-	vibrato 8, 1, 7
+	vibrato 8, 2, 3
 	note_type 5, 2, 11, 3, 3
 	octave 4
 	note A_, 4

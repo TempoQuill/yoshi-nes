@@ -1,6 +1,6 @@
 Music_Cities1_Ch2:
 	channel_volume 13
-	vibrato 8, 2, 1
+	vibrato 8, 2, 2
 
 Music_Cities1_Ch2_Mainloop:
 	note_type 12, 3, 4, 2, 8

@@ -1,6 +1,6 @@
 Music_GameCorner_Ch2:
 	channel_volume 11
-	vibrato 12, 1, 4
+	vibrato 12, 3, 2
 	pitch_inc_swith
 	note_type 12, 0, 6, 1, 3
 	octave 3
@@ -190,7 +190,7 @@ Music_GameCorner_Ch2_mainloop:
 Music_GameCorner_Ch1:
 	tempo 120
 	channel_volume 12
-	vibrato 10, 1, 3
+	vibrato 10, 2, 1
 	note_type 12, 2, 1, 4, 3
 	octave 4
 	note C#, 6

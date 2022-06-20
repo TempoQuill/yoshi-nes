@@ -1,6 +1,6 @@
 Music_OaksLab_Ch2:
 	channel_volume 12
-	vibrato 16, 1, 2
+	vibrato 16, 1, 1
 	pitch_inc_switch
 	note_type 12, 0, 6, 2, 2
 	octave 1
@@ -70,7 +70,7 @@ Music_OaksLab_Ch2_mainloop:
 Music_OaksLab_Ch1:
 	tempo 140
 	channel_volume 15
-	vibrato 10, 1, 5
+	vibrato 10, 2, 2
 	note_type 12, 3, 7, 2, 4
 	octave 2
 	note G#, 1

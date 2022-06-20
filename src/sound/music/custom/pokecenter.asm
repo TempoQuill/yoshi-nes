@@ -1,5 +1,5 @@
 Music_Pokecenter_Ch2:
-	vibrato 10, 1, 2
+	vibrato 10, 2, 1
 	channel_volume 14
 	pitch_inc_switch
 
@@ -140,7 +140,7 @@ Music_Pokecenter_Ch2_sub3:
 
 Music_Pokecenter_Ch1:
 	tempo 144
-	vibrato 8, 2, 5
+	vibrato 8, 2, 2
 
 Music_Pokecenter_Ch1_mainloop:
 	sound_call Music_Pokecenter_Ch1_sub1

@@ -1,6 +1,6 @@
 Music_CurrentScore_Ch2:
 	channel_volume 11
-	vibrato 6, 1, 6
+	vibrato 6, 2, 3
 	pitch_inc_switch
 	note_type 6, 2, 13, 1, 6
 	octave 3
@@ -16,7 +16,7 @@ Music_CurrentScore_Ch2:
 Music_CurrentScore_Ch1:
 	tempo 256
 	channel_volume 13
-	vibrato 8, 1, 7
+	vibrato 8, 2, 3
 	note_type 6, 2, 1, 3, 3
 	octave 4
 	note E_, 2
