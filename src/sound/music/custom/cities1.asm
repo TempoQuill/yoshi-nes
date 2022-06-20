@@ -601,40 +601,40 @@ Music_Cities1_Ch4_Loop1:
 	drum_note 6, 6
 	channel_volume 11
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 4
+	drum_note 8, 4
 	sound_loop 0, Music_Cities1_Ch4
 
 Music_Cities1_Ch4_Sub1:
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 4
+	drum_note 8, 4
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 2
-	drum_note 18, 2
+	drum_note 8, 2
+	drum_note 8, 2
 	sound_ret
 
 Music_Cities1_Ch4_Sub2:
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 4
+	drum_note 8, 4
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 8, 6
 	frame_swap
-	drum_note 18, 4
+	drum_note 8, 4
 	sound_ret
 
 Music_Cities1_Ch4_Sub3:
