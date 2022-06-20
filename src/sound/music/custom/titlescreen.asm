@@ -169,13 +169,18 @@ Music_TitleScreen_Ch1:
 	octave 3
 	note D_, 1
 	note F#, 1
-	note G_, 4
-	note G_, 6
+	note G_, 1
+	rest 3
+	note G_, 1
+	rest 5
 	note G_, 1
 	note G_, 1
-	note G_, 4
-	note G_, 4
-	note G_, 4
+	note G_, 1
+	rest 3
+	note G_, 1
+	rest 3
+	note G_, 1
+	rest 3
 	note_type 8, 1, 3, 4, 4
 	note F_, 2
 	note F_, 2
@@ -357,7 +362,7 @@ Music_TitleScreen_Ch3:
 	note A_, 2
 
 Music_TitleScreen_Ch3_mainloop:
-	hill_type 12, 0, 89
+	hill_type 8, 0, 89
 	sound_call Music_TitleScreen_Ch3_sub1
 	sound_call Music_TitleScreen_Ch3_sub2
 
