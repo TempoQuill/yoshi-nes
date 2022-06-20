@@ -440,9 +440,9 @@ Music_Celadon_Ch4:
 Music_Celadon_Ch4_Menu:
 	drum_speed 6
 
-Music_Celadon_Ch4_mainloop:
 	frame_swap
 	rest 4
+Music_Celadon_Ch4_mainloop:
 	frame_swap
 	rest 4
 	frame_swap
@@ -488,7 +488,7 @@ Music_Celadon_Ch4_loop1:
 	rest 2
 	frame_swap
 	rest 2
-	sound_loop 4, Music_Celadon_Ch4_mainloop
+	sound_loop 4, Music_Celadon_Ch4_loop1
 	frame_swap
 	rest 8
 	frame_swap
@@ -520,4 +520,6 @@ Music_Celadon_Ch4_loop2:
 	frame_swap
 	rest 8
 	sound_loop 4, Music_Celadon_Ch4_loop2
+	frame_swap
+	rest 4
 	sound_loop 0, Music_Celadon_Ch4_mainloop
