@@ -229,6 +229,7 @@ ENDIF
 	sound_ret
 
 Sfx_Swap_Ch6:
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
 	sfx_type 1, 2, 0, 1, 3
 	pulse_note 4, $300
 	pulse_note 9, $200
@@ -238,6 +239,15 @@ Sfx_Swap_Ch6:
 	pulse_note 9, $200
 	pulse_note 4, $300
 	sound_ret
+ELSE
+	sfx_type 1, 2, 0, 0, 2
+	pulse_note 13, $40
+	pulse_note 15, $30
+	pulse_note 13, $40
+	sfx_type 8, 2, 0, 0, 2
+	pulse_note 15, $30
+	sound_ret
+ENDIF
 
 Sfx_Crunch7_Ch6:
 	sfx_type 4, 2, 0, 0, 3
