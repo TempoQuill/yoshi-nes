@@ -23,7 +23,7 @@ IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
 ELSE
 	.include "src/sound/music/custom/pkmnhealed.asm"
 	.include "src/sound/music/custom/currentscore.asm"
-	.include "src/sound/music/custom/evolutoinditty.asm"
+	.include "src/sound/music/custom/evolutionditty.asm"
 	.include "src/sound/music/custom/defeatedtrainer.asm"
 ENDIF
 .include "src/sound/music/unused.asm"
