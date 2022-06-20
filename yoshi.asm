@@ -1,3 +1,4 @@
+.include "src/config.asm"
 
 ; -----------------------------------------
 ; Add definitions
