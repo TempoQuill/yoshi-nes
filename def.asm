@@ -173,9 +173,6 @@ MMC1_RomBank = $e000
 header_byte_length = 3
 channel_mask = %00000011
 num_channels = 8
-sfx_boundary = (HeaderBoundary_SFX - MusicHeaders) / 3
-music_boundary = (HeaderBoundary_Music - MusicHeaders) / 3
-drum_boundary = (HeaderBoundary_Drums - MusicHeaders) / 3
 
 Ramp_Mask     = %00001111
 Volume_Ramp_F = %00010000
@@ -281,69 +278,76 @@ B♭ = 10
 B_ = 11
 NOTE_REST = 12
 
-NOISE_2P_HIHAT      = $01
-NOISE_SNARE         = $02
-NOISE_CRASH         = $03
-NOISE_OP_HIHAT      = $04
-NOISE_CS_SNARE_1    = $05
-NOISE_CS_SNARE_2    = $06
-NOISE_CS_SNARE_3    = $07
-NOISE_CS_SNARE_4    = $08
-NOISE_TOM_1         = $09
-NOISE_TOM_2         = $0a
-DPCM_KICK           = $0b
-DPCM_SNARE          = $0c
-DPCM_SNARE_LOW      = $0d
-DPCM_CLAVE          = $0e
-DPCM_HONK_LOW       = $0f
-DPCM_CLAVE_LOW      = $10
-DPCM_HONK           = $11
-NOISE_HIHAT         = $12
-SFX_COLLECT_BONUS   = $13
-SFX_WALK_SOFT       = $15
-SFX_WALK            = $16
-SFX_ROW_1           = $17
-SFX_ROW_2           = $18
-SFX_ROW_3           = $19
-SFX_ROW_4           = $1a
-SFX_ROW_5           = $1b
-SFX_ROW_6           = $1c
-SFX_SWITCH_COLUMN   = $1d
-SFX_HATCH           = $1e
-SFX_SHELL_VANISH    = $1f
-SFX_MATCH           = $20
-SFX_PLACEMENT       = $21
-SFX_CRUNCH_BIG      = $22
-SFX_CRUNCH_1        = $24
-SFX_CRUNCH_2        = $25
-SFX_CRUNCH_3        = $26
-SFX_CRUNCH_4        = $27
-SFX_CRUNCH_5        = $28
-SFX_CRUNCH_6        = $29
-SFX_CRUNCH_7        = $2a
-SFX_SWAP            = $2b
-SFX_YOSHI           = $2c
-SFX_BIG_YOSHI       = $2e
-SFX_GARBAGE         = $30
-SFX_PAUSE           = $31
-SFX_DUMMY           = $33
-MUSIC_TITLE         = $34
-MUSIC_FLOWER        = $38
-MUSIC_FLOWER_MENU   = $3c
-MUSIC_STAR          = $40
-MUSIC_STAR_MENU     = $44
-MUSIC_MUSHROOM      = $48
-MUSIC_MUSHROOM_MENU = $4c
-MUSIC_VS_MATCH      = $50
-MUSIC_GAME_OVER     = $54
-MUSIC_STAGE_CLEAR   = $57
-MUSIC_CURRENT_SCORE = $5a
-MUSIC_VS_MENU       = $5e
-MUSIC_GAME_POINT    = $62
-MUSIC_VS_RESULTS    = $65
-MUSIC_UNUSED        = $69
-MUSIC_ROUND_END     = $6c
-MUSIC_TEST          = $6f
+MACRO music_def def, equ
+def = (equ + 3 - MusicHeaders) / 3
+ENDM
+
+	music_def NOISE_2P_HIHAT,   Drum_2PHihat
+	music_def NOISE_SNARE,      Drum_Snare
+	music_def NOISE_CRASH,      Drum_Crash
+	music_def NOISE_OP_HIHAT,   Drum_OPHihat
+	music_def NOISE_CS_SNARE_1, Drum_CSSnare1
+	music_def NOISE_CS_SNARE_2, Drum_CSSnare2
+	music_def NOISE_CS_SNARE_3, Drum_CSSnare3
+	music_def NOISE_CS_SNARE_4, Drum_CSSnare4
+	music_def NOISE_TOM_1,      Drum_Tom1
+	music_def NOISE_TOM_2,      Drum_Tom2
+	music_def DPCM_KICK,        Drum_SKick
+	music_def DPCM_SNARE,       Drum_SSnare
+	music_def DPCM_SNARE_LOW,   Drum_SSnareLow
+	music_def DPCM_CLAVE,       Drum_SClave
+	music_def DPCM_HONK_LOW,    Drum_SHonkLow
+	music_def DPCM_CLAVE_LOW,   Drum_SClaveLow
+	music_def DPCM_HONK,        Drum_SHonk
+	music_def NOISE_HIHAT,      Drum_Hihat
+drum_boundary = (HeaderBoundary_Drums - MusicHeaders) / 3
+	music_def SFX_COLLECT_BONUS, Sfx_CollectBonus
+	music_def SFX_WALK_SOFT,     Sfx_WalkSoft
+	music_def SFX_WALK,          Sfx_Walk
+	music_def SFX_ROW_1,         Sfx_Row1
+	music_def SFX_ROW_2,         Sfx_Row2
+	music_def SFX_ROW_3,         Sfx_Row3
+	music_def SFX_ROW_4,         Sfx_Row4
+	music_def SFX_ROW_5,         Sfx_Row5
+	music_def SFX_ROW_6,         Sfx_Row6
+	music_def SFX_SWITCH_COLUMN, Sfx_SwitchColumn
+	music_def SFX_HATCH,         Sfx_Hatch
+	music_def SFX_SHELL_VANISH,  Sfx_ShellVanish 
+	music_def SFX_MATCH,         Sfx_Match
+	music_def SFX_PLACEMENT,     Sfx_Placement
+	music_def SFX_CRUNCH_BIG,    Sfx_CrunchBig
+	music_def SFX_CRUNCH_1,      Sfx_Crunch1
+	music_def SFX_CRUNCH_2,      Sfx_Crunch2
+	music_def SFX_CRUNCH_3,      Sfx_Crunch3
+	music_def SFX_CRUNCH_4,      Sfx_Crunch4
+	music_def SFX_CRUNCH_5,      Sfx_Crunch5
+	music_def SFX_CRUNCH_6,      Sfx_Crunch6
+	music_def SFX_CRUNCH_7,      Sfx_Crunch7
+	music_def SFX_SWAP,          Sfx_Swap
+	music_def SFX_YOSHI,         Sfx_Yoshi
+	music_def SFX_BIG_YOSHI,     Sfx_BigYoshi
+	music_def SFX_GARBAGE,       Sfx_Garbage
+	music_def SFX_PAUSE,         Sfx_Pause
+	music_def SFX_DUMMY,         Sfx_Dummy
+sfx_boundary = (HeaderBoundary_SFX - MusicHeaders) / 3
+	music_def MUSIC_TITLE,         Music_Title
+	music_def MUSIC_FLOWER,        Music_Flower
+	music_def MUSIC_FLOWER_MENU,   Music_Flower_Menu
+	music_def MUSIC_STAR,          Music_Starman
+	music_def MUSIC_STAR_MENU,     Music_Starman_Menu
+	music_def MUSIC_MUSHROOM,      Music_Mushroom
+	music_def MUSIC_MUSHROOM_MENU, Music_Mushroom_Menu
+	music_def MUSIC_VS_MATCH,      Music_VSMatch
+	music_def MUSIC_GAME_OVER,     Music_GameOver
+	music_def MUSIC_STAGE_CLEAR,   Music_StageClear
+	music_def MUSIC_CURRENT_SCORE, Music_CurScore
+	music_def MUSIC_VS_MENU,       Music_VSMenu
+	music_def MUSIC_GAME_POINT,    Music_GamePoint
+	music_def MUSIC_VS_RESULTS,    Music_VSResults
+	music_def MUSIC_UNUSED,        Music_Unused
+	music_def MUSIC_ROUND_END,     Music_RoundEnd
+	music_def MUSIC_TEST,          Music_DrumTest
+music_boundary = (HeaderBoundary_Music - MusicHeaders) / 3
 
 NO_MUSIC = $ff
 

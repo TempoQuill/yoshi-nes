@@ -47,8 +47,8 @@ MACRO rest length
 	.db 12 << 4 | length - 1
 ENDM
 
-MACRO note_type length, cycle, instrument, fade_length, fade_delay
-	.db note_type_cmd | length, $30 | cycle << 6, instrument, fade_length << 4 | fade_delay
+MACRO note_type length, cycle, instrument, fade_length, note_tail
+	.db note_type_cmd | length, $30 | cycle << 6, instrument, fade_length << 4 | note_tail
 ENDM
 
 MACRO hill_type length, linear_flag, linear

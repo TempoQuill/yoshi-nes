@@ -1,4 +1,4 @@
-Pulse_9ddd:
+Sfx_Row6_Ch6:
 	tempo 128
 	channel_volume 11
 	note_type 6, 2, 7, 1, 4
@@ -10,7 +10,7 @@ Pulse_9ddd:
 	sound_ret
 
 
-Pulse_9deb:
+Sfx_Row5_Ch6:
 	tempo 128
 	channel_volume 11
 	note_type 6, 2, 7, 1, 4
@@ -21,7 +21,7 @@ Pulse_9deb:
 	sound_ret
 
 
-Pulse_9df8:
+Sfx_Row4_Ch6:
 	tempo 128
 	channel_volume 12
 	note_type 6, 2, 9, 1, 4
@@ -33,7 +33,7 @@ Pulse_9df8:
 	sound_ret
 
 
-Pulse_9e06:
+Sfx_Row3_Ch6:
 	tempo 128
 	channel_volume 12
 	note_type 6, 2, 9, 1, 4
@@ -45,7 +45,7 @@ Pulse_9e06:
 	sound_ret
 
 
-Pulse_9e14:
+Sfx_Row2_Ch6:
 	tempo 128
 	channel_volume 13
 	note_type 6, 2, 9, 1, 4
@@ -56,7 +56,7 @@ Pulse_9e14:
 	sound_ret
 
 
-Pulse_9e21:
+Sfx_Row1_Ch6:
 	tempo 128
 	channel_volume 13
 	note_type 6, 2, 9, 1, 4
@@ -68,7 +68,7 @@ Pulse_9e21:
 	sound_ret
 
 
-Pulse_9e2f:
+Sfx_Garbage_Ch6:
 	tempo 128
 	channel_volume 13
 	note_type 8, 1, 7, 1, 4
