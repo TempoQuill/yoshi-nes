@@ -439,10 +439,8 @@ Music_Celadon_Ch4:
 
 Music_Celadon_Ch4_Menu:
 	drum_speed 6
-
 	frame_swap
-	rest 4
-Music_Celadon_Ch4_mainloop:
+	rest 3
 	frame_swap
 	rest 4
 	frame_swap
@@ -477,7 +475,44 @@ Music_Celadon_Ch4_mainloop:
 	rest 8
 	frame_swap
 	rest 8
-	sound_loop 3, Music_Celadon_Ch4_mainloop
+Music_Celadon_Ch4_mainloop:
+	frame_swap
+	rest 4
+	frame_swap
+	rest 4
+	frame_swap
+	rest 4
+	frame_swap
+	rest 4
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 10
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 8
+	frame_swap
+	rest 8
+	sound_loop 2, Music_Celadon_Ch4_mainloop
 
 Music_Celadon_Ch4_loop1:
 	frame_swap
@@ -522,4 +557,38 @@ Music_Celadon_Ch4_loop2:
 	sound_loop 4, Music_Celadon_Ch4_loop2
 	frame_swap
 	rest 4
+	frame_swap
+	rest 4
+	frame_swap
+	rest 4
+	frame_swap
+	rest 4
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 10
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 2
+	frame_swap
+	rest 8
+	frame_swap
+	rest 8
 	sound_loop 0, Music_Celadon_Ch4_mainloop
