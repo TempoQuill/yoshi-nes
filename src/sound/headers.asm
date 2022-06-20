@@ -1,4 +1,5 @@
 MusicHeaders:
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
 Drum_2PHihat:
 	sound_header 1, 8, Drum_2PHihat_Ch8
 
@@ -52,6 +53,65 @@ Drum_SHonk:
 
 Drum_Hihat:
 	sound_header 1, 8, Drum_Hihat_Ch8
+ELSE
+Drum_SSnare1:
+	sound_header 1, 9, Drum_SSnare1_Ch9
+
+Drum_SSnare2:
+	sound_header 1, 9, Drum_SSnare2_Ch9
+
+Drum_SSnare3:
+	sound_header 1, 9, Drum_SSnare3_Ch9
+
+Drum_SSnare4:
+	sound_header 1, 9, Drum_SSnare4_Ch9
+
+Drum_CymbalRev:
+	sound_header 1, 8, Drum_CymbalRev_Ch8
+
+Drum_Clang1:
+	sound_header 1, 8, Drum_Clang1_Ch8
+
+Drum_Clang2:
+	sound_header 1, 8, Drum_Clang2_Ch8
+
+Drum_Hihat1:
+	sound_header 1, 8, Drum_Hihat1_Ch8
+
+Drum_EchoSnare1:
+	sound_header 1, 8, Drum_EchoSnare1_Ch8
+
+Drum_EchoSnare2:
+	sound_header 1, 8, Drum_EchoSnare2_Ch8
+
+Drum_EchoSnare3:
+	sound_header 1, 8, Drum_EchoSnare3_Ch8
+
+Drum_Hihat2:
+	sound_header 1, 8, Drum_Hihat2_Ch8
+
+Drum_EchoSnare4:
+	sound_header 1, 8, Drum_EchoSnare4_Ch8
+
+Drum_EchoSnare5:
+	sound_header 1, 8, Drum_EchoSnare5_Ch8
+
+Drum_MuteSnare:
+	sound_header 1, 8, Drum_MuteSnare_Ch8
+
+Drum_Triangle:
+	sound_header 1, 8, Drum_Triangle_Ch8
+
+Drum_Snare1:
+	sound_header 1, 8, Drum_Snare1_Ch8
+
+Drum_Snare2:
+	sound_header 1, 8, Drum_Snare2_Ch8
+
+Drum_Snare3:
+	sound_header 1, 8, Drum_Snare3_Ch8
+
+ENDIF
 
 HeaderBoundary_Drums:
 
@@ -146,6 +206,7 @@ Sfx_Dummy:
 
 HeaderBoundary_SFX:
 
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
 Music_Title:
 	sound_header 4, 1, Music_Title_Ch1
 	sound_subheader 2, Music_Title_Ch2
@@ -193,12 +254,61 @@ Music_VSMatch:
 	sound_subheader 2, Music_VSMatch_Ch2
 	sound_subheader 3, Music_VSMatch_Ch3
 	sound_subheader 4, Music_VSMatch_Ch4
+ELSE
+Music_TitleScreen:
+	sound_header 4, 1, Music_TitleScreen_Ch1
+	sound_subheader 2, Music_TitleScreen_Ch2
+	sound_subheader 3, Music_TitleScreen_Ch3
+	sound_subheader 4, Music_TitleScreen_Ch4
+
+Music_Pokecenter:
+	sound_header 4, 1, Music_Pokecenter_Ch1
+	sound_subheader 2, Music_Pokecenter_Ch2
+	sound_subheader 3, Music_Pokecenter_Ch3
+	sound_subheader 4, Music_Pokecenter_Ch4
+
+Music_Pokecenter_Menu:
+	sound_header 4, 1, Music_Pokecenter_Ch1
+	sound_subheader 2, Music_Pokecenter_Ch2
+	sound_subheader 3, Music_Pokecenter_Ch3
+	sound_subheader 4, Music_Pokecenter_Ch4
+
+Music_Cities1:
+	sound_header 4, 1, Music_Cities1_Ch1
+	sound_subheader 2, Music_Cities1_Ch2
+	sound_subheader 3, Music_Cities1_Ch3
+	sound_subheader 4, Music_Cities1_Ch4
+
+Music_Cities1_Menu:
+	sound_header 4, 1, Music_Cities1_Ch1
+	sound_subheader 2, Music_Cities1_Ch2
+	sound_subheader 3, Music_Cities1_Ch3
+	sound_subheader 4, Music_Cities1_Ch4
+
+Music_Celadon:
+	sound_header 4, 1, Music_Celadon_Ch1
+	sound_subheader 2, Music_Celadon_Ch2
+	sound_subheader 3, Music_Celadon_Ch3
+	sound_subheader 4, Music_Celadon_Ch4
+
+Music_Celadon_Menu:
+	sound_header 4, 1, Music_Celadon_Ch1_Menu
+	sound_subheader 2, Music_Celadon_Ch2_Menu
+	sound_subheader 3, Music_Celadon_Ch3_Menu
+	sound_subheader 4, Music_Celadon_Ch4_Menu
+
+Music_GameCorner:
+	sound_header 3, 1, Music_GameCorner_Ch1
+	sound_subheader 2, Music_GameCorner_Ch2
+	sound_subheader 3, Music_GameCorner_Ch3
+ENDIF
 
 Music_GameOver:
 	sound_header 3, 1, Music_GameOver_Ch1
 	sound_subheader 2, Music_GameOver_Ch2
 	sound_subheader 3, Music_GameOver_Ch3
 
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
 Music_StageClear:
 	sound_header 3, 1, Music_StageClear_Ch1
 	sound_subheader 2, Music_StageClear_Ch2
@@ -226,16 +336,49 @@ Music_VSResults:
 	sound_subheader 2, Music_VSResults_Ch2
 	sound_subheader 3, Music_VSResults_Ch3
 	sound_subheader 4, Music_VSResults_Ch4
+ELSE
+Music_PkmnHealed:
+	sound_header 3, 1, Music_PkmnHealed_Ch1
+	sound_subheader 2, Music_PkmnHealed_Ch2
+	sound_subheader 3, Music_PkmnHealed_Ch3
+
+Music_CurrentScore:
+	sound_header 3, 1, Music_CurrentScore_Ch1
+	sound_subheader 2, Music_CurrentScore_Ch2
+	sound_subheader 3, Music_CurrentScore_Ch3
+
+Music_OaksLab:
+	sound_header 3, 1, Music_OaksLab_Ch1
+	sound_subheader 2, Music_OaksLab_Ch2
+	sound_subheader 3, Music_OaksLab_Ch3
+
+Music_EvolutionDitty:
+	sound_header 3, 1, Music_EvolutionDitty_Ch1
+	sound_subheader 2, Music_EvolutionDitty_Ch2
+	sound_subheader 3, Music_EvolutionDitty_Ch3
+
+Music_DefeatedTrainer:
+	sound_header 3, 1, Music_DefeatedTrainer_Ch1
+	sound_subheader 2, Music_DefeatedTrainer_Ch2
+	sound_subheader 3, Music_DefeatedTrainer_Ch3
+ENDIF
 
 Music_Unused:
 	sound_header 3, 1, Music_Unused_Ch1
 	sound_subheader 2, Music_Unused_Ch2
 	sound_subheader 3, Music_Unused_Ch3
 
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
 Music_RoundEnd:
 	sound_header 3, 1, Music_RoundEnd_Ch1
 	sound_subheader 2, Music_RoundEnd_Ch2
 	sound_subheader 3, Music_RoundEnd_Ch3
+ELSE
+Music_Item:
+	sound_header 3, 1, Music_Item_Ch1
+	sound_subheader 2, Music_Item_Ch2
+	sound_subheader 3, Music_Item_Ch3
+ENDIF
 
 Music_DrumTest:
 	sound_header 1, 4, Music_DrumTest_Ch4

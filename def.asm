@@ -278,71 +278,19 @@ B♭ = 10
 B_ = 11
 NOTE_REST = 12
 
-NOISE_2P_HIHAT      = $01
-NOISE_SNARE         = $02
-NOISE_CRASH         = $03
-NOISE_OP_HIHAT      = $04
-NOISE_CS_SNARE_1    = $05
-NOISE_CS_SNARE_2    = $06
-NOISE_CS_SNARE_3    = $07
-NOISE_CS_SNARE_4    = $08
-NOISE_TOM_1         = $09
-NOISE_TOM_2         = $0a
-DPCM_KICK           = $0b
-DPCM_SNARE          = $0c
-DPCM_SNARE_LOW      = $0d
-DPCM_CLAVE          = $0e
-DPCM_HONK_LOW       = $0f
-DPCM_CLAVE_LOW      = $10
-DPCM_HONK           = $11
-NOISE_HIHAT         = $12
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
+	.include "src/def/yoshi-drums.asm"
+ELSE
+	.include "src/def/red-drums.asm"
+ENDIF
 drum_boundary = (HeaderBoundary_Drums - MusicHeaders) / 3
-SFX_COLLECT_BONUS   = $13
-SFX_WALK_SOFT       = $15
-SFX_WALK            = $16
-SFX_ROW_1           = $17
-SFX_ROW_2           = $18
-SFX_ROW_3           = $19
-SFX_ROW_4           = $1a
-SFX_ROW_5           = $1b
-SFX_ROW_6           = $1c
-SFX_SWITCH_COLUMN   = $1d
-SFX_HATCH           = $1e
-SFX_SHELL_VANISH    = $1f
-SFX_MATCH           = $20
-SFX_PLACEMENT       = $21
-SFX_CRUNCH_BIG      = $22
-SFX_CRUNCH_1        = $24
-SFX_CRUNCH_2        = $25
-SFX_CRUNCH_3        = $26
-SFX_CRUNCH_4        = $27
-SFX_CRUNCH_5        = $28
-SFX_CRUNCH_6        = $29
-SFX_CRUNCH_7        = $2a
-SFX_SWAP            = $2b
-SFX_YOSHI           = $2c
-SFX_BIG_YOSHI       = $2e
-SFX_GARBAGE         = $30
-SFX_PAUSE           = $31
-SFX_DUMMY           = $33
+.include "src/def/yoshi-sfx.asm"
 sfx_boundary = (HeaderBoundary_SFX - MusicHeaders) / 3
-MUSIC_TITLE         = $34
-MUSIC_FLOWER        = $38
-MUSIC_FLOWER_MENU   = $3c
-MUSIC_STAR          = $40
-MUSIC_STAR_MENU     = $44
-MUSIC_MUSHROOM      = $48
-MUSIC_MUSHROOM_MENU = $4c
-MUSIC_VS_MATCH      = $50
-MUSIC_GAME_OVER     = $54
-MUSIC_STAGE_CLEAR   = $57
-MUSIC_CURRENT_SCORE = $5a
-MUSIC_VS_MENU       = $5e
-MUSIC_GAME_POINT    = $62
-MUSIC_VS_RESULTS    = $65
-MUSIC_UNUSED        = $69
-MUSIC_ROUND_END     = $6c
-MUSIC_TEST          = $6f
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
+	.include "src/def/yoshi-music.asm"
+ELSE
+	.include "src/def/red-music.asm"
+ENDIF
 music_boundary = (HeaderBoundary_Music - MusicHeaders) / 3
 
 NO_MUSIC = $ff

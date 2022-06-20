@@ -334,9 +334,6 @@ ParseByte:
 	JSR CopyMusicAddress
 	JMP ParseByte
 @sound_loop:
-; this function is buggy: the same loop can only be encountered 128 times
-; before treating a negative value as 0
-; to fix use BCC instead of BMI
 	; safe increment loop counter
 	LDA iChannelLoopCounter, X
 	CLC
@@ -346,7 +343,11 @@ ParseByte:
 	INY
 	CMP (zMusicAddress), Y
 	BEQ @end_loop
-	BMI @use_loop ; BCC would be more appropriate
+IFNDEF LOOP_BUG_FIX
+	BMI @use_loop
+ELSE
+	BCC @use_loop
+ENDIF
 	; we exceed the byte shown, this is what happens when we loop with 0
 	SEC
 	SBC #1

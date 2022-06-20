@@ -574,31 +574,31 @@ Music_Cities1_Ch4_Loop1:
 	sound_call Music_Cities1_Ch4_Sub4
 	sound_call Music_Cities1_Ch4_Sub3
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 1, 4
+	drum_note 7, 4
 	sound_call Music_Cities1_Ch4_Sub5
 	sound_call Music_Cities1_Ch4_Sub4
 	sound_call Music_Cities1_Ch4_Sub3
 	sound_call Music_Cities1_Ch4_Sub5
 	sound_call Music_Cities1_Ch4_Sub3
 	frame_swap
-	drum_note 18, 6
-	drum_note 18, 6
+	drum_note 6, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 1, 2
+	drum_note 7, 2
 	frame_swap
-	drum_note 18, 2
+	drum_note 6, 2
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 18, 4
+	drum_note 6, 4
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	channel_volume 11
 	frame_swap
 	drum_note 18, 6
@@ -639,41 +639,41 @@ Music_Cities1_Ch4_Sub2:
 
 Music_Cities1_Ch4_Sub3:
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 1, 4
+	drum_note 7, 4
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 1, 4
+	drum_note 7, 4
 	sound_ret
 
 Music_Cities1_Ch4_Sub4:
 	frame_swap
-	drum_note 18, 6
-	drum_note 18, 6
+	drum_note 6, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 1, 4
+	drum_note 7, 4
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 1, 2
+	drum_note 7, 2
 	frame_swap
-	drum_note 18, 2
+	drum_note 6, 2
 	sound_ret
 
 Music_Cities1_Ch4_Sub5:
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 18, 6
+	drum_note 6, 6
 	frame_swap
-	drum_note 1, 2
-	drum_note 1, 2
+	drum_note 7, 2
+	drum_note 7, 2
 	sound_ret

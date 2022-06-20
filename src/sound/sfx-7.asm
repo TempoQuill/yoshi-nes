@@ -108,6 +108,120 @@ Drum_Hihat_Ch8:
 	noise_note 11, 0, 0, 1
 	sound_ret
 
+IFDEF POKEMON_RED_MUSIC_SOUNDFONT
+Drum_CymbalRev_Ch8:
+	perc_type 7, 1, 1, 1
+	noise_note 8, 0, 0, 13
+	perc_type 6, 1, 1, 1
+	noise_note 8, 0, 0, 12
+	perc_type 5, 1, 1, 1
+	noise_note 8, 0, 0, 11
+	perc_type 4, 1, 1, 1
+	noise_note 8, 0, 0, 10
+	perc_type 3, 1, 1, 1
+	noise_note 8, 0, 0, 9
+	perc_type 2, 0, 0, 2
+	noise_note 8, 0, 0, 8
+	sound_ret
+
+Drum_Clang1_Ch8:
+	perc_type 3, 0, 0, 2
+	noise_note 5, 0, 1, 4
+	sound_ret
+
+Drum_Clang2_Ch8:
+	perc_type 2, 0, 0, 2
+	noise_note 15, 0, 1, 5
+	perc_type 4, 0, 0, 2
+	noise_note 5, 0, 1, 4
+	sound_ret
+
+Drum_Hihat1_Ch8:
+	perc_type 11, 0, 0, 3
+	noise_note 8, 0, 0, 0
+	sound_ret
+
+Drum_EchoSnare1_Ch8:
+	perc_type 3, 1, 1, 1
+	noise_note 11, 0, 0, 7
+	noise_note 7, 0, 0, 7
+	noise_note 5, 0, 0, 7
+	noise_note 4, 0, 0, 7
+	sound_ret
+
+Drum_EchoSnare2_Ch8:
+	perc_type 3, 1, 1, 1
+	noise_note 11, 0, 0, 10
+	noise_note 7, 0, 0, 10
+	noise_note 5, 0, 0, 10
+	noise_note 4, 0, 0, 10
+	sound_ret
+
+Drum_EchoSnare3_Ch8:
+	perc_type 3, 1, 1, 1
+	noise_note 11, 0, 0, 11
+	noise_note 7, 0, 0, 11
+	noise_note 5, 0, 0, 11
+	noise_note 4, 0, 0, 11
+	sound_ret
+
+Drum_Hihat2_Ch8:
+	perc_type 15, 0, 0, 4
+	noise_note 10, 0, 0, 0
+	sound_ret
+
+Drum_EchoSnare4_Ch8:
+	perc_type 3, 1, 1, 1
+	noise_note 11, 0, 0, 5
+	noise_note 7, 0, 0, 5
+	noise_note 5, 0, 0, 5
+	noise_note 4, 0, 0, 5
+	sound_ret
+
+Drum_EchoSnare5_Ch8:
+	perc_type 3, 1, 1, 1
+	noise_note 11, 0, 0, 9
+	noise_note 7, 0, 0, 9
+	noise_note 5, 0, 0, 9
+	noise_note 4, 0, 0, 9
+	sound_ret
+
+Drum_MuteSnare_Ch8:
+	perc_type 1, 1, 1, 1
+	noise_note 14, 0, 1, 0
+	noise_note 4, 0, 0, 8
+	noise_note 3, 0, 0, 8
+	sound_ret
+
+Drum_Triangle_Ch8:
+	perc_type 3, 0, 0, 3
+	noise_note 9, 0, 1, 2
+	perc_type 7, 0, 0, 3
+	noise_note 7, 0, 1, 1
+	sound_ret
+
+Drum_Snare1_Ch8:
+	perc_type 1, 1, 1, 1
+	noise_note 9, 0, 0, 4
+	perc_type 10, 0, 0, 2
+	noise_note 9, 0, 0, 4
+	sound_ret
+
+Drum_Snare2_Ch8:
+	perc_type 1, 1, 1, 1
+	noise_note 7, 0, 0, 4
+	perc_type 10, 0, 0, 2
+	noise_note 7, 0, 0, 4
+	sound_ret
+
+Drum_Snare3_Ch8:
+	perc_type 1, 1, 1, 1
+	noise_note 6, 0, 0, 4
+	perc_type 10, 0, 0, 2
+	noise_note 6, 0, 0, 4
+	sound_ret
+ENDIF
+
 ; cafa
 	sfx_type 11, 2, 0, 1, 3
 	pitch_sweep 0, 1, 3

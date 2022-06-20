@@ -1,20 +1,43 @@
 ; PRG 1 contains all the music as well as the sound engine
 ; and OAM tile indeces, OAM attributes/coordinates and palette data
 
-.include "src/sound/music/title.asm"
-.include "src/sound/music/starman.asm"
-.include "src/sound/music/flower.asm"
-.include "src/sound/music/mushroom.asm"
-.include "src/sound/music/vsmatch.asm"
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
+	.include "src/sound/music/title.asm"
+	.include "src/sound/music/starman.asm"
+	.include "src/sound/music/flower.asm"
+	.include "src/sound/music/mushroom.asm"
+	.include "src/sound/music/vsmatch.asm"
+ELSE
+	.include src/sound/music/custom/titlescreen.asm"
+	.include src/sound/music/custom/pokecenter.asm"
+	.include src/sound/music/custom/celadon.asm"
+	.include src/sound/music/custom/cities1.asm"
+	.include src/sound/music/custom/gamecorner.asm"
+ENDIF
 .include "src/sound/music/gameover.asm"
-.include "src/sound/music/stageclear.asm"
-.include "src/sound/music/currentscore.asm"
-.include "src/sound/music/gamepoint.asm"
-.include "src/sound/music/vsresults.asm"
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
+	.include "src/sound/music/stageclear.asm"
+	.include "src/sound/music/currentscore.asm"
+	.include "src/sound/music/gamepoint.asm"
+	.include "src/sound/music/vsresults.asm"
+ELSE
+	.include "src/sound/music/custom/pkmnhealed.asm"
+	.include "src/sound/music/custom/currentscore.asm"
+	.include "src/sound/music/custom/evolutoinditty.asm"
+	.include "src/sound/music/custom/defeatedtrainer.asm"
+ENDIF
 .include "src/sound/music/unused.asm"
-.include "src/sound/music/vsmenu.asm"
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
+	.include "src/sound/music/vsmenu.asm"
+ELSE
+	.include "src/sound/music/custom/oakslab.asm"
+ENDIF
 .include "src/sound/sfx-1.asm"
-.include "src/sound/music/roundend.asm"
+IFNDEF POKEMON_RED_MUSIC_SOUNDFONT
+	.include "src/sound/music/roundend.asm"
+ELSE
+	.include "src/sound/music/custom/item.asm"
+ENDIF
 
 .include "src/sound/engine.asm"
 
