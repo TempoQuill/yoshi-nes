@@ -71,7 +71,7 @@ Music_OaksLab_Ch1:
 	tempo 140
 	channel_volume 15
 	vibrato 10, 1, 5
-	note_type 12, 3, 7, 4, 2
+	note_type 12, 3, 7, 2, 4
 	octave 2
 	note G#, 1
 	note A_, 1
