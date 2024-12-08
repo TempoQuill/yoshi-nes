@@ -66,7 +66,7 @@ Music_VSResults_Ch2_Sub1:
 	note G_, 1
 	rest 11
 	octave 3
-	note A#, 1
+	note B♭, 1
 	rest 2
 	note G_, 1
 	octave 4
@@ -115,7 +115,7 @@ Music_VSResults_Ch1_Sub1:
 	octave 4
 	note A_, 1
 	rest 1
-	note A#, 1
+	note B♭, 1
 	rest 3
 	octave 5
 	note C_, 1
@@ -128,7 +128,7 @@ Music_VSResults_Ch1_Sub1:
 	note C_, 1
 	rest 1
 	octave 3
-	note A#, 1
+	note B♭, 1
 	rest 1
 	note G_, 1
 	rest 3
@@ -138,7 +138,7 @@ Music_VSResults_Ch1_Sub1:
 	note G_, 1
 	note A_, 1
 	rest 1
-	note A#, 1
+	note B♭, 1
 	rest 3
 	note A_, 1
 	rest 3
@@ -200,7 +200,7 @@ Music_VSResults_Ch3:
 	octave 5
 	note A_, 1
 	rest 1
-	note A#, 1
+	note B♭, 1
 	rest 3
 	octave 6
 	note C_, 1
@@ -213,7 +213,7 @@ Music_VSResults_Ch3:
 	note C_, 1
 	rest 1
 	octave 4
-	note A#, 1
+	note B♭, 1
 	rest 1
 	note G_, 1
 	rest 3
@@ -223,7 +223,7 @@ Music_VSResults_Ch3:
 	note G_, 1
 	note A_, 1
 	rest 1
-	note A#, 1
+	note B♭, 1
 	rest 3
 	note A_, 1
 	rest 3

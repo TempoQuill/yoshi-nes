@@ -3,21 +3,21 @@ Music_Title_Ch2:
 	pitch_inc_switch
 	note_type 12, 1, 11, 1, 4
 	octave 2
-	note A#, 3
+	note B♭, 3
 	octave 3
 	note D_, 3
 	note F_, 2
 	octave 2
-	note A#, 3
+	note B♭, 3
 	octave 3
 	note D_, 3
 	note F_, 2
-	note D#, 3
+	note E♭, 3
 	note G_, 3
-	note A#, 2
-	note D#, 3
+	note B♭, 2
+	note E♭, 3
 	note G_, 3
-	note A#, 2
+	note B♭, 2
 	note A_, 2
 	note F_, 4
 	note A_, 2
@@ -25,49 +25,49 @@ Music_Title_Ch2:
 	note C_, 4
 	octave 3
 	note A_, 4
-	note A#, 1
+	note B♭, 1
 	note A_, 1
-	note A#, 1
+	note B♭, 1
 	note F_, 1
 	note G_, 1
 	note F_, 1
 	note D_, 1
 	note F_, 1
 	octave 2
-	note A#, 4
+	note B♭, 4
 	octave 3
-	note A#, 4
+	note B♭, 4
 	octave 2
-	note A#, 3
+	note B♭, 3
 	octave 3
 	note D_, 3
 	note F_, 2
 	octave 2
-	note A#, 3
+	note B♭, 3
 	octave 3
 	note D_, 3
 	note F_, 2
-	note D#, 3
+	note E♭, 3
 	note G_, 3
-	note A#, 2
-	note D#, 3
+	note B♭, 2
+	note E♭, 3
 	note D_, 1
-	note D#, 1
+	note E♭, 1
 	note D_, 1
 	note D_, 1
-	note D#, 1
+	note E♭, 1
 	note C_, 3
 	note D_, 3
-	note D#, 2
+	note E♭, 2
 	note C_, 3
 	note D_, 3
-	note D#, 2
-	note A#, 2
+	note E♭, 2
+	note B♭, 2
 	note F_, 2
 	octave 4
 	note C_, 2
 	octave 3
-	note D#, 2
+	note E♭, 2
 	octave 4
 	note C#, 2
 	octave 3
@@ -77,54 +77,54 @@ Music_Title_Ch2:
 	octave 3
 	note C_, 2
 	octave 2
-	note A#, 3
+	note B♭, 3
 	octave 3
 	note D_, 3
 	note F_, 2
 	octave 2
-	note A#, 3
+	note B♭, 3
 	octave 3
 	note D_, 3
 	note F_, 2
-	note D#, 3
+	note E♭, 3
 	note G_, 3
-	note A#, 2
-	note D#, 3
+	note B♭, 2
+	note E♭, 3
 	note G_, 3
-	note A#, 2
+	note B♭, 2
 	note F_, 3
 	note F_, 3
-	note A#, 2
+	note B♭, 2
 	note F_, 3
 	note A_, 3
 	octave 4
 	note C_, 2
 	note D_, 3
 	octave 3
-	note A#, 3
+	note B♭, 3
 	note F_, 2
 	octave 4
 	note F_, 2
-	note D#, 2
+	note E♭, 2
 	note D_, 2
 	note C_, 2
 	octave 3
 	note G_, 2
 	octave 2
-	note A#, 2
+	note B♭, 2
 	octave 3
-	note D#, 2
+	note E♭, 2
 	note F_, 2
 	note G_, 2
-	note D#, 2
-	note A#, 2
+	note E♭, 2
+	note B♭, 2
 	note G_, 2
 	note F_, 2
 	octave 2
-	note A#, 2
+	note B♭, 2
 	octave 3
 	note D_, 2
-	note D#, 2
+	note E♭, 2
 	note F_, 2
 	note D_, 2
 	note G_, 2
@@ -135,36 +135,36 @@ Music_Title_Ch2:
 	octave 3
 	note C_, 2
 	note D_, 2
-	note D#, 2
+	note E♭, 2
 	note C_, 2
 	note G_, 2
-	note D#, 2
+	note E♭, 2
 	note F_, 2
-	note D#, 2
+	note E♭, 2
 	note D_, 2
 	note C_, 2
 	note D_, 2
 	note F_, 2
 	octave 2
-	note A#, 2
+	note B♭, 2
 	octave 3
 	note F_, 2
 	note G_, 2
 	octave 2
-	note A#, 2
+	note B♭, 2
 	octave 3
-	note D#, 2
+	note E♭, 2
 	note F_, 2
 	note G_, 2
-	note D#, 2
-	note A#, 2
+	note E♭, 2
+	note B♭, 2
 	note G_, 2
 	note F_, 2
 	octave 2
-	note A#, 2
+	note B♭, 2
 	octave 3
 	note D_, 2
-	note D#, 2
+	note E♭, 2
 	note F_, 2
 	note G_, 2
 	note A_, 2
@@ -181,11 +181,11 @@ Music_Title_Ch2:
 	octave 4
 	note C_, 2
 	octave 3
-	note A#, 2
+	note B♭, 2
 	note A_, 2
 	note G_, 2
 	note A_, 2
-	note A#, 1
+	note B♭, 1
 	rest 7
 	sound_ret
 
@@ -200,12 +200,12 @@ Music_Title_Ch1:
 	note C_, 2
 	note C_, 2
 	octave 3
-	note A#, 2
+	note B♭, 2
 	octave 4
 	note C_, 2
 	note D_, 2
 	octave 3
-	note A#, 1
+	note B♭, 1
 	note_type 6, 1, 10, 1, 8
 	octave 4
 	note D_, 1
@@ -217,33 +217,33 @@ Music_Title_Ch1:
 	note F_, 2
 	note G_, 2
 	note F_, 2
-	note D#, 2
+	note E♭, 2
 	note D_, 2
 	note C_, 2
 	note C_, 2
 	note D_, 2
 	note D_, 2
-	note D#, 2
-	note D#, 2
+	note E♭, 2
+	note E♭, 2
 	note G_, 2
-	note D#, 2
+	note E♭, 2
 	note F_, 4
-	note D#, 4
+	note E♭, 4
 	note D_, 4
-	note A#, 4
+	note B♭, 4
 	note_type 12, 1, 10, 1, 6
 	note F_, 1
 	note G_, 2
 	note F_, 3
 	note D_, 2
-	note A#, 2
+	note B♭, 2
 	note A_, 2
-	note A#, 2
+	note B♭, 2
 	note A_, 2
 	note G_, 2
-	note D#, 14
+	note E♭, 14
 	note C_, 1
-	note D#, 2
+	note E♭, 2
 	note C_, 3
 	octave 3
 	note A_, 2
@@ -253,67 +253,67 @@ Music_Title_Ch1:
 	note G_, 2
 	note F_, 2
 	note D_, 4
-	note D#, 4
+	note E♭, 4
 	note E_, 4
 	note F_, 4
 	note F_, 1
 	note G_, 2
 	note F_, 3
 	note D_, 2
-	note A#, 2
+	note B♭, 2
 	note A_, 2
-	note A#, 2
+	note B♭, 2
 	note A_, 2
 	note G_, 3
-	note A#, 11
+	note B♭, 11
 	note_type 6, 1, 10, 2, 6
 	note F_, 1
 	note G_, 1
 	note A_, 1
-	note A#, 1
+	note B♭, 1
 	note_type 12, 1, 10, 2, 6
 	octave 5
 	note C_, 2
 	note C_, 2
 	octave 4
-	note A#, 2
-	note A#, 2
+	note B♭, 2
+	note B♭, 2
 	note A_, 2
 	octave 5
 	note D_, 2
 	note C_, 2
 	octave 4
 	note A_, 2
-	note A#, 16
+	note B♭, 16
 	note G_, 4
-	note D#, 6
+	note E♭, 6
 	note G_, 2
 	note F_, 2
 	note G_, 2
 	note F_, 4
-	note A#, 6
-	note A#, 2
+	note B♭, 6
+	note B♭, 2
 	note A_, 2
-	note A#, 2
+	note B♭, 2
 	note A_, 4
 	note F_, 4
 	octave 5
 	note C_, 4
 	octave 4
 	note A_, 4
-	note A#, 4
+	note B♭, 4
 	octave 5
 	note C_, 4
 	note D_, 2
 	note C_, 2
 	octave 4
-	note A#, 2
+	note B♭, 2
 	note A_, 2
 	note G_, 4
-	note D#, 6
-	note A#, 2
+	note E♭, 6
+	note B♭, 2
 	note A_, 2
-	note A#, 2
+	note B♭, 2
 	octave 5
 	note D_, 4
 	note C_, 4
@@ -324,16 +324,16 @@ Music_Title_Ch1:
 	octave 5
 	note C_, 4
 	octave 4
-	note A#, 4
+	note B♭, 4
 	note A_, 2
 	octave 5
 	note D_, 2
 	note C_, 2
 	octave 4
 	note A_, 2
-	note A#, 4
-	note A#, 4
-	note A#, 1
+	note B♭, 4
+	note B♭, 4
+	note B♭, 1
 	rest 7
 	rest 4
 	sound_ret
@@ -345,8 +345,8 @@ Music_Title_Ch3:
 	sound_call Music_Title_Ch3_Sub1
 	sound_call Music_Title_Ch3_Sub1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note F_, 2
 	octave 5
@@ -354,20 +354,20 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note G_, 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note F_, 2
 	octave 5
@@ -375,66 +375,66 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note G_, 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
-	note A#, 2
+	note B♭, 2
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	note C_, 4
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
-	note A#, 2
+	note B♭, 2
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	note C_, 4
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note G_, 2
 	octave 5
@@ -442,20 +442,20 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note A_, 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note G_, 2
 	octave 5
@@ -463,20 +463,20 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note A_, 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note D_, 2
 	octave 5
@@ -484,20 +484,20 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note C_, 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 3
 	note B_, 2
@@ -506,22 +506,22 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 3
-	note A#, 4
+	note B♭, 4
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note F_, 2
 	octave 5
@@ -529,20 +529,20 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note G_, 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note F_, 2
 	octave 5
@@ -550,89 +550,89 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note G_, 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
-	note A#, 2
+	note B♭, 2
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	note C_, 4
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
-	note A#, 2
+	note B♭, 2
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	note C_, 4
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
-	note A#, 2
+	note B♭, 2
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	note C_, 4
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	note A_, 2
 	octave 5
@@ -640,56 +640,56 @@ Music_Title_Ch3:
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	note C_, 4
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
-	note A#, 2
+	note B♭, 2
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	note D_, 4
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 3
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 5
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
@@ -703,88 +703,88 @@ Music_Title_Ch3:
 	sound_call Music_Title_Ch3_Sub1
 	sound_call Music_Title_Ch3_Sub1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 3
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 5
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 3
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 4
 	pitch_slide 1, 3, F_
 	note F_, 1
 	rest 1
 	octave 3
-	pitch_slide 1, 2, A#
-	note A#, 1
+	pitch_slide 1, 2, B♭
+	note B♭, 1
 	rest 3
 	sound_ret
 
 Music_Title_Ch3_Sub1:
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 3
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 5
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 3
 	octave 5
 	pitch_slide 1, 4, F_
 	note F_, 1
 	rest 1
 	octave 4
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 5
-	pitch_slide 1, 3, A#
-	note A#, 1
+	pitch_slide 1, 3, B♭
+	note B♭, 1
 	rest 1
 	octave 5
 	pitch_slide 1, 4, F_

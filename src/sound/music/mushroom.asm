@@ -818,7 +818,7 @@ Music_Mushroom_Ch1_Sub5:
 
 Music_Mushroom_Ch1_Sub6:
 	note F#, 2
-	note F_, 2
+	note E#, 2
 	note F#, 2
 	note G_, 2
 	note F#, 2

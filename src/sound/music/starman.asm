@@ -790,7 +790,7 @@ Music_Starman_Ch3_Mainloop:
 	note E_, 2
 	octave 3
 	note A_, 1
-	note A#, 1
+	note B♭, 1
 	note B_, 1
 	note A_, 1
 	note G#, 2
@@ -989,7 +989,7 @@ Music_Starman_Ch3_Mainloop:
 	note D_, 1
 	note E_, 1
 	note F#, 1
-	note G_, 1
+	note Fx, 1 ; double sharp
 	note G#, 1
 	note A_, 8
 	octave 2

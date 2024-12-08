@@ -6,7 +6,7 @@ Music_GamePoint_Ch2:
 	octave 3
 	note A_, 2
 	note A_, 1
-	note A#, 1
+	note B♭, 1
 	octave 4
 	note C_, 6
 	note C_, 2
@@ -34,7 +34,7 @@ Music_GamePoint_Ch1:
 	note F_, 2
 	note G_, 2
 	note A_, 2
-	note A#, 3
+	note B♭, 3
 	octave 5
 	note C_, 1
 	note D_, 2
