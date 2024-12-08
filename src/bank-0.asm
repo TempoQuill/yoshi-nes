@@ -27,32 +27,32 @@ InitNametable:
 DisablePicture:
 	LDA zPPUMask
 	AND #$1e ; are we showing anything?
-	BEQ @00_805d
+	BEQ @skip
 	LDY #$03
-@00_8033:
+@fadeout:
 	LDX #pal_size * num_pals - 1
-@00_8035:
+@loop:
 	LDA iPals, X
 	SEC
 	SBC #$10
-	BPL @00_803f
+	BPL @store
 	LDA #$0f
-@00_803f:
+@store:
 	STA iPals, X
 	DEX
-	BPL @00_8035
+	BPL @loop
 	LDA #$01
 	STA i224
 	LDA #$01
 	STA zb1
 	JSR Sub_00_806a
 	DEY
-	BNE @00_8033
+	BNE @fadeout
 	LDA zPPUMask
 	STA iPPUMask
 	AND #$e1 ; hide everything
 	STA zPPUMask
-@00_805d:
+@skip:
 	JSR Sub_00_806a
 	RTS
 
@@ -428,12 +428,10 @@ Sub_00_84bb:
 Sub_00_84fa:
 	LDA #$00
 	CLC
+REPT 3
 	ADC (zPointer83), Y
 	INY
-	ADC (zPointer83), Y
-	INY
-	ADC (zPointer83), Y
-	INY
+ENDR
 	ADC (zPointer83), Y
 	LSR A
 	STA za3
